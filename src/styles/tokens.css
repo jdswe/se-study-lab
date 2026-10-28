@@ -1,0 +1,93 @@
+/* Design tokens. Colours are defined once and redefined for dark mode. */
+:root {
+  --bg: #F6F2EA;
+  --bg-elev: #FFFDF8;
+  --panel: #FFFDF8;
+  --panel-2: #EEE7D8;
+  --ink: #1F2A36;
+  --ink-soft: #4E5A66;
+  --ink-faint: #7A828C;
+  --line: #DDD3C0;
+  --accent: #2F6F73;
+  --accent-ink: #ffffff;
+  --accent-2: #8E6C8A;
+  --cyan: #3A7CA5;
+  --good: #3E7D5A;
+  --good-bg: #E3EFE6;
+  --bad: #A9473D;
+  --bad-bg: #F6E3DE;
+  --warn: #8A5A1C;
+  --warn-bg: #F5EAD0;
+  --code-bg: #1F2A36;
+  --code-ink: #EDE7DA;
+  --hero-a: #E6EEEA;
+  --hero-b: #F4E7DF;
+  --focus: #2F6F73;
+  --radius: 14px;
+  --shadow: 0 1px 2px rgb(15 23 42 / 0.06), 0 8px 24px rgb(15 23 42 / 0.06);
+  --font-sans: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --grad-brand: linear-gradient(120deg, #2F6F73 0%, #5E8C7A 100%);
+  --grad-warm: linear-gradient(120deg, #C0704F 0%, #B98A3E 100%);
+  --grad-cool: linear-gradient(120deg, #3A4E74 0%, #7A6A8C 100%);
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1A2330;
+    --bg-elev: #212C3B;
+    --panel: #222D3C;
+    --panel-2: #2A3749;
+    --ink: #EDE7DA;
+    --ink-soft: #C6C0B3;
+    --ink-faint: #9A9A92;
+    --line: #3A4757;
+    --accent: #8FC1C4;
+    --accent-ink: #1A2330;
+    --accent-2: #D9A98C;
+    --cyan: #8FB9D6;
+    --good: #9CCBAA;
+    --good-bg: #26372D;
+    --bad: #E3A097;
+    --bad-bg: #3D2A27;
+    --warn: #E6C98A;
+    --warn-bg: #3A3222;
+    --code-bg: #141C27;
+    --code-ink: #EDE7DA;
+    --hero-a: #263A3A;
+    --hero-b: #3A2F33;
+    --focus: #8FC1C4;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 30px rgb(0 0 0 / 0.35);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #1A2330;
+  --bg-elev: #212C3B;
+  --panel: #222D3C;
+  --panel-2: #2A3749;
+  --ink: #EDE7DA;
+  --ink-soft: #C6C0B3;
+  --ink-faint: #9A9A92;
+  --line: #3A4757;
+  --accent: #8FC1C4;
+  --accent-ink: #1A2330;
+  --accent-2: #D9A98C;
+  --cyan: #8FB9D6;
+  --good: #9CCBAA;
+  --good-bg: #26372D;
+  --bad: #E3A097;
+  --bad-bg: #3D2A27;
+  --warn: #E6C98A;
+  --warn-bg: #3A3222;
+  --code-bg: #141C27;
+  --code-ink: #EDE7DA;
+  --hero-a: #263A3A;
+  --hero-b: #3A2F33;
+  --focus: #8FC1C4;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 30px rgb(0 0 0 / 0.35);
+  color-scheme: dark;
+}

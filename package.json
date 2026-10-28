@@ -1,0 +1,32 @@
+{
+  "name": "se-study-lab",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "An independent, bilingual study platform for software engineering and computer science.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "check:privacy": "node scripts/check-privacy.mjs",
+    "docs": "node scripts/build-docs.mjs"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router-dom": "6.30.6"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "4.3.4",
+    "docx": "9.5.1",
+    "pptxgenjs": "3.12.0",
+    "typescript": "5.6.3",
+    "vite": "5.4.11",
+    "vitest": "2.1.8"
+  }
+}
