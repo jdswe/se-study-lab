@@ -1,49 +1,27 @@
-import { useState, useSyncExternalStore, type ReactNode } from 'react';
+import { useSyncExternalStore, type ReactNode } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useI18n } from '../i18n';
 import { LocalTime } from './LocalTime';
-import { Backdrop, variantForPath } from './Backdrop';
-import { findTerm } from '../content/curriculum';
-
-/** Hue of the term in the current path, used to tint the term backdrop. */
-function termHue(path: string): number | undefined {
-  const m = path.match(/^\/term\/(\d+)/);
-  return m ? findTerm(Number(m[1]))?.hue : undefined;
-}
+import { Backdrop, backdropForPath } from './Backdrop';
 import { useReveal } from '../lib/useReveal';
 import type { Locale } from '../content/types';
 import { updateState, useProgress } from '../lib/store';
 
-const links = [
-  { to: '/', key: 'home', end: true },
-  { to: '/flashcards', key: 'flashcards' },
-  { to: '/quizzes', key: 'quizzes' },
-  { to: '/playground', key: 'playground' },
-  { to: '/labs', key: 'labs' },
-  { to: '/planner', key: 'planner' },
-  { to: '/progress', key: 'progress' },
-  { to: '/resources', key: 'resources' },
-  { to: '/settings', key: 'settings' },
-] as const;
-
 const LANGS: { value: Locale; label: string }[] = [
   { value: 'en', label: 'EN' },
   { value: 'es', label: 'ES' },
+  { value: 'pt', label: 'PT' },
 ];
 
-/** Global chrome: skip link, navigation, language selector, theme toggle, and footer. */
+/**
+ * Global chrome. Only program-wide controls live here: home, language, theme,
+ * and settings. Study sections live inside each subject.
+ */
 export function Layout({ children }: { children: ReactNode }) {
   const { t, locale, setLocale } = useI18n();
-  const [open, setOpen] = useState(false);
   const location = useLocation();
   const { theme } = useProgress();
-
-  // Close the mobile menu on navigation.
-  const [lastPath, setLastPath] = useState(location.pathname);
-  if (lastPath !== location.pathname) {
-    setLastPath(location.pathname);
-    setOpen(false);
-  }
+  const backdrop = backdropForPath(location.pathname);
 
   useReveal(location.pathname);
 
@@ -57,7 +35,7 @@ export function Layout({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <Backdrop variant={variantForPath(location.pathname)} hue={termHue(location.pathname)} />
+      <Backdrop variant={backdrop.variant} hue={backdrop.hue} />
       <a className="skip-link" href="#main">{t('nav.skip')}</a>
       <header className="site-header">
         <div className="header-inner">
@@ -71,14 +49,6 @@ export function Layout({ children }: { children: ReactNode }) {
             </svg>
             <span>{t('appName')}</span>
           </Link>
-
-          <nav id="main-nav" className={`nav ${open ? 'is-open' : ''}`} aria-label="Main">
-            {links.map((l) => (
-              <NavLink key={l.to} to={l.to} end={'end' in l ? l.end : false}>
-                {t(`nav.${l.key}`)}
-              </NavLink>
-            ))}
-          </nav>
 
           <div className="header-tools">
             <div className="segmented" role="group" aria-label={t('settings.language')}>
@@ -112,15 +82,12 @@ export function Layout({ children }: { children: ReactNode }) {
                 </svg>
               )}
             </button>
-            <button
-              type="button"
-              className="btn btn-small menu-button"
-              aria-expanded={open}
-              aria-controls="main-nav"
-              onClick={() => setOpen((v) => !v)}
-            >
-              {t('nav.open')}
-            </button>
+            <NavLink to="/settings" className="btn btn-small btn-ghost theme-switch" aria-label={t('nav.settings')} title={t('nav.settings')}>
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" />
+              </svg>
+            </NavLink>
           </div>
         </div>
       </header>

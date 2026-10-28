@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
+import { findSubject, findTerm, placeOfWeek } from '../content/curriculum';
+import type { SubjectTheme } from '../content/types';
 
-export type BackdropVariant = 'program' | 'term' | 'commits' | 'cards' | 'quiz' | 'terminal' | 'calm';
+export type BackdropVariant = 'program' | 'term' | 'commits' | 'data' | 'cards' | 'quiz' | 'terminal' | 'calm';
 
 /** Seeded pseudo-random numbers, so the backdrop looks the same on every visit. */
 function seeded(seed: number) {
@@ -60,7 +62,22 @@ export function Backdrop({ variant, hue }: { variant: BackdropVariant; hue?: num
           })}
         </svg>
       )}
-      {variant !== 'commits' && variant !== 'program' && shapes.map((s, i) => (
+      {variant === 'data' && (
+        <svg className="bd-commits bd-data" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+          {[[120, 140], [520, 90], [900, 220], [260, 480], [700, 520], [1020, 600]].map(([x, y], i) => (
+            <g key={i} stroke={PALETTE[i % PALETTE.length]}>
+              {[0, 1, 2, 3].map((r) => [0, 1, 2].map((c) => <rect key={`${r}-${c}`} x={x + c * 52} y={y + r * 26} width="52" height="26" fill={r === 0 ? 'currentColor' : 'none'} />))}
+            </g>
+          ))}
+          {[[430, 330], [1080, 380], [140, 700]].map(([x, y], i) => (
+            <g key={`c${i}`} stroke={PALETTE[(i + 2) % PALETTE.length]} fill="none">
+              <ellipse cx={x} cy={y} rx="46" ry="14" />
+              <path d={`M ${x - 46} ${y} L ${x - 46} ${y + 70} A 46 14 0 0 0 ${x + 46} ${y + 70} L ${x + 46} ${y}`} />
+            </g>
+          ))}
+        </svg>
+      )}
+      {variant !== 'commits' && variant !== 'program' && variant !== 'data' && shapes.map((s, i) => (
         <span
           key={i}
           className="bd-shape"
@@ -83,13 +100,29 @@ export function Backdrop({ variant, hue }: { variant: BackdropVariant; hue?: num
   );
 }
 
-/** Picks the backdrop for a route, so each section has its own atmosphere. */
-export function variantForPath(path: string): BackdropVariant {
-  if (path === '/') return 'program';
-  if (/^\/term\/\d+$/.test(path)) return 'term';
-  if (path.startsWith('/term/') || path.startsWith('/week')) return 'commits';
-  if (path.startsWith('/flashcards')) return 'cards';
-  if (path.startsWith('/quizzes')) return 'quiz';
-  if (path.startsWith('/labs') || path.startsWith('/playground')) return 'terminal';
-  return 'calm';
+const THEME_VARIANT: Record<SubjectTheme, BackdropVariant> = { 'version-control': 'commits', databases: 'data', default: 'calm' };
+
+/**
+ * Picks the backdrop for a route: the program on the home page, the term's
+ * colour on term and module pages, and inside a subject the subject's own
+ * theme, with a different mood for cards, quizzes, and planning sections.
+ */
+export function backdropForPath(path: string): { variant: BackdropVariant; hue?: number } {
+  if (path === '/') return { variant: 'program' };
+  const week = path.match(/^\/week\/([^/]+)/);
+  if (week) {
+    const place = placeOfWeek(week[1]);
+    return { variant: place ? THEME_VARIANT[place.subject.theme] : 'calm', hue: place?.term.hue };
+  }
+  const m = path.match(/^\/term\/(\d+)(?:\/module\/(\d+)(?:\/([^/]+)(?:\/([^/]+))?)?)?/);
+  if (!m) return { variant: 'calm' };
+  const hue = findTerm(Number(m[1]))?.hue;
+  if (!m[3]) return { variant: 'term', hue };
+  const subject = findSubject(Number(m[1]), Number(m[2]), m[3]);
+  const section = m[4] ?? 'weeks';
+  if (section === 'flashcards') return { variant: 'cards', hue };
+  if (section === 'quizzes') return { variant: 'quiz', hue };
+  if (['planner', 'progress', 'resources'].includes(section)) return { variant: 'calm', hue };
+  if (section === 'git-playground' || section === 'labs') return { variant: subject?.theme === 'databases' ? 'data' : 'terminal', hue };
+  return { variant: subject ? THEME_VARIANT[subject.theme] : 'calm', hue };
 }

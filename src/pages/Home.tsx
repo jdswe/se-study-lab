@@ -6,7 +6,7 @@ import { JourneyArt } from '../components/JourneyArt';
 import { TermArt } from '../components/TermArt';
 import { SearchBox } from '../components/SearchBox';
 import { useProgress } from '../lib/store';
-import { bestQuiz, dueCount, scopeProgress, streakOf } from '../lib/stats';
+import { bestQuiz, dueCount, progressOf, streakOf } from '../lib/stats';
 
 /** Program home: the whole degree as eight terms, plus where to continue. */
 export function Home() {
@@ -14,11 +14,13 @@ export function Home() {
   const progress = useProgress();
   const now = new Date();
   // The current term is the first one with published content that is not finished.
+  const termWeeks = (n: number) => weeks.filter((w) => w.term === n);
   const current = terms.find((term) => {
-    const p = scopeProgress(weeks, progress, term.number);
+    const p = progressOf(termWeeks(term.number), progress);
     return p.total > 0 && p.done < p.total;
   }) ?? terms[0];
-  const nextWeek = weeks.find((w) => w.term === current.number) ?? weeks[0];
+  // Continue with the first unfinished week of the current term.
+  const nextWeek = termWeeks(current.number).find((w) => w.lessons.some((l) => !progress.lessonsDone[l.id])) ?? termWeeks(current.number)[0] ?? weeks[0];
   const due = weeks.reduce((n, w) => n + dueCount(w, progress, now), 0);
   const best = bestQuiz(progress, nextWeek.id);
 
@@ -32,7 +34,7 @@ export function Home() {
           <SearchBox />
           <div className="hero-actions">
             <Link className="btn btn-primary" to={`/week/${nextWeek.id}`}>{t('home.continue')}</Link>
-            <Link className="btn" to="/playground">{t('playground.open')}</Link>
+            <Link className="btn" to={`/term/${current.number}`}>{t('home.openTerm', { n: current.number })}</Link>
           </div>
         </div>
         <JourneyArt current={current.number} />
@@ -52,8 +54,8 @@ export function Home() {
         </div>
         <div className="term-grid">
           {terms.map((term) => {
-            const p = scopeProgress(weeks, progress, term.number);
-            const subjects = term.modules.filter((m) => m.subject).length;
+            const p = progressOf(termWeeks(term.number), progress);
+            const subjects = term.modules.reduce((n, m) => n + m.subjects.length, 0);
             const status = term.number === current.number ? 'now' : subjects > 0 ? 'open' : 'soon';
             return (
               <Link key={term.number} to={`/term/${term.number}`} className={`term-card status-${status}`} style={{ ['--term-hue' as string]: term.hue }}>

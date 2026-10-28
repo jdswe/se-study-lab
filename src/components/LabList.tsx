@@ -1,10 +1,11 @@
+import { Link } from 'react-router-dom';
 import { useI18n } from '../i18n';
 import type { Lab } from '../content/types';
 import { updateState, useProgress } from '../lib/store';
 import { CodeBlock } from './CodeBlock';
 
 /** Lab instructions with copyable steps. Step completion is saved in local progress. */
-export function LabList({ labs }: { labs: Lab[] }) {
+export function LabList({ labs, sqlLabPath }: { labs: Lab[]; sqlLabPath?: string }) {
   const { t, pick } = useI18n();
   const progress = useProgress();
 
@@ -19,7 +20,7 @@ export function LabList({ labs }: { labs: Lab[] }) {
 
   return (
     <div className="stack">
-      <p className="warning">{t('labs.sandboxWarning')}</p>
+      {labs.some((l) => (l.kind ?? 'shell') === 'shell') && <p className="warning">{t('labs.sandboxWarning')}</p>}
       {labs.map((lab) => {
         const doneSteps = lab.steps.filter((s) => progress.stepsDone[s.id]).length;
         return (
@@ -40,7 +41,10 @@ export function LabList({ labs }: { labs: Lab[] }) {
                       <input type="checkbox" checked={done} onChange={() => toggleStep(step.id)} /> {t('labs.stepDone')}
                     </label>
                   </div>
-                  <CodeBlock code={step.commands.join('\n')} label={`${lab.id} step ${i + 1}`} />
+                  {step.commands.length > 0 && <CodeBlock code={step.commands.join('\n')} label={`${lab.id} step ${i + 1}`} />}
+                  {lab.kind === 'sql' && sqlLabPath && step.commands.length > 0 && (
+                    <Link className="btn btn-small" to={`${sqlLabPath}?q=${encodeURIComponent(step.commands.join('\n'))}`}>▶ {t('sqllab.openInLab')}</Link>
+                  )}
                   <p className="explain"><strong>{t('labs.expected')}:</strong> {pick(step.expected).text}</p>
                 </article>
               );

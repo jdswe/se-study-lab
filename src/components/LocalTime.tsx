@@ -21,11 +21,12 @@ export function LocalTime() {
   const chosen = country !== 'auto' ? COUNTRIES.find((c) => c.code === country) : undefined;
   const info = chosen ?? countryForZone(detectedZone);
   const zone = chosen ? chosen.zone : detectedZone;
-  const lang = locale === 'es' ? 'es' : 'en';
+  const lang = locale;
+  const intlLang = { en: 'en', es: 'es', pt: 'pt-BR' }[locale];
 
   // Always 24-hour format, whatever the locale.
-  const time = new Intl.DateTimeFormat(lang, { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: zone }).format(now);
-  const zoneName = new Intl.DateTimeFormat(lang, { timeZoneName: 'long', timeZone: zone })
+  const time = new Intl.DateTimeFormat(intlLang, { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: zone }).format(now);
+  const zoneName = new Intl.DateTimeFormat(intlLang, { timeZoneName: 'long', timeZone: zone })
     .formatToParts(now).find((p) => p.type === 'timeZoneName')?.value ?? zone;
   const place = info ? info.name[lang] : zone;
 

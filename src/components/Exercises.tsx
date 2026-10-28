@@ -1,7 +1,11 @@
 import { useI18n } from '../i18n';
 import type { Exercise } from '../content/types';
 
-const LEVEL_NAMES = { en: ['Warm-up', 'Practice', 'Challenge'], es: ['Calentamiento', 'Práctica', 'Desafío'] } as const;
+const LEVEL_NAMES = {
+  en: ['Warm-up', 'Practice', 'Challenge'],
+  es: ['Calentamiento', 'Práctica', 'Desafío'],
+  pt: ['Aquecimento', 'Prática', 'Desafio'],
+} as const;
 
 /** Exercises with a hidden hint and solution, so learners can try first. */
 export function ExerciseList({ exercises }: { exercises: Exercise[] }) {

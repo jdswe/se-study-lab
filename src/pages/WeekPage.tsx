@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { NavLink, Navigate, useParams, useSearchParams } from 'react-router-dom';
 import { findWeek } from '../content/index';
-import { findModule } from '../content/curriculum';
-import type { Activity, Lesson as LessonType, Story } from '../content/types';
+import { placeOfWeek, subjectPath } from '../content/curriculum';
+import type { Activity, Lesson as LessonType, Story, Video } from '../content/types';
 import { StoryPlayer } from '../components/StoryPlayer';
+import { VideoPlayer, renderedVideos } from '../components/VideoPlayer';
 import { DocumentCard, LinkCard } from '../components/ResourceCards';
 import { useI18n } from '../i18n';
 import { Breadcrumbs } from '../components/Breadcrumbs';
@@ -30,7 +31,7 @@ export function WeekPage() {
   if (!TABS.includes(tab as Tab)) return <Navigate to={`/week/${weekId}`} replace />;
 
   const doneCount = lessonStatuses(week, progress).filter((s) => s.done).length;
-  const subject = findModule(week.term, week.module)?.subject;
+  const place = placeOfWeek(week.id);
   const percent = week.lessons.length ? Math.round((doneCount / week.lessons.length) * 100) : 0;
   const title = pick(week.title).text;
   const accent = `hsl(${hueFor(0)} 34% 48%)`;
@@ -41,7 +42,8 @@ export function WeekPage() {
         items={[
           { label: t('nav.home'), to: '/' },
           { label: t('curriculum.term', { n: week.term }), to: `/term/${week.term}` },
-          { label: subject ? pick(subject).text : t('curriculum.module', { n: week.module }), to: `/term/${week.term}/module/${week.module}` },
+          { label: t('curriculum.module', { n: week.module }), to: `/term/${week.term}/module/${week.module}` },
+          ...(place ? [{ label: pick(place.subject.title).text, to: subjectPath(place) }] : []),
           { label: t('module.weekN', { n: week.week }) },
         ]}
       />
@@ -74,7 +76,7 @@ export function WeekPage() {
       </nav>
 
       {tab === 'overview' && <Overview weekId={week.id} />}
-      {tab === 'lessons' && <LessonsWithAnchor lessons={week.lessons} activities={week.activities} stories={week.stories} />}
+      {tab === 'lessons' && <LessonsWithAnchor lessons={week.lessons} activities={week.activities} stories={week.stories} videos={renderedVideos(week.videos)} />}
       {tab === 'flashcards' && <Deck cards={week.flashcards} />}
       {tab === 'quiz' && (
         <QuizRunner
@@ -84,7 +86,7 @@ export function WeekPage() {
           lessonTitles={Object.fromEntries(week.lessons.map((l) => [l.id, pick(l.title).text]))}
         />
       )}
-      {tab === 'labs' && <LabList labs={week.labs} />}
+      {tab === 'labs' && <LabList labs={week.labs} sqlLabPath={place?.subject.tools.includes('sql-lab') ? subjectPath(place, 'sql-lab') : undefined} />}
       {tab === 'resources' && <Resources weekId={week.id} />}
     </div>
   );
@@ -120,6 +122,16 @@ function Overview({ weekId }: { weekId: string }) {
           ))}
         </div>
       </section>
+
+      {renderedVideos(week.videos).length > 0 && (
+        <section className="section-card" style={{ ['--hue' as string]: 205 }} aria-labelledby="video-title">
+          <h2 id="video-title"><span className="section-icon" aria-hidden="true">▶</span> {t('video.section')}</h2>
+          <p className="muted">{t('video.sectionText')}</p>
+          <div className="video-grid">
+            {renderedVideos(week.videos).map((v) => <VideoPlayer key={v.id} video={v} />)}
+          </div>
+        </section>
+      )}
 
       <section className="section-card" style={{ ['--hue' as string]: 25 }} aria-labelledby="story-title">
         <h2 id="story-title"><span className="section-icon" aria-hidden="true">▶</span> {t('story.section')}</h2>
@@ -175,7 +187,7 @@ function Overview({ weekId }: { weekId: string }) {
   );
 }
 
-function LessonsWithAnchor({ lessons, activities, stories }: { lessons: LessonType[]; activities: Activity[]; stories: Story[] }) {
+function LessonsWithAnchor({ lessons, activities, stories, videos }: { lessons: LessonType[]; activities: Activity[]; stories: Story[]; videos: Video[] }) {
   const { t, pick } = useI18n();
   const progress = useProgress();
   const [params] = useSearchParams();
@@ -215,6 +227,7 @@ function LessonsWithAnchor({ lessons, activities, stories }: { lessons: LessonTy
             index={i}
             activities={activities.filter((a) => a.lessonId === lesson.id)}
             stories={stories.filter((s) => s.lessonId === lesson.id)}
+            videos={videos.filter((v) => v.lessonId === lesson.id)}
           />
         ))}
       </div>
@@ -233,7 +246,7 @@ function Resources({ weekId }: { weekId: string }) {
         <p className="muted">{t('resources.previewNote')}</p>
         <div className="res-grid">
           {week.documents.map((d) => (
-            <DocumentCard key={d.file} title={pick(d.title).text} file={d.file} kind={d.kind} />
+            <DocumentCard key={d.file} weekId={week.id} title={pick(d.title).text} file={d.file} kind={d.kind} preview={d.preview} />
           ))}
         </div>
       </section>

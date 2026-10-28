@@ -14,25 +14,25 @@ const commitsOn = (s: RepoState, branch: string) => s.commits.filter((c) => c.br
 export const MISSIONS: Mission[] = [
   {
     id: 'm1',
-    title: { en: 'Make two commits on main', es: 'Haz dos commits en main' },
+    title: { en: 'Make two commits on main', es: 'Haz dos commits en main', pt: 'Faça dois commits em main' },
     hint: 'git commit -m "add README"',
     done: (s) => logOf(s, 'main').length >= 3,
   },
   {
     id: 'm2',
-    title: { en: 'Create a branch called feature and switch to it', es: 'Crea una rama llamada feature y cámbiate a ella' },
+    title: { en: 'Create a branch called feature and switch to it', es: 'Crea una rama llamada feature y cámbiate a ella', pt: 'Crie uma branch chamada feature e mude para ela' },
     hint: 'git switch -c feature',
     done: (s) => Boolean(s.branches.feature),
   },
   {
     id: 'm3',
-    title: { en: 'Commit twice on feature', es: 'Haz dos commits en feature' },
+    title: { en: 'Commit twice on feature', es: 'Haz dos commits en feature', pt: 'Faça dois commits em feature' },
     hint: 'git commit -m "add login form"',
     done: (s) => commitsOn(s, 'feature').length >= 2,
   },
   {
     id: 'm4',
-    title: { en: 'Go back to main and commit once more', es: 'Vuelve a main y haz un commit más' },
+    title: { en: 'Go back to main and commit once more', es: 'Vuelve a main y haz un commit más', pt: 'Volte para main e faça mais um commit' },
     hint: 'git switch main',
     done: (s) => {
       const firstFeature = commitsOn(s, 'feature')[0];
@@ -41,7 +41,7 @@ export const MISSIONS: Mission[] = [
   },
   {
     id: 'm5',
-    title: { en: 'Merge feature into main with a merge commit', es: 'Fusiona feature en main con un commit de fusión' },
+    title: { en: 'Merge feature into main with a merge commit', es: 'Fusiona feature en main con un commit de fusión', pt: 'Faça o merge de feature em main com um commit de merge' },
     hint: 'git merge feature',
     done: (s) => (s.commits.find((c) => c.id === s.branches.main)?.parents.length ?? 0) === 2,
   },

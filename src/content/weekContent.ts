@@ -1,4 +1,4 @@
-import type { Activity, Story, Flashcard, Lab, Lesson, Localized, Question, StudyPlanDay, ExternalResource } from './types';
+import type { Activity, Story, Video, Flashcard, Lab, Lesson, Localized, Question, StudyPlanDay, ExternalResource } from './types';
 
 /** Everything the UI needs for one week. Adding a week means adding one of these. */
 export interface WeekContent {
@@ -9,6 +9,8 @@ export interface WeekContent {
   term: number;
   module: number;
   week: number;
+  /** Slug of the subject this week belongs to (see curriculum.ts). */
+  subject: string;
   title: Localized;
   intro: Localized;
   objectives: Localized[];
@@ -28,5 +30,8 @@ export interface WeekContent {
   /** Original downloadable documents. Empty until they are authored and checked. */
   activities: Activity[];
   stories: Story[];
-  documents: { title: Localized; file: string; kind: 'pdf' | 'docx' | 'pptx' }[];
+  /** One-minute concept videos; shown only once rendered (see generated/videoManifest.json). */
+  videos: Video[];
+  /** `preview` names a PDF twin used for in-page preview of Word and PowerPoint files. */
+  documents: { title: Localized; file: string; kind: 'pdf' | 'docx' | 'pptx'; preview?: string }[];
 }

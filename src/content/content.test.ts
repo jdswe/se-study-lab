@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { weeks } from './index';
-import { terms, weekId } from './curriculum';
+import { placeOfWeek, terms } from './curriculum';
 
 /**
  * Content integrity checks. These fail loudly when a lesson, card, question,
@@ -60,10 +60,26 @@ describe('curriculum', () => {
     for (const t of terms) expect(t.modules).toHaveLength(3);
   });
 
-  it('registers every published week, and every week has a curriculum entry', () => {
+  it('lists every published week exactly once, and every week has a curriculum entry', () => {
     const published = terms.flatMap((t) =>
-      t.modules.flatMap((m) => m.weeks.filter((w) => w.status === 'published').map((w) => weekId(t, m.number, w.number))),
+      t.modules.flatMap((m) => m.subjects.flatMap((s) => s.weeks.filter((w) => w.status === 'published').map((w) => w.id))),
     );
-    expect(published.sort()).toEqual(weeks.map((w) => w.id).sort());
+    expect(new Set(published).size).toBe(published.length);
+    expect([...published].sort()).toEqual(weeks.map((w) => w.id).sort());
+  });
+
+  it('places each week in the subject its content declares', () => {
+    for (const w of weeks) expect(placeOfWeek(w.id)?.subject.slug).toBe(w.subject);
+  });
+});
+
+describe('Portuguese coverage', () => {
+  it('translates every content string', async () => {
+    const { missingPortuguese } = await import('./localize');
+    const { program } = await import('./curriculum');
+    const { sqlTasks } = await import('./db1-week1/sqlTasks');
+    const { studioScenarios } = await import('./db1-week1/studio');
+    const missing = missingPortuguese([program, terms, weeks, sqlTasks, studioScenarios]);
+    expect(missing, `${missing.length} strings without Portuguese, e.g.: ${missing.slice(0, 5).join(' | ')}`).toEqual([]);
   });
 });

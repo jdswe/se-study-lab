@@ -2,9 +2,10 @@ import { createContext, useContext, useMemo, type ReactNode } from 'react';
 import type { Localized, Locale } from '../content/types';
 import { en, type Dict } from './en';
 import { es } from './es';
+import { pt } from './pt';
 import { updateState, useProgress } from '../lib/store';
 
-const dictionaries: Record<Locale, Dict> = { en, es };
+const dictionaries: Record<Locale, Dict> = { en, es, pt };
 
 /** Full dictionary for a locale, for list-valued strings. */
 export function dictionaryFor(locale: Locale): Dict {
@@ -46,8 +47,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
         return out;
       },
       pick: (text) => {
-        if (locale === 'es' && text.es) return { text: text.es, fallback: false };
-        return { text: text.en, fallback: locale === 'es' };
+        const translated = locale === 'en' ? text.en : text[locale];
+        if (translated) return { text: translated, fallback: false };
+        return { text: text.en, fallback: true };
       },
     };
   }, [locale]);

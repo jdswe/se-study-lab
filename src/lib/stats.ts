@@ -45,10 +45,9 @@ export function streakOf(s: ProgressState, now: Date): number {
   return currentStreak(s.studyDays, now);
 }
 
-/** Lessons done and total for every published week matching a term (and optionally a module). */
-export function scopeProgress(all: WeekContent[], s: ProgressState, term: number, module?: number) {
-  const scoped = all.filter((w) => w.term === term && (module === undefined || w.module === module));
-  const total = scoped.reduce((n, w) => n + w.lessons.length, 0);
-  const done = scoped.reduce((n, w) => n + w.lessons.filter((l) => s.lessonsDone[l.id]).length, 0);
+/** Lessons done and total across a set of weeks (a subject, a module, or a term). */
+export function progressOf(scope: WeekContent[], s: ProgressState) {
+  const total = scope.reduce((n, w) => n + w.lessons.length, 0);
+  const done = scope.reduce((n, w) => n + w.lessons.filter((l) => s.lessonsDone[l.id]).length, 0);
   return { done, total, pct: total ? Math.round((done / total) * 100) : 0 };
 }

@@ -1,69 +1,55 @@
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { useI18n } from '../i18n';
-import { findModule, findTerm, weekId } from '../content/curriculum';
-import { findWeek } from '../content/index';
+import { findModule, findTerm, subjectPath } from '../content/curriculum';
+import { weeksOf } from '../content/index';
 import { Breadcrumbs } from '../components/Breadcrumbs';
-import { HeroDemo } from '../components/HeroDemo';
+import { TermArt } from '../components/TermArt';
 import { useProgress } from '../lib/store';
+import { progressOf } from '../lib/stats';
 
-/** One module (subject): its weeks, published and planned, with the subject's own visual theme. */
+const THEME_GLYPH: Record<string, string> = { 'version-control': '⑂', databases: '▦', default: '◆' };
+
+/** A module: the subjects taught in it, each with its own weeks and tools. */
 export function ModulePage() {
   const { term: tp = '', module: mp = '' } = useParams();
   const { t, pick } = useI18n();
   const progress = useProgress();
   const term = findTerm(Number(tp));
   const mod = findModule(Number(tp), Number(mp));
-  if (!term || !mod || !mod.subject) return <Navigate to={term ? `/term/${term.number}` : '/'} replace />;
-
-  const slots = Array.from({ length: mod.plannedWeeks }, (_, i) => i + 1);
+  if (!term || !mod) return <Navigate to="/" replace />;
+  if (mod.subjects.length === 0) return <Navigate to={`/term/${term.number}`} replace />;
 
   return (
-    <div className={`module-page theme-${mod.theme}`} style={{ ['--term-hue' as string]: term.hue }}>
+    <div className="term-page" style={{ ['--term-hue' as string]: term.hue }}>
       <Breadcrumbs items={[
         { label: t('nav.home'), to: '/' },
         { label: t('curriculum.term', { n: term.number }), to: `/term/${term.number}` },
-        { label: pick(mod.subject).text },
+        { label: t('curriculum.module', { n: mod.number }) },
       ]} />
-      <header className="hero module-hero">
-        <div className="hero-copy">
-          <p className="eyebrow">{t('curriculum.term', { n: term.number })} · {t('curriculum.module', { n: mod.number })}</p>
-          <h1>{pick(mod.subject).text}</h1>
-          <p>{t('module.subtitle', { n: mod.plannedWeeks })}</p>
+      <header className="level-hero">
+        <div>
+          <p className="eyebrow">{t('curriculum.term', { n: term.number })}</p>
+          <h1>{t('curriculum.module', { n: mod.number })}</h1>
+          <p className="muted">{t('module.subjectsIntro', { n: mod.subjects.length })}</p>
         </div>
-        {mod.theme === 'version-control' && <HeroDemo />}
+        <TermArt term={term.number + mod.number} hue={(term.hue + mod.number * 18) % 360} className="level-art" />
       </header>
-
-      <section aria-labelledby="weeks-title" style={{ marginTop: 32 }}>
-        <h2 id="weeks-title">{t('module.weeksTitle')}</h2>
-        <ol className="week-grid">
-          {slots.map((n) => {
-            const meta = mod.weeks.find((w) => w.number === n);
-            const content = meta ? findWeek(weekId(term, mod.number, n)) : undefined;
-            if (!meta || !content) {
-              return (
-                <li key={n} className="week-card is-soon">
-                  <span className="week-num">{String(n).padStart(2, '0')}</span>
-                  <h3>{t('module.weekN', { n })}</h3>
-                  <p className="faint">{t('common.comingSoon')}</p>
-                </li>
-              );
-            }
-            const done = content.lessons.filter((l) => progress.lessonsDone[l.id]).length;
-            const pct = Math.round((done / content.lessons.length) * 100);
-            return (
-              <li key={n}>
-                <Link to={`/week/${content.id}`} className="week-card is-ready">
-                  <span className="week-num">{String(n).padStart(2, '0')}</span>
-                  <h3>{pick(meta.title).text}</h3>
-                  <p className="faint">{t('module.weekMeta', { lessons: content.lessons.length, min: content.estimatedMinutes })}</p>
-                  <div className="term-progress"><span style={{ width: `${pct}%` }} /></div>
-                  <span className="module-next">{done > 0 ? t('home.continue') : t('module.start')} →</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ol>
-      </section>
+      <div className="module-grid">
+        {mod.subjects.map((s) => {
+          const weeks = weeksOf(s);
+          const p = progressOf(weeks, progress);
+          return (
+            <Link key={s.slug} to={subjectPath({ term, module: mod, subject: s })} className={`module-card is-ready subject-card theme-${s.theme}`}>
+              <span className="module-num" aria-hidden="true">{THEME_GLYPH[s.theme]}</span>
+              <span className="term-year">{t('subject.label')}</span>
+              <h3>{pick(s.title).text}</h3>
+              <p className="faint">{t('module.weeksReady', { done: s.weeks.length, total: s.plannedWeeks })}</p>
+              <div className="term-progress"><span style={{ width: `${p.pct}%` }} /></div>
+              <span className="module-next">{t('subject.open')} →</span>
+            </Link>
+          );
+        })}
+      </div>
     </div>
   );
 }

@@ -1,11 +1,11 @@
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { useI18n } from '../i18n';
 import { findTerm } from '../content/curriculum';
-import { weeks } from '../content/index';
+import { weeksOf } from '../content/index';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { TermArt } from '../components/TermArt';
 import { useProgress } from '../lib/store';
-import { scopeProgress } from '../lib/stats';
+import { progressOf } from '../lib/stats';
 
 /** One term: its three modules as cards. */
 export function TermPage() {
@@ -29,19 +29,17 @@ export function TermPage() {
 
       <div className="module-grid">
         {term.modules.map((m) => {
-          const p = scopeProgress(weeks, progress, term.number, m.number);
-          const first = m.weeks[0];
-          const ready = Boolean(m.subject);
+          const weeks = m.subjects.flatMap((s) => weeksOf(s));
+          const p = progressOf(weeks, progress);
+          const ready = m.subjects.length > 0;
           const body = (
             <>
               <span className="module-num">{String(m.number).padStart(2, '0')}</span>
               <span className="term-year">{t('curriculum.module', { n: m.number })}</span>
-              <h3>{m.subject ? pick(m.subject).text : t('module.placeholder')}</h3>
-              <p className="faint">
-                {ready ? t('module.weeksReady', { done: m.weeks.length, total: m.plannedWeeks }) : t('module.addMaterials')}
-              </p>
+              <h3>{ready ? m.subjects.map((s) => pick(s.title).text).join(' · ') : t('module.placeholder')}</h3>
+              <p className="faint">{ready ? t('module.subjectsCount', { n: m.subjects.length }) : t('module.addMaterials')}</p>
               {ready && <div className="term-progress"><span style={{ width: `${p.pct}%` }} /></div>}
-              {ready && first && <span className="module-next">{t('module.startAt', { n: first.number })} →</span>}
+              {ready && <span className="module-next">{t('subject.open')} →</span>}
             </>
           );
           return ready ? (

@@ -18,6 +18,8 @@ export interface ProgressState {
   version: 1;
   locale: Locale;
   theme: 'system' | 'light' | 'dark';
+  /** Turns animations off, in addition to the operating system setting. */
+  reduceMotion: boolean;
   /** 'auto' follows the browser time zone; otherwise an ISO country code. */
   country: string;
   lessonsDone: Record<string, true>;
@@ -40,6 +42,7 @@ export function emptyState(): ProgressState {
     version: 1,
     locale: 'en',
     theme: 'system',
+    reduceMotion: false,
     country: 'auto',
     lessonsDone: {},
     cards: {},

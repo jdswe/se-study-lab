@@ -6,8 +6,7 @@ import { COUNTRIES } from '../lib/countries';
 
 export function Settings() {
   const { t, locale, setLocale } = useI18n();
-  const { theme, country } = useProgress();
-  const reduceMotion = document.documentElement.classList.contains('reduce-motion');
+  const { theme, country, reduceMotion } = useProgress();
 
   return (
     <div>
@@ -21,6 +20,7 @@ export function Settings() {
           <select aria-label={t('settings.language')} value={locale} onChange={(e) => setLocale(e.target.value as Locale)}>
             <option value="en">English</option>
             <option value="es">Español</option>
+            <option value="pt">Português</option>
           </select>
         </section>
         <section className="card">
@@ -42,10 +42,7 @@ export function Settings() {
             <input
               type="checkbox"
               checked={reduceMotion}
-              onChange={(e) => {
-                document.documentElement.classList.toggle('reduce-motion', e.target.checked);
-                try { window.localStorage.setItem('se-study-lab:reduce-motion', e.target.checked ? '1' : '0'); } catch { /* ignore */ }
-              }}
+              onChange={(e) => updateState((s) => ({ ...s, reduceMotion: e.target.checked }))}
             />{' '}
             {t('settings.reduceMotion')}
           </label>
@@ -60,7 +57,7 @@ export function Settings() {
           >
             <option value="auto">{t('settings.countryAuto')}</option>
             {COUNTRIES.map((c) => (
-              <option key={c.code} value={c.code}>{c.name[locale === 'es' ? 'es' : 'en']}</option>
+              <option key={c.code} value={c.code}>{c.name[locale]}</option>
             ))}
           </select>
         </section>

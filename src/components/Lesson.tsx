@@ -2,7 +2,8 @@ import { useId, useState } from 'react';
 import type { KnowledgeCheck as CheckType, Lesson as LessonType } from '../content/types';
 import { ExerciseList } from './Exercises';
 import { ActivityList } from './Activities';
-import type { Activity, Story } from '../content/types';
+import type { Activity, Story, Video } from '../content/types';
+import { VideoPlayer } from './VideoPlayer';
 import { StoryPlayer } from './StoryPlayer';
 import { useI18n } from '../i18n';
 import { touchStudyDay, updateState, useProgress } from '../lib/store';
@@ -10,17 +11,18 @@ import { CodeBlock } from './CodeBlock';
 import { Diagram } from './Diagrams';
 
 /** Renders one lesson: body, diagram, code, takeaways, check, pitfalls, and completion. */
-export function Lesson({ lesson, index, activities = [], stories = [] }: {
+export function Lesson({ lesson, index, activities = [], stories = [], videos = [] }: {
   lesson: LessonType;
   index: number;
   activities?: Activity[];
   stories?: Story[];
+  videos?: Video[];
 }) {
   const { t, pick, locale } = useI18n();
   const progress = useProgress();
   const done = Boolean(progress.lessonsDone[lesson.id]);
   const title = pick(lesson.title);
-  const usesEnglishBody = locale === 'es' && lesson.body.some((p) => !p.es);
+  const usesEnglishBody = locale !== 'en' && lesson.body.some((p) => !p[locale]);
 
   function toggleDone() {
     updateState((s) => {
@@ -48,16 +50,18 @@ export function Lesson({ lesson, index, activities = [], stories = [] }: {
 
       <div className="lesson-body">
         {lesson.body.map((p, i) => (
-          <p key={i}>{locale === 'es' && p.es ? p.es : p.en}</p>
+          <p key={i}>{pick(p).text}</p>
         ))}
       </div>
 
       {lesson.analogy && (
         <aside className="analogy" aria-label={t('week.analogy')}>
           <strong>{t('week.analogy')}</strong>
-          <p>{locale === 'es' && lesson.analogy.es ? lesson.analogy.es : lesson.analogy.en}</p>
+          <p>{pick(lesson.analogy).text}</p>
         </aside>
       )}
+
+      {videos.map((v) => <VideoPlayer key={v.id} video={v} />)}
 
       {stories.map((story) => <StoryPlayer key={story.id} story={story} />)}
 

@@ -1,5 +1,5 @@
 /** Locales the platform supports. English is the default. */
-export type Locale = 'en' | 'es';
+export type Locale = 'en' | 'es' | 'pt';
 
 /**
  * Text that may be translated. `es` is optional: when a translation does not
@@ -8,29 +8,40 @@ export type Locale = 'en' | 'es';
 export interface Localized {
   en: string;
   es?: string;
+  pt?: string;
 }
 
 export type WeekStatus = 'published' | 'planned';
 
 export interface WeekMeta {
+  /** Content id, also the key for progress records, e.g. y1-t1-m3-w1. */
+  id: string;
   number: number;
-  slug: string;
   title: Localized;
   status: WeekStatus;
 }
 
-/** Visual theme of a subject; decides the decoration of its module and weeks. */
-export type SubjectTheme = 'version-control' | 'default';
+/** Visual theme of a subject; decides the decoration of its pages and weeks. */
+export type SubjectTheme = 'version-control' | 'databases' | 'default';
+
+/** Interactive tools a subject can offer in its own navigation. */
+export type SubjectTool = 'git-playground' | 'design-studio' | 'sql-lab';
+
+/** A subject (course) taught inside a module, with its own weeks and tools. */
+export interface SubjectMeta {
+  slug: string;
+  title: Localized;
+  theme: SubjectTheme;
+  /** Planned length. Usually 8 weeks; some subjects have 10. */
+  plannedWeeks: number;
+  tools: SubjectTool[];
+  weeks: WeekMeta[];
+}
 
 export interface ModuleMeta {
   number: number;
-  /** Subject name, or undefined while the module's materials are not added yet. */
-  subject?: Localized;
-  theme: SubjectTheme;
-  /** Planned length. Modules usually have 8 weeks; some have 10. */
-  plannedWeeks: number;
-  /** Weeks with published content. */
-  weeks: WeekMeta[];
+  /** Subjects taught in this module. Empty until their materials are added. */
+  subjects: SubjectMeta[];
 }
 
 /** Terms are numbered 1 to 8 across the whole program; two per year. */
@@ -54,7 +65,7 @@ export interface Lesson {
   /** Short inline check that appears after the lesson body. */
   check?: KnowledgeCheck;
   /** Optional diagram key rendered by the lesson view. */
-  diagram?: 'lifecycle' | 'git-areas' | 'branch-merge' | 'requirements' | 'context';
+  diagram?: 'lifecycle' | 'git-areas' | 'branch-merge' | 'requirements' | 'context' | 'files-vs-dbms' | 'er-store' | 'three-schema';
   /** Optional code example, always shown in English. */
   code?: { language: string; caption: Localized; source: string };
   /** A plain-language analogy that makes the core idea concrete. */
@@ -151,6 +162,8 @@ export interface LabStep {
 
 export interface Lab {
   id: string;
+  /** Where the steps run: a shell sandbox (default), the SQL Lab, or the Design Studio / draw.io. */
+  kind?: 'shell' | 'sql' | 'design';
   level: 1 | 2 | 3;
   title: Localized;
   goal: Localized;
@@ -229,4 +242,34 @@ export interface ClassifyActivity extends ActivityBase {
   buckets: Localized[];
   /** Each item with the index of its correct bucket. */
   items: { text: Localized; bucket: number }[];
+}
+
+/** What a video frame shows. Each kind is drawn by scripts/build-videos.mjs. */
+export type VideoVisual =
+  | { kind: 'title' }
+  | { kind: 'timeline'; commits: number; highlight?: number }
+  | { kind: 'distributed' }
+  | { kind: 'areas'; active: 0 | 1 | 2; arrow?: 'add' | 'commit' }
+  | { kind: 'branch'; step: 0 | 1 | 2 | 3 | 4 }
+  | { kind: 'pipeline'; set: 'lifecycle' | 'requirements'; active: number[] }
+  | { kind: 'split'; reveal: 1 | 2 }
+  | { kind: 'files'; step: 0 | 1 | 2 }
+  | { kind: 'tables'; step: 0 | 1 | 2 | 3 }
+  | { kind: 'transaction'; step: 0 | 1 | 2 | 3 | 4; failed?: boolean };
+
+export interface VideoScene {
+  visual: VideoVisual;
+  /** Short headline drawn on the frame. */
+  onScreen: Localized;
+  /** What the narrator says; also used for captions. */
+  narration: Localized;
+}
+
+/** A one-minute concept video, rendered per language with its own narration. */
+export interface Video {
+  id: string;
+  lessonId: string;
+  title: Localized;
+  summary: Localized;
+  scenes: VideoScene[];
 }
