@@ -1,16 +1,20 @@
-// Generates the downloadable study documents for every published week, in
-// English and Spanish, from the same content the website uses:
-//   study-guide.pdf, study-guide.docx, cheat-sheet.pdf, lab-workbook.pdf, slides.pptx
-// PDFs are printed from HTML with headless Chrome; diagrams for Word and
-// PowerPoint are rendered to PNG the same way. Run with `npm run docs`.
+// Generates the downloadable documents for every published week, in English,
+// Spanish, and Portuguese. They are short, print-first companions to the site,
+// not copies of it:
+//   summary.pdf      the week on one or two pages: core ideas and what to watch out for
+//   cheat-sheet.pdf  commands or formulas to keep next to you
+//   worksheet.pdf    exercises with space to write, a quick check, and an answer key
+//   worksheet.docx   the same worksheet, editable
+//   slides.pptx      one idea per slide, with diagrams (slides.pdf is its preview twin)
+// Diagrams are the website's own components rendered to SVG, so both always match.
+// PDFs are printed from HTML with headless Chrome. Run with `npm run docs`.
 import { build } from 'esbuild';
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import {
-  AlignmentType, BorderStyle, Document, HeadingLevel, ImageRun, Packer, PageBreak, Paragraph,
-  ShadingType, Table, TableCell, TableRow, TextRun, WidthType,
+  BorderStyle, Document, Packer, PageBreak, Paragraph, TabStopType, TextRun,
 } from 'docx';
 import PptxGenJS from 'pptxgenjs';
 
@@ -24,73 +28,63 @@ const LOCALES = ['en', 'es', 'pt'];
 const C = {
   ink: '1F2A36', soft: '4E5A66', faint: '7A828C', cream: 'F6F2EA', paper: 'FFFDF8', sand: 'EEE7D8', line: 'DDD3C0',
   teal: '2F6F73', sage: '5E8C7A', terracotta: 'C0704F', mauve: '7A6A8C', ochre: 'B98A3E', navy: '3A4E74',
+  good: '3E7D5A', bad: 'A9473D',
 };
-const LESSON_COLORS = [C.teal, C.terracotta, C.navy, C.mauve, C.sage, C.ochre, C.teal, C.terracotta];
+// Subject accent, as on the website (src/lib/subjectStyle.ts).
+const ACCENT = { 'software-development-1': C.teal, 'database-1': C.navy, 'calculus-1': C.mauve };
+const SUBJECT_NAME = {
+  'software-development-1': { en: 'Software Development 1', es: 'Desarrollo de Software 1', pt: 'Desenvolvimento de Software 1' },
+  'database-1': { en: 'Databases 1', es: 'Bases de Datos 1', pt: 'Bancos de Dados 1' },
+  'calculus-1': { en: 'Calculus 1', es: 'Cálculo 1', pt: 'Cálculo 1' },
+};
 
 const T = {
   en: {
-    guide: 'Study Guide', cheat: 'Cheat Sheet', labs: 'Lab Workbook', slides: 'Slides',
-    independent: 'SE Study Lab · Study material',
-    weekLabel: (w) => `Year ${w.year} · Term ${w.term} · Module ${w.module} · Week ${w.week}`,
-    contents: 'Contents', objectives: 'Learning objectives', lesson: 'Lesson', lessons: 'lessons', minutes: 'min',
-    analogy: 'Think of it like this', takeaways: 'Key takeaways', mistakes: 'Common mistakes', fix: 'Fix',
-    exercises: 'Exercises', hint: 'Hint', solutions: 'Worked solutions', glossary: 'Glossary',
-    term: 'Question', meaning: 'Answer', practice: 'Practice quiz', answers: 'Answer key',
-    match: 'Match each item on the left with one on the right.', blank: 'Answer: ______________________',
-    goal: 'Goal', level: 'Level', expected: 'Expected result', reflect: 'Reflect',
-    reflectText: 'What changed after this step, and why?',
-    safety: 'Safety rule: run every command only inside ~/se-lab-sandbox or ~/se-lab-remote.git. Read each command before running it.',
-    troubleshooting: 'Troubleshooting', symptom: 'Symptom', cause: 'Likely cause',
-    agenda: 'Agenda', checkpoint: 'Checkpoint', practiceSlide: 'Practise it', closing: 'Keep going',
-    closingText: 'Review your flashcards when they are due, use the subject\'s tools, and retake the quiz until you score 80% or more.',
-    workflow: 'Step by step', missions: 'Subject tools', labsList: 'Labs',
-    answerIs: 'Answer', diagram: 'Diagram',
-    sqlNote: 'Run these queries in the subject\'s SQL Lab: a real database in your browser, with a button to reset the data.',
-    designNote: 'Do this lab in the subject\'s Design Studio, then export the diagram to draw.io.',
-  },
-  pt: {
-    guide: 'Guia de estudo', cheat: 'Folha de referência', labs: 'Caderno de laboratório', slides: 'Slides',
-    independent: 'SE Study Lab · Material de estudo',
-    weekLabel: (w) => `Ano ${w.year} · Período ${w.term} · Módulo ${w.module} · Semana ${w.week}`,
-    contents: 'Conteúdo', objectives: 'Objetivos de aprendizagem', lesson: 'Lição', lessons: 'lições', minutes: 'min',
-    analogy: 'Pense assim', takeaways: 'Ideias-chave', mistakes: 'Erros comuns', fix: 'Solução',
-    exercises: 'Exercícios', hint: 'Dica', solutions: 'Soluções comentadas', glossary: 'Glossário',
-    term: 'Pergunta', meaning: 'Resposta', practice: 'Questionário de prática', answers: 'Gabarito',
-    match: 'Associe cada item da esquerda a um da direita.', blank: 'Resposta: ______________________',
-    goal: 'Objetivo', level: 'Nível', expected: 'Resultado esperado', reflect: 'Reflita',
-    reflectText: 'O que mudou depois deste passo, e por quê?',
-    safety: 'Regra de segurança: execute cada comando apenas dentro de ~/se-lab-sandbox ou ~/se-lab-remote.git. Leia cada comando antes de executá-lo.',
-    troubleshooting: 'Diagnóstico de problemas', symptom: 'Sintoma', cause: 'Causa provável',
-    agenda: 'Agenda', checkpoint: 'Ponto de verificação', practiceSlide: 'Coloque em prática', closing: 'Continue',
-    closingText: 'Revise seus cartões quando estiverem pendentes, use as ferramentas da disciplina e refaça o questionário até chegar a 80% ou mais.',
-    workflow: 'Passo a passo', missions: 'Ferramentas da disciplina', labsList: 'Laboratórios',
-    answerIs: 'Resposta', diagram: 'Diagrama',
-    sqlNote: 'Execute estas consultas no Laboratório SQL da disciplina: um banco de dados real no seu navegador, com botão para reiniciar os dados.',
-    designNote: 'Faça este laboratório no Estúdio de design da disciplina e depois exporte o diagrama para o draw.io.',
+    brand: 'SE Study Lab', week: 'Week', lesson: 'Lesson',
+    summary: 'Week summary', cheat: 'Cheat sheet', worksheet: 'Worksheet', slides: 'Slides',
+    coreIdeas: 'Core ideas, lesson by lesson', watchOut: 'Watch out', mistake: 'Mistake', fix: 'Fix',
+    keyTerms: 'Key terms', troubleshooting: 'When something goes wrong', symptom: 'Symptom', cause: 'Likely cause',
+    name: 'Name', date: 'Date', partA: 'Exercises', partAHint: 'Show your work. Each exercise has a hint at the end: try without it first.',
+    partB: 'Quick check', partBHint: 'Circle one answer.', answerKey: 'Answer key', level: ['Warm-up', 'Practice', 'Challenge'],
+    hint: 'Hint', matchHint: 'Match each item on the left with one on the right.', blank: 'Answer',
+    thinkOfIt: 'Think of it like this', checkYourself: 'Check yourself', answersInNotes: 'Answers are in the speaker notes.',
+    nextSteps: 'Practise next', labs: 'Labs', tools: 'On the site',
+    toolNames: { 'git-playground': 'Git Playground', 'sql-lab': 'SQL Lab', 'design-studio': 'Design Studio', 'inequality-lab': 'Inequality Lab' },
+    alsoOnline: 'Flashcards, the quiz, and interactive tools are on the site.',
+    stepByStep: 'Step by step',
   },
   es: {
-    guide: 'Guía de estudio', cheat: 'Hoja de referencia', labs: 'Cuaderno de laboratorio', slides: 'Diapositivas',
-    independent: 'SE Study Lab · Material de estudio',
-    weekLabel: (w) => `Año ${w.year} · Término ${w.term} · Módulo ${w.module} · Semana ${w.week}`,
-    contents: 'Contenido', objectives: 'Objetivos de aprendizaje', lesson: 'Lección', lessons: 'lecciones', minutes: 'min',
-    analogy: 'Piénsalo así', takeaways: 'Ideas clave', mistakes: 'Errores comunes', fix: 'Solución',
-    exercises: 'Ejercicios', hint: 'Pista', solutions: 'Soluciones resueltas', glossary: 'Glosario',
-    term: 'Pregunta', meaning: 'Respuesta', practice: 'Cuestionario de práctica', answers: 'Clave de respuestas',
-    match: 'Relaciona cada elemento de la izquierda con uno de la derecha.', blank: 'Respuesta: ______________________',
-    goal: 'Objetivo', level: 'Nivel', expected: 'Resultado esperado', reflect: 'Reflexiona',
-    reflectText: '¿Qué cambió después de este paso y por qué?',
-    safety: 'Regla de seguridad: ejecuta cada comando solo dentro de ~/se-lab-sandbox o ~/se-lab-remote.git. Lee cada comando antes de ejecutarlo.',
-    troubleshooting: 'Diagnóstico de problemas', symptom: 'Síntoma', cause: 'Causa probable',
-    agenda: 'Agenda', checkpoint: 'Punto de control', practiceSlide: 'Ponlo en práctica', closing: 'Sigue adelante',
-    closingText: 'Repasa tus tarjetas cuando toque, usa las herramientas de la materia y repite el cuestionario hasta lograr 80% o más.',
-    workflow: 'Paso a paso', missions: 'Herramientas de la materia', labsList: 'Laboratorios',
-    answerIs: 'Respuesta', diagram: 'Diagrama',
-    sqlNote: 'Ejecuta estas consultas en el Laboratorio SQL de la materia: una base de datos real en tu navegador, con un botón para reiniciar los datos.',
-    designNote: 'Haz este laboratorio en el Estudio de diseño de la materia y luego exporta el diagrama a draw.io.',
+    brand: 'SE Study Lab', week: 'Semana', lesson: 'Lección',
+    summary: 'Resumen de la semana', cheat: 'Hoja de referencia', worksheet: 'Hoja de ejercicios', slides: 'Diapositivas',
+    coreIdeas: 'Ideas clave, lección por lección', watchOut: 'Cuidado con esto', mistake: 'Error', fix: 'Solución',
+    keyTerms: 'Términos clave', troubleshooting: 'Cuando algo sale mal', symptom: 'Síntoma', cause: 'Causa probable',
+    name: 'Nombre', date: 'Fecha', partA: 'Ejercicios', partAHint: 'Muestra tu procedimiento. Cada ejercicio trae una pista al final: intenta primero sin ella.',
+    partB: 'Comprobación rápida', partBHint: 'Encierra una respuesta.', answerKey: 'Respuestas', level: ['Calentamiento', 'Práctica', 'Desafío'],
+    hint: 'Pista', matchHint: 'Relaciona cada elemento de la izquierda con uno de la derecha.', blank: 'Respuesta',
+    thinkOfIt: 'Piénsalo así', checkYourself: 'Ponte a prueba', answersInNotes: 'Las respuestas están en las notas del orador.',
+    nextSteps: 'Practica después', labs: 'Laboratorios', tools: 'En el sitio',
+    toolNames: { 'git-playground': 'Simulador de Git', 'sql-lab': 'Laboratorio SQL', 'design-studio': 'Estudio de diseño', 'inequality-lab': 'Laboratorio de desigualdades' },
+    alsoOnline: 'Las tarjetas, el cuestionario y las herramientas interactivas están en el sitio.',
+    stepByStep: 'Paso a paso',
+  },
+  pt: {
+    brand: 'SE Study Lab', week: 'Semana', lesson: 'Lição',
+    summary: 'Resumo da semana', cheat: 'Folha de referência', worksheet: 'Folha de exercícios', slides: 'Slides',
+    coreIdeas: 'Ideias-chave, lição por lição', watchOut: 'Cuidado com isto', mistake: 'Erro', fix: 'Solução',
+    keyTerms: 'Termos-chave', troubleshooting: 'Quando algo dá errado', symptom: 'Sintoma', cause: 'Causa provável',
+    name: 'Nome', date: 'Data', partA: 'Exercícios', partAHint: 'Mostre seu raciocínio. Cada exercício traz uma dica no final: tente primeiro sem ela.',
+    partB: 'Verificação rápida', partBHint: 'Circule uma resposta.', answerKey: 'Respostas', level: ['Aquecimento', 'Prática', 'Desafio'],
+    hint: 'Dica', matchHint: 'Associe cada item da esquerda a um da direita.', blank: 'Resposta',
+    thinkOfIt: 'Pense assim', checkYourself: 'Teste-se', answersInNotes: 'As respostas estão nas notas do apresentador.',
+    nextSteps: 'Pratique depois', labs: 'Laboratórios', tools: 'No site',
+    toolNames: { 'git-playground': 'Simulador de Git', 'sql-lab': 'Laboratório SQL', 'design-studio': 'Estúdio de design', 'inequality-lab': 'Laboratório de desigualdades' },
+    alsoOnline: 'Os cartões, o questionário e as ferramentas interativas estão no site.',
+    stepByStep: 'Passo a passo',
   },
 };
 
-// Cheat sheets and troubleshooting tables, one per subject.
+// Cheat sheets and troubleshooting tables, one per subject. `math: true`
+// sections show formulas in a math face instead of monospace.
 const R = (cmd, en, es, pt) => [cmd, { en, es, pt }];
 const H = (en, es, pt) => ({ en, es, pt });
 const CHEATS = {
@@ -159,6 +153,21 @@ const CHEATS = {
         R('name VARCHAR(60) NOT NULL', 'A value is required', 'Se exige un valor', 'Um valor é obrigatório'),
         R('price INTEGER CHECK (price >= 0)', 'Validate a condition', 'Validar una condición', 'Validar uma condição'),
       ] },
+      { title: H('Design: ER → tables', 'Diseño: ER → tablas', 'Projeto: ER → tabelas'), rows: [
+        R('Entity → table', 'Attributes become columns, key becomes PK', 'Los atributos pasan a columnas y la clave a PK', 'Os atributos viram colunas e a chave vira PK'),
+        R('1:N → FK on the N side', 'order.customer_id REFERENCES customer', 'order.customer_id REFERENCES customer', 'order.customer_id REFERENCES customer'),
+        R('N:M → junction table', 'Both keys as FKs, often a composite PK', 'Ambas claves como FK, a menudo PK compuesta', 'As duas chaves como FK, muitas vezes PK composta'),
+        R('Multivalued → new table', 'One row per value (patient_phone)', 'Una fila por valor (patient_phone)', 'Uma linha por valor (patient_phone)'),
+        R('Weak entity → PK = owner + discriminator', 'room(ward_id, room_no)', 'room(ward_id, room_no)', 'room(ward_id, room_no)'),
+        R('Derived → not stored', 'Calculate it in queries (age)', 'Se calcula en consultas (edad)', 'Calcule nas consultas (idade)'),
+      ] },
+      { title: H('DDL: build the structure', 'DDL: construir la estructura', 'DDL: construir a estrutura'), rows: [
+        R('CREATE TABLE t (id INTEGER PRIMARY KEY, …);', 'Create a table', 'Crear una tabla', 'Criar uma tabela'),
+        R('ALTER TABLE t ADD COLUMN phone VARCHAR(20);', 'Add a column', 'Agregar una columna', 'Adicionar uma coluna'),
+        R('TRUNCATE TABLE t;', 'Empty it, keep the table', 'Vaciarla y conservar la tabla', 'Esvaziar e manter a tabela'),
+        R('DROP TABLE t;', 'Remove the table and its data', 'Eliminar la tabla y sus datos', 'Remover a tabela e seus dados'),
+        R('… ON DELETE CASCADE | RESTRICT | SET NULL', 'What happens to children when a parent goes', 'Qué pasa con las hijas cuando se va el padre', 'O que acontece com as filhas quando o pai sai'),
+      ] },
       { title: H('Transactions', 'Transacciones', 'Transações'), rows: [
         R('BEGIN; … COMMIT;', 'Apply all steps together', 'Aplicar todos los pasos juntos', 'Aplicar todos os passos juntos'),
         R('BEGIN; … ROLLBACK;', 'Undo everything since BEGIN', 'Deshacer todo desde BEGIN', 'Desfazer tudo desde o BEGIN'),
@@ -168,6 +177,48 @@ const CHEATS = {
       [H('FOREIGN KEY constraint failed', 'FOREIGN KEY constraint failed', 'FOREIGN KEY constraint failed'), H('The referenced row does not exist', 'La fila referenciada no existe', 'A linha referenciada não existe'), H('Insert the parent row first (for example, the customer)', 'Inserta primero la fila padre (por ejemplo, el cliente)', 'Insira primeiro a linha pai (por exemplo, o cliente)')],
       [H('CHECK constraint failed', 'CHECK constraint failed', 'CHECK constraint failed'), H('A value breaks a rule, such as a negative price', 'Un valor rompe una regla, como un precio negativo', 'Um valor quebra uma regra, como um preço negativo'), H('Fix the value or the rule', 'Corrige el valor o la regla', 'Corrija o valor ou a regra')],
       [H('Every row changed', 'Cambiaron todas las filas', 'Todas as linhas mudaram'), H('UPDATE or DELETE without WHERE', 'UPDATE o DELETE sin WHERE', 'UPDATE ou DELETE sem WHERE'), H('Test the condition with SELECT first; work inside a transaction', 'Prueba la condición con SELECT primero; trabaja dentro de una transacción', 'Teste a condição com SELECT primeiro; trabalhe dentro de uma transação')],
+    ],
+  },
+  'calculus-1': {
+    diagram: 'sign-chart',
+    sections: [
+      { math: true, title: H('Intervals', 'Intervalos', 'Intervalos'), rows: [
+        R('[a, b]  ⇔  a ≤ x ≤ b', 'Both ends included', 'Ambos extremos incluidos', 'As duas extremidades incluídas'),
+        R('(a, b)  ⇔  a < x < b', 'Both ends excluded', 'Ambos extremos excluidos', 'As duas extremidades excluídas'),
+        R('[a, ∞)  ⇔  x ≥ a', '∞ always takes a parenthesis', '∞ siempre lleva paréntesis', '∞ sempre leva parêntese'),
+        R('A ∪ B  /  A ∩ B', '"or" (either) / "and" (overlap)', '"o" (alguno) / "y" (parte común)', '"ou" (algum) / "e" (parte comum)'),
+        R('ℝ = (−∞, ∞),  ∅', 'All reals / no solution', 'Todos los reales / sin solución', 'Todos os reais / sem solução'),
+      ] },
+      { math: true, title: H('Equations', 'Ecuaciones', 'Equações'), rows: [
+        R('ax + b = 0  →  x = −b/a', 'Linear: one root', 'Lineal: una raíz', 'Linear: uma raiz'),
+        R('x = (−b ± √(b² − 4ac)) / 2a', 'Quadratic formula', 'Fórmula cuadrática', 'Fórmula quadrática'),
+        R('Δ = b² − 4ac', '> 0: two roots, = 0: one, < 0: none', '> 0: dos raíces, = 0: una, < 0: ninguna', '> 0: duas raízes, = 0: uma, < 0: nenhuma'),
+        R('A·B = 0  ⇔  A = 0 or B = 0', 'Zero product rule', 'Regla del producto cero', 'Regra do produto zero'),
+        R('p/q:  p | a₀,  q | aₙ', 'Rational root candidates', 'Candidatos a raíz racional', 'Candidatos a raiz racional'),
+      ] },
+      { math: true, title: H('Inequality rules', 'Reglas de las desigualdades', 'Regras das desigualdades'), rows: [
+        R('a < b  ⇒  a + c < b + c', 'Adding keeps the sign', 'Sumar mantiene el signo', 'Somar mantém o sinal'),
+        R('c > 0:  a < b  ⇒  ac < bc', 'Positive factor keeps it', 'Un factor positivo lo mantiene', 'Um fator positivo o mantém'),
+        R('c < 0:  a < b  ⇒  ac > bc', 'Negative factor flips it', 'Un factor negativo lo invierte', 'Um fator negativo o inverte'),
+        R('P(x)/Q(x) ≥ 0', 'Never multiply by Q(x): use a sign chart', 'Nunca multipliques por Q(x): usa una tabla de signos', 'Nunca multiplique por Q(x): use um quadro de sinais'),
+      ] },
+      { math: true, title: H('Absolute value', 'Valor absoluto', 'Valor absoluto'), rows: [
+        R('|x − a|', 'Distance from x to a', 'Distancia de x a a', 'Distância de x até a'),
+        R('|x − a| < r  ⇔  a − r < x < a + r', 'One interval', 'Un intervalo', 'Um intervalo'),
+        R('|x − a| > r  ⇔  x < a − r or x > a + r', 'Two pieces', 'Dos trozos', 'Dois pedaços'),
+      ] },
+      { title: H('Sign chart in five steps', 'Tabla de signos en cinco pasos', 'Quadro de sinais em cinco passos'), rows: [
+        R('1. … ≥ 0', 'Move everything to one side', 'Pasa todo a un lado', 'Passe tudo para um lado'),
+        R('2. (x − r₁)(x − r₂)…', 'Factor', 'Factoriza', 'Fatore'),
+        R('3. r₁, r₂, …', 'Critical points: zeros and undefined points', 'Puntos críticos: ceros y puntos no definidos', 'Pontos críticos: zeros e pontos não definidos'),
+        R('4. one test value per interval', 'The sign is constant between them', 'El signo es constante entre ellos', 'O sinal é constante entre eles'),
+        R('5. ∪ of the right intervals', 'Endpoints: [ ] for ≤ ≥, ( ) for < > and denominators', 'Extremos: [ ] con ≤ ≥, ( ) con < > y denominadores', 'Extremidades: [ ] com ≤ ≥, ( ) com < > e denominadores'),
+      ] },
+    ],
+    trouble: [
+      [H('Answer is the mirror of the right one', 'La respuesta es el reflejo de la correcta', 'A resposta é o reflexo da certa'), H('Divided by a negative without flipping', 'Dividiste entre un negativo sin invertir', 'Dividiu por um negativo sem inverter'), H('Test one value from your answer in the original', 'Prueba un valor de tu respuesta en la original', 'Teste um valor da sua resposta na original')],
+      [H('A point makes the expression undefined', 'Un punto deja la expresión sin definir', 'Um ponto deixa a expressão indefinida'), H('A zero of the denominator was included', 'Se incluyó un cero del denominador', 'Um zero do denominador foi incluído'), H('Always use ( ) at denominator zeros', 'Usa siempre ( ) en los ceros del denominador', 'Use sempre ( ) nos zeros do denominador')],
+      [H('x² < 9 solved as x < 3', 'x² < 9 resuelto como x < 3', 'x² < 9 resolvido como x < 3'), H('Took a square root like an equation', 'Se sacó raíz como en una ecuación', 'Tirou a raiz como numa equação'), H('Factor (x − 3)(x + 3) and use a sign chart: (−3, 3)', 'Factoriza (x − 3)(x + 3) y usa una tabla de signos: (−3, 3)', 'Fatore (x − 3)(x + 3) e use um quadro de sinais: (−3, 3)')],
     ],
   },
 };
@@ -187,470 +238,300 @@ function htmlToPdf(html, outFile) {
   chrome(['--no-pdf-header-footer', '--virtual-time-budget=10000', `--print-to-pdf=${outFile}`, pathToFileURL(tmp).href]);
 }
 
-function svgToPng(svg, outFile, width = 1200, height = 520) {
+// The website's tokens (light theme) and diagram rules, with animation off for print.
+const TOKENS = readFileSync(join(ROOT, 'src/styles/tokens.css'), 'utf8').split('@media')[0];
+const DIAGRAM_CSS = readFileSync(join(ROOT, 'src/styles/app.css'), 'utf8').split('\n').filter((l) => l.startsWith('.diagram')).join('\n')
+  + '\n.diagram, .diagram * { animation: none !important; } .diagram .draw { stroke-dashoffset: 0 !important; } .diagram { margin: 0; max-width: none; }';
+const FONTS = '<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=block" rel="stylesheet">';
+
+/** Width/height ratio from an SVG's viewBox. */
+function svgRatio(svg) {
+  const m = /viewBox="0 0 ([\d.]+) ([\d.]+)"/.exec(svg);
+  return m ? Number(m[2]) / Number(m[1]) : 0.4;
+}
+
+function svgToPng(svg, accent, outFile, width = 1440) {
+  const height = Math.round(width * svgRatio(svg));
   const tmp = join(CACHE, `svg-${Math.random().toString(36).slice(2)}.html`);
-  writeFileSync(tmp, `<!doctype html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=block" rel="stylesheet"><style>html,body{margin:0;background:#${C.paper};font-family:Poppins,Arial,sans-serif}svg{display:block;width:${width}px;height:${height}px}</style></head><body>${svg}</body></html>`);
+  writeFileSync(tmp, `<!doctype html><html><head><meta charset="utf-8">${FONTS}<style>${TOKENS}:root{--subject:#${accent}}${DIAGRAM_CSS}html,body{margin:0;background:#${C.paper}}svg{display:block;width:${width}px;height:${height}px}.diagram text{font-size:14px}</style></head><body>${svg}</body></html>`);
   chrome(['--virtual-time-budget=8000', `--window-size=${width},${height}`, `--screenshot=${outFile}`, pathToFileURL(tmp).href]);
-  return outFile;
+  return { path: outFile, ratio: height / width };
 }
 
-// ---------- diagrams (SVG strings, localised) ----------
-function diagramSvg(kind, loc) {
-  const l = (en, es, pt) => ({ en, es, pt })[loc] ?? en;
-  const text = (x, y, s, opts = '') => `<text x="${x}" y="${y}" text-anchor="middle" font-family="Poppins, Arial" ${opts}>${esc(s)}</text>`;
-  const head = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520"><defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#' + C.teal + '"/></marker></defs>';
-  if (kind === 'git-areas') {
-    const boxes = [[30, l('Working directory', 'Directorio de trabajo', 'Diretório de trabalho'), l('files you edit', 'archivos que editas', 'arquivos que você edita'), C.teal], [460, l('Staging area', 'Área de preparación', 'Área de preparação'), l('the index', 'el índice', 'o índice'), C.terracotta], [890, l('Repository', 'Repositorio', 'Repositório'), '.git', C.navy]];
-    return head + boxes.map(([x, t1, t2, c]) => `<rect x="${x}" y="150" width="280" height="160" rx="26" fill="#${C.paper}" stroke="#${c}" stroke-width="5"/>${text(x + 140, 225, t1, `font-size="22" font-weight="700" fill="#${C.ink}"`)}${text(x + 140, 268, t2, `font-size="22" fill="#${C.soft}"`)}`).join('')
-      + `<path d="M320 250 L450 250" stroke="#${C.teal}" stroke-width="5" marker-end="url(#a)"/><path d="M750 250 L880 250" stroke="#${C.teal}" stroke-width="5" marker-end="url(#a)"/>`
-      + text(385, 225, 'git add', `font-size="21" font-family="monospace" font-weight="700" fill="#${C.ink}"`) + text(815, 225, 'git commit', `font-size="21" font-family="monospace" font-weight="700" fill="#${C.ink}"`)
-      + `<path d="M1030 320 C 1030 440, 170 440, 170 320" fill="none" stroke="#${C.faint}" stroke-width="3" stroke-dasharray="10 10" marker-end="url(#a)"/>`
-      + text(600, 470, l('git restore brings a file back from history', 'git restore recupera un archivo del historial', 'git restore recupera um arquivo do histórico'), `font-size="22" fill="#${C.soft}"`) + '</svg>';
-  }
-  if (kind === 'branch-merge') {
-    const y1 = 180, y2 = 360;
-    const dots = [[120, y1, C.teal], [270, y1, C.teal], [480, y2, C.terracotta], [660, y2, C.terracotta], [840, y2, C.terracotta], [1060, y1, C.teal]];
-    return head + `<path d="M120 ${y1} L1060 ${y1}" stroke="#${C.teal}" stroke-width="7" fill="none"/>`
-      + `<path d="M270 ${y1} C 360 ${y1}, 380 ${y2}, 480 ${y2} L 840 ${y2} C 940 ${y2}, 960 ${y1}, 1060 ${y1}" stroke="#${C.terracotta}" stroke-width="7" fill="none"/>`
-      + dots.map(([x, y, c]) => `<circle cx="${x}" cy="${y}" r="22" fill="#${C.paper}" stroke="#${c}" stroke-width="7"/>`).join('')
-      + `<rect x="1000" y="100" width="150" height="44" rx="22" fill="#${C.teal}"/>` + text(1075, 130, 'main', `font-size="22" font-weight="700" fill="#${C.paper}"`)
-      + `<rect x="740" y="400" width="200" height="44" rx="22" fill="#${C.paper}" stroke="#${C.terracotta}" stroke-width="3"/>` + text(840, 430, 'feature', `font-size="22" font-weight="700" fill="#${C.terracotta}"`)
-      + text(600, 80, l('Branch, commit, merge back', 'Crear rama, hacer commits, fusionar', 'Criar branch, fazer commits, fazer merge'), `font-size="30" font-weight="700" fill="#${C.ink}"`)
-      + text(600, 500, l('Each circle is a commit. A branch is a pointer. Merging joins histories.', 'Cada círculo es un commit. Una rama es un puntero. Fusionar une historiales.', 'Cada círculo é um commit. Uma branch é um ponteiro. O merge une históricos.'), `font-size="22" fill="#${C.soft}"`) + '</svg>';
-  }
-  if (kind === 'lifecycle') {
-    const phases = [l('Requirements', 'Requisitos', 'Requisitos'), l('Design', 'Diseño', 'Design'), l('Implementation', 'Implementación', 'Implementação'), l('Testing', 'Pruebas', 'Testes'), l('Deployment', 'Despliegue', 'Implantação'), l('Maintenance', 'Mantenimiento', 'Manutenção')];
-    const cx = 600, cy = 270, r = 190;
-    return head + `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#${C.line}" stroke-width="5" stroke-dasharray="14 12"/>`
-      + phases.map((p, i) => {
-        const a = -Math.PI / 2 + (i * 2 * Math.PI) / phases.length;
-        const x = cx + r * Math.cos(a), y = cy + r * Math.sin(a);
-        const c = LESSON_COLORS[i];
-        return `<circle cx="${x}" cy="${y}" r="62" fill="#${C.paper}" stroke="#${c}" stroke-width="5"/>` + text(x, y + 8, p, `font-size="19" font-weight="600" fill="#${C.ink}"`);
-      }).join('')
-      + text(cx, cy - 6, l('Feedback', 'Retroalimentación', 'Feedback'), `font-size="28" font-weight="700" fill="#${C.teal}"`)
-      + text(cx, cy + 30, l('each loop = a baseline', 'cada vuelta = una línea base', 'cada volta = uma linha de base'), `font-size="20" fill="#${C.soft}"`) + '</svg>';
-  }
-  if (kind === 'requirements') {
-    const steps = [l('Inception', 'Inicio', 'Concepção'), l('Elicitation', 'Obtención', 'Elicitação'), l('Elaboration', 'Elaboración', 'Elaboração'), l('Negotiation', 'Negociación', 'Negociação'), l('Specification', 'Especificación', 'Especificação'), l('Validation', 'Validación', 'Validação')];
-    return head + steps.map((s, i) => {
-      const x = 30 + i * 192, c = LESSON_COLORS[i];
-      return `<rect x="${x}" y="120" width="172" height="130" rx="22" fill="#${C.paper}" stroke="#${c}" stroke-width="5"/>` + text(x + 86, 180, s, `font-size="21" font-weight="700" fill="#${C.ink}"`) + text(x + 86, 220, String(i + 1), `font-size="24" fill="#${c}" font-weight="700"`);
-    }).join('')
-      + `<rect x="30" y="300" width="1140" height="80" rx="20" fill="#${C.sand}"/>`
-      + text(600, 350, l('7 · Requirements management: every change recorded and approved', '7 · Gestión de requisitos: cada cambio registrado y aprobado', '7 · Gestão de requisitos: cada mudança registrada e aprovada'), `font-size="24" font-weight="700" fill="#${C.ink}"`)
-      + text(600, 450, l('Errors caught here are the cheapest to fix.', 'Los errores detectados aquí son los más baratos de corregir.', 'Erros encontrados aqui são os mais baratos de corrigir.'), `font-size="22" fill="#${C.soft}"`) + '</svg>';
-  }
-  if (kind === 'files-vs-dbms') {
-    const progs = [l('Sales', 'Ventas', 'Vendas'), l('Billing', 'Facturación', 'Faturamento'), l('Shipping', 'Envíos', 'Entregas')];
-    let out = text(300, 60, l('Before: one file per program', 'Antes: un archivo por programa', 'Antes: um arquivo por programa'), `font-size="26" font-weight="700" fill="#${C.ink}"`)
-      + text(900, 60, l('With a DBMS: stored once', 'Con un SGBD: se guarda una vez', 'Com um SGBD: guardado uma vez'), `font-size="26" font-weight="700" fill="#${C.ink}"`)
-      + `<line x1="600" y1="40" x2="600" y2="490" stroke="#${C.line}" stroke-width="4" stroke-dasharray="12 12"/>`;
-    progs.forEach((p, i) => {
-      const y = 110 + i * 130;
-      out += `<rect x="40" y="${y}" width="200" height="80" rx="20" fill="#${C.paper}" stroke="#${C.teal}" stroke-width="4"/>` + text(140, y + 50, p, `font-size="24" font-weight="600" fill="#${C.ink}"`);
-      out += `<path d="M240 ${y + 40} L320 ${y + 40}" stroke="#${C.faint}" stroke-width="4"/>`;
-      out += `<rect x="320" y="${y}" width="230" height="80" rx="8" fill="#${C.paper}" stroke="#${C.terracotta}" stroke-width="4"/>` + text(435, y + 34, `${l('file', 'archivo', 'arquivo')} ${i + 1}`, `font-size="22" fill="#${C.ink}"`) + text(435, y + 64, 'Ana · Ana · Ana', `font-size="20" fill="#${C.terracotta}"`);
-      out += `<rect x="640" y="${y}" width="200" height="80" rx="20" fill="#${C.paper}" stroke="#${C.teal}" stroke-width="4"/>` + text(740, y + 50, p, `font-size="24" font-weight="600" fill="#${C.ink}"`);
-      out += `<path d="M840 ${y + 40} C 900 ${y + 40}, 900 280, 940 280" fill="none" stroke="#${C.teal}" stroke-width="4"/>`;
-    });
-    out += `<rect x="940" y="210" width="220" height="140" rx="28" fill="#${C.sand}" stroke="#${C.teal}" stroke-width="5"/>` + text(1050, 275, l('DBMS', 'SGBD', 'SGBD'), `font-size="34" font-weight="800" fill="#${C.ink}"`) + text(1050, 315, 'Ana × 1', `font-size="24" fill="#${C.teal}"`);
-    return head + out + '</svg>';
-  }
-  if (kind === 'er-store') {
-    const tables = [
-      [40, 60, l('CUSTOMER', 'CLIENTE', 'CLIENTE'), ['PK customer_id', 'name', 'city']],
-      [440, 60, l('ORDERS', 'PEDIDO', 'PEDIDO'), ['PK order_id', 'FK customer_id', 'order_date']],
-      [840, 60, l('ORDER_ITEM', 'DETALLE_PEDIDO', 'ITEM_PEDIDO'), ['PK FK order_id', 'PK FK product_id', 'quantity']],
-      [840, 300, l('PRODUCT', 'PRODUCTO', 'PRODUTO'), ['PK product_id', 'name', 'price', 'stock']],
-    ];
-    let out = `<path d="M360 130 L440 130" stroke="#${C.terracotta}" stroke-width="5"/><path d="M760 130 L840 130" stroke="#${C.terracotta}" stroke-width="5"/><path d="M1000 300 L1000 230" stroke="#${C.terracotta}" stroke-width="5"/>`
-      + text(375, 118, '1', `font-size="22" font-weight="700" fill="#${C.terracotta}"`) + text(425, 118, 'N', `font-size="22" font-weight="700" fill="#${C.terracotta}"`)
-      + text(775, 118, '1', `font-size="22" font-weight="700" fill="#${C.terracotta}"`) + text(825, 118, 'N', `font-size="22" font-weight="700" fill="#${C.terracotta}"`)
-      + text(1020, 290, '1', `font-size="22" font-weight="700" fill="#${C.terracotta}"`) + text(1020, 248, 'N', `font-size="22" font-weight="700" fill="#${C.terracotta}"`);
-    for (const [x, y, name, cols] of tables) {
-      const h = 56 + cols.length * 36;
-      out += `<rect x="${x}" y="${y}" width="320" height="${h}" rx="18" fill="#${C.paper}" stroke="#${C.teal}" stroke-width="4"/><rect x="${x}" y="${y}" width="320" height="50" rx="18" fill="#${C.teal}"/><rect x="${x}" y="${y + 30}" width="320" height="20" fill="#${C.teal}"/>`
-        + text(x + 160, y + 34, name, `font-size="22" font-weight="700" fill="#${C.paper}"`)
-        + cols.map((c, j) => `<text x="${x + 22}" y="${y + 86 + j * 36}" font-size="20" font-family="monospace" fill="#${C.ink}" ${c.startsWith('PK') ? 'font-weight="700"' : ''}>${esc(c)}</text>`).join('');
-    }
-    return head + out + '</svg>';
-  }
-  if (kind === 'three-schema') {
-    const levels = [
-      [l('External level', 'Nivel externo', 'Nível externo'), l('views per user group', 'vistas por grupo de usuarios', 'visões por grupo de usuários'), C.terracotta],
-      [l('Conceptual level', 'Nivel conceptual', 'Nível conceitual'), l('the whole logical model', 'todo el modelo lógico', 'todo o modelo lógico'), C.teal],
-      [l('Internal level', 'Nivel interno', 'Nível interno'), l('files, pages, indexes', 'archivos, páginas, índices', 'arquivos, páginas, índices'), C.navy],
-    ];
-    let out = '';
-    levels.forEach(([name, sub, c], i) => {
-      const y = 40 + i * 150;
-      out += `<rect x="180" y="${y}" width="840" height="120" rx="26" fill="#${C.paper}" stroke="#${c}" stroke-width="5"/>` + text(600, y + 55, name, `font-size="32" font-weight="800" fill="#${c}"`) + text(600, y + 95, sub, `font-size="24" fill="#${C.soft}"`);
-      if (i < 2) out += `<path d="M600 ${y + 120} L600 ${y + 150}" stroke="#${C.faint}" stroke-width="4" marker-end="url(#a)"/>`;
-    });
-    out += text(600, 505, l('Data independence: one level changes without breaking the others.', 'Independencia de datos: un nivel cambia sin romper los demás.', 'Independência de dados: um nível muda sem quebrar os outros.'), `font-size="22" fill="#${C.soft}"`);
-    return head + out + '</svg>';
-  }
-  // context
-  const actors = [[200, 110, l('Customer', 'Cliente', 'Cliente'), l('order', 'pedido', 'pedido')], [1000, 110, l('Restaurant', 'Restaurante', 'Restaurante'), l('menu', 'menú', 'cardápio')], [200, 420, l('Courier', 'Repartidor', 'Entregador'), l('location', 'ubicación', 'localização')], [1000, 420, l('Payments', 'Pagos', 'Pagamentos'), l('confirmation', 'confirmación', 'confirmação')]];
-  return head + actors.map(([x, y, n, f]) => `<path d="M${x} ${y} L600 265" stroke="#${C.teal}" stroke-width="4" stroke-dasharray="12 8"/><rect x="${x - 120}" y="${y - 38}" width="240" height="76" rx="38" fill="#${C.paper}" stroke="#${C.mauve}" stroke-width="4"/>` + text(x, y + 10, n, `font-size="26" font-weight="700" fill="#${C.ink}"`) + text((x + 600) / 2, (y + 265) / 2 - 12, f, `font-size="20" fill="#${C.soft}"`)).join('')
-    + `<rect x="440" y="195" width="320" height="140" rx="30" fill="#${C.sand}" stroke="#${C.teal}" stroke-width="5"/>`
-    + text(600, 258, l('Delivery app', 'App de domicilios', 'App de entregas'), `font-size="32" font-weight="800" fill="#${C.ink}"`) + text(600, 298, l('the system', 'el sistema', 'o sistema'), `font-size="22" fill="#${C.soft}"`) + '</svg>';
-}
-
-// ---------- HTML documents ----------
-const BASE_CSS = `
-@page { size: A4; margin: 16mm 16mm 18mm; }
+// ---------- shared print styles ----------
+function printCss(accent) {
+  return `${TOKENS}
+:root { --subject: #${accent}; }
+${DIAGRAM_CSS}
+@page { size: A4; margin: 14mm 15mm 16mm; }
 * { box-sizing: border-box; }
-body { font-family: Poppins, Arial, sans-serif; color: #${C.ink}; font-size: 10.2pt; line-height: 1.55; margin: 0; }
-h1, h2, h3 { line-height: 1.2; margin: 0 0 8px; }
-h2 { font-size: 17pt; } h3 { font-size: 12pt; margin-top: 14px; }
-p { margin: 0 0 8px; }
-code, pre { font-family: "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
-pre { background: #${C.ink}; color: #${C.cream}; padding: 10px 12px; border-radius: 8px; font-size: 8.8pt; white-space: pre-wrap; margin: 6px 0 8px; }
-.cover { height: 263mm; display: flex; flex-direction: column; justify-content: space-between; padding: 22mm 16mm; color: #${C.paper};
-  background: radial-gradient(120mm 90mm at 85% 15%, rgba(255,253,248,0.18), transparent 70%), linear-gradient(140deg, #${C.teal} 0%, #${C.sage} 55%, #${C.ochre} 100%); border-radius: 6mm; page-break-after: always; }
-.cover .kicker { letter-spacing: 0.18em; text-transform: uppercase; font-size: 9pt; opacity: 0.9; font-weight: 600; }
-.cover h1 { font-size: 34pt; font-weight: 800; margin: 10px 0 12px; }
-.cover .sub { font-size: 14pt; opacity: 0.95; max-width: 140mm; }
-.cover .chips span { display: inline-block; margin: 0 6px 6px 0; padding: 4px 12px; border-radius: 999px; background: rgba(255,253,248,0.2); font-size: 9.5pt; }
-.cover .note { font-size: 9pt; opacity: 0.9; border-top: 1px solid rgba(255,253,248,0.5); padding-top: 8px; }
-.section { page-break-before: always; }
-.band { display: flex; gap: 14px; align-items: center; padding: 12px 16px; border-radius: 12px; color: #${C.paper}; margin-bottom: 12px; }
-.band .num { font-size: 26pt; font-weight: 800; opacity: 0.85; }
-.band h2 { margin: 0; color: #${C.paper}; }
-.band .meta { font-size: 9pt; opacity: 0.9; }
-.analogy { border-left: 5px solid; background: #${C.sand}; padding: 8px 12px; border-radius: 8px; margin: 10px 0; }
-.analogy b { display: block; margin-bottom: 2px; }
-.box { background: #${C.cream}; border: 1px solid #${C.line}; border-radius: 10px; padding: 8px 14px; margin: 10px 0; }
-.box ul { margin: 4px 0; padding-left: 16px; }
-figure { margin: 8px 0 10px; } figure svg { width: 100%; height: auto; display: block; border: 1px solid #${C.line}; border-radius: 10px; background: #${C.paper}; }
-figcaption { font-size: 8.5pt; color: #${C.faint}; text-align: center; margin-top: 4px; }
-.ex { border: 1px solid #${C.line}; border-radius: 10px; padding: 8px 12px; margin: 6px 0; page-break-inside: avoid; }
-.ex .lvl { font-size: 8pt; font-weight: 700; color: #${C.paper}; padding: 1px 8px; border-radius: 999px; margin-left: 6px; }
-.hint { color: #${C.soft}; font-style: italic; font-size: 9pt; }
-table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 9.2pt; }
-th { background: #${C.teal}; color: #${C.paper}; text-align: left; padding: 6px 8px; }
-td { border-bottom: 1px solid #${C.line}; padding: 5px 8px; vertical-align: top; }
-tr:nth-child(even) td { background: #${C.cream}; }
-.toc li { margin-bottom: 3px; }
-.q { page-break-inside: avoid; margin-bottom: 10px; }
-.q ol { margin: 4px 0 0; padding-left: 18px; list-style: upper-alpha; }
-.footer-note { margin-top: 14px; font-size: 8.5pt; color: #${C.faint}; }
+body { font-family: Poppins, Arial, sans-serif; color: #${C.ink}; font-size: 9.6pt; line-height: 1.5; margin: 0; }
+h1, h2, h3 { line-height: 1.2; margin: 0; }
+p { margin: 0 0 6px; }
+code, .mono { font-family: "JetBrains Mono", monospace; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; font-size: 0.92em; }
+.math { font-family: "Cambria Math", "STIX Two Math", "Latin Modern Math", Georgia, serif; font-size: 1.08em; }
+.head { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid #${accent}; padding-bottom: 6px; margin-bottom: 14px; font-size: 8.5pt; color: #${C.faint}; }
+.head b { color: #${accent}; font-weight: 700; }
+.title { display: grid; grid-template-columns: auto 1fr; gap: 0 14px; align-items: end; margin-bottom: 14px; }
+.title .num { font-size: 54pt; font-weight: 800; line-height: 0.85; color: #${accent}; }
+.title h1 { font-size: 20pt; font-weight: 700; }
+.title .kind { grid-column: 2; font-size: 10pt; color: #${C.soft}; font-weight: 600; }
+h2 { font-size: 11.5pt; font-weight: 700; color: #${accent}; margin: 14px 0 8px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; }
+.card { break-inside: avoid; border-top: 1.5px solid #${C.line}; padding-top: 6px; }
+.card h3 { font-size: 9.8pt; font-weight: 700; margin-bottom: 4px; display: flex; gap: 6px; }
+.card h3 span { color: #${accent}; }
+.card ul { margin: 0; padding-left: 14px; }
+.card li { margin-bottom: 2px; }
+table { width: 100%; border-collapse: collapse; font-size: 8.8pt; }
+th { text-align: left; font-weight: 600; color: #${C.soft}; border-bottom: 1.5px solid #${accent}; padding: 4px 6px; }
+td { border-bottom: 1px solid #${C.line}; padding: 4px 6px; vertical-align: top; }
+figure { margin: 4px 0 10px; break-inside: avoid; }
+figure svg { width: 100%; height: auto; display: block; }
+.foot { margin-top: 12px; font-size: 7.5pt; color: #${C.faint}; }
 `;
-
-function htmlShell(title, body, lang) {
-  return `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><title>${esc(title)}</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=block" rel="stylesheet">
-<style>${BASE_CSS}</style></head><body>${body}</body></html>`;
 }
 
-function cover(kicker, title, sub, chips, note) {
-  return `<section class="cover"><div><div class="kicker">${esc(kicker)}</div><h1>${esc(title)}</h1><div class="sub">${esc(sub)}</div></div>
-<div><div class="chips">${chips.map((c) => `<span>${esc(c)}</span>`).join('')}</div><p class="note">${esc(note)}</p></div></section>`;
-}
-
-function questionHtml(q, i, pick, t) {
-  let body = '';
-  if (q.options) body = `${q.code ? `<pre>${esc(q.code)}</pre>` : ''}<ol>${q.options.map((o) => `<li>${esc(pick(o))}</li>`).join('')}</ol>`;
-  else if (q.type === 'matching') body = `<p class="hint">${esc(t.match)}</p><table><tr><td>${q.left.map((x, j) => `${j + 1}. ${esc(pick(x))}`).join('<br>')}</td><td>${q.right.map((x, j) => `${letter(j)}. ${esc(pick(x))}`).join('<br>')}</td></tr></table>`;
-  else body = `<p class="hint">${esc(t.blank)}</p>`;
-  return `<div class="q"><b>${i + 1}. ${esc(pick(q.prompt))}</b>${body}</div>`;
-}
-
-function answerText(q, pick) {
-  if (q.options) return `${letter(q.answer)} — ${pick(q.explanation)}`;
-  if (q.type === 'matching') return `${q.answer.map((r, j) => `${j + 1}→${letter(r)}`).join(', ')} — ${pick(q.explanation)}`;
-  return pick(q.explanation);
-}
-
-function studyGuideHtml(week, loc) {
+function page(week, loc, kind, body) {
   const t = T[loc], pick = L(loc);
-  const lessons = week.lessons;
-  let html = cover(t.weekLabel(week), pick(week.title), pick(week.intro), [t.guide, `${lessons.length} ${t.lessons}`, `${week.estimatedMinutes} ${t.minutes}`], t.independent);
-  html += `<section><h2>${esc(t.contents)}</h2><ol class="toc">${lessons.map((l) => `<li>${esc(pick(l.title))}</li>`).join('')}<li>${esc(t.solutions)}</li><li>${esc(t.glossary)}</li><li>${esc(t.practice)}</li></ol>
-<h3>${esc(t.objectives)}</h3><ul>${week.objectives.map((o) => `<li>${esc(pick(o))}</li>`).join('')}</ul></section>`;
-  lessons.forEach((l, i) => {
-    const color = LESSON_COLORS[i % LESSON_COLORS.length];
-    html += `<section class="section"><div class="band" style="background:#${color}"><span class="num">${String(i + 1).padStart(2, '0')}</span><div><div class="meta">${esc(t.lesson)} ${i + 1} · ${l.minutes} ${t.minutes}</div><h2>${esc(pick(l.title))}</h2></div></div>`;
-    html += l.body.map((p) => `<p>${esc(pick(p))}</p>`).join('');
-    if (l.analogy) html += `<div class="analogy" style="border-color:#${color}"><b>${esc(t.analogy)}</b>${esc(pick(l.analogy))}</div>`;
-    if (l.diagram) html += `<figure>${diagramSvg(l.diagram, loc)}<figcaption>${esc(t.diagram)} · ${esc(pick(l.title))}</figcaption></figure>`;
-    html += `<div class="box"><b>${esc(t.takeaways)}</b><ul>${l.takeaways.map((k) => `<li>${esc(pick(k))}</li>`).join('')}</ul></div>`;
-    if (l.pitfalls?.length) html += `<h3>${esc(t.mistakes)}</h3><ul>${l.pitfalls.map((p) => `<li>✗ ${esc(pick(p.mistake))} <br>✓ <b>${esc(t.fix)}:</b> ${esc(pick(p.fix))}</li>`).join('')}</ul>`;
-    if (l.exercises?.length) {
-      html += `<h3>${esc(t.exercises)}</h3>` + l.exercises.map((e, j) => `<div class="ex"><b>${i + 1}.${j + 1} ${esc(pick(e.title))}</b><span class="lvl" style="background:#${[C.sage, C.navy, C.terracotta][e.level - 1]}">${t.level} ${e.level}</span><p>${esc(pick(e.prompt))}</p><p class="hint">${esc(t.hint)}: ${esc(pick(e.hint))}</p></div>`).join('');
-    }
-    html += '</section>';
-  });
-  html += `<section class="section"><h2>${esc(t.solutions)}</h2>`;
-  lessons.forEach((l, i) => (l.exercises ?? []).forEach((e, j) => { html += `<p><b>${i + 1}.${j + 1} ${esc(pick(e.title))}.</b> ${esc(pick(e.solution))}</p>`; }));
-  html += `</section><section class="section"><h2>${esc(t.glossary)}</h2><table><tr><th>${esc(t.term)}</th><th>${esc(t.meaning)}</th></tr>${week.flashcards.map((c) => `<tr><td>${esc(pick(c.front))}</td><td>${esc(pick(c.back))}</td></tr>`).join('')}</table></section>`;
-  html += `<section class="section"><h2>${esc(t.practice)}</h2>${week.questions.map((q, i) => questionHtml(q, i, pick, t)).join('')}</section>`;
-  html += `<section class="section"><h2>${esc(t.answers)}</h2><ol>${week.questions.map((q) => `<li>${esc(answerText(q, pick))}</li>`).join('')}</ol><p class="footer-note">${esc(t.independent)}</p></section>`;
-  return htmlShell(`${t.guide} · ${pick(week.title)}`, html, loc);
+  const accent = ACCENT[week.subject] ?? C.teal;
+  return `<!doctype html><html lang="${loc}"><head><meta charset="utf-8"><title>${esc(kind)} · ${esc(pick(week.title))}</title>${FONTS}<style>${printCss(accent)}</style></head><body>
+<div class="head"><span><b>${esc(t.brand)}</b> · ${esc(pick(SUBJECT_NAME[week.subject]))}</span><span>${esc(kind)}</span></div>
+<div class="title"><span class="num">${week.week}</span><h1>${esc(pick(week.title))}</h1><span class="kind">${esc(t.week)} ${week.week} · ${esc(kind)}</span></div>
+${body}
+<p class="foot">${esc(t.brand)} · ${esc(t.alsoOnline)}</p></body></html>`;
 }
 
-function cheatSheetHtml(week, loc) {
+// ---------- summary ----------
+function summaryHtml(week, loc, svgs) {
   const t = T[loc], pick = L(loc);
-  let html = `<div class="band" style="background:linear-gradient(120deg,#${C.teal},#${C.sage})"><div><div class="meta">${esc(t.weekLabel(week))}</div><h2 style="font-size:22pt">${esc(t.cheat)}</h2></div></div>`;
+  let body = `<h2>${esc(t.coreIdeas)}</h2><div class="grid2">`;
+  body += week.lessons.map((l, i) => `<div class="card"><h3><span>${i + 1}</span>${esc(pick(l.title))}</h3><ul>${l.takeaways.map((k) => `<li>${esc(pick(k))}</li>`).join('')}</ul></div>`).join('');
+  body += '</div>';
   const cheat = CHEATS[week.subject];
-  html += `<figure>${diagramSvg(cheat.diagram, loc)}</figure>`;
-  html += cheat.sections.map((sec) => `<h3>${esc(pick(sec.title))}</h3><table>${sec.rows.map(([cmd, d]) => `<tr><td style="width:52%"><code>${esc(cmd)}</code></td><td>${esc(pick(d))}</td></tr>`).join('')}</table>`).join('');
-  html += `<h3>${esc(t.troubleshooting)}</h3><table><tr><th>${esc(t.symptom)}</th><th>${esc(t.cause)}</th><th>${esc(t.fix)}</th></tr>${cheat.trouble.map((r) => `<tr>${r.map((c) => `<td>${esc(pick(c))}</td>`).join('')}</tr>`).join('')}</table>`;
-  html += `<p class="footer-note">${esc(t.independent)}</p>`;
-  return htmlShell(t.cheat, html, loc);
+  if (cheat?.diagram && svgs[cheat.diagram]) body += `<figure>${svgs[cheat.diagram]}</figure>`;
+  const pitfalls = [...week.commonMistakes, ...week.lessons.flatMap((l) => l.pitfalls ?? [])].slice(0, 8);
+  body += `<h2>${esc(t.watchOut)}</h2><table><tr><th style="width:50%">${esc(t.mistake)}</th><th>${esc(t.fix)}</th></tr>${pitfalls.map((p) => `<tr><td>${esc(pick(p.mistake))}</td><td>${esc(pick(p.fix))}</td></tr>`).join('')}</table>`;
+  return page(week, loc, t.summary, body);
 }
 
-function labWorkbookHtml(week, loc) {
+// ---------- cheat sheet ----------
+function cheatHtml(week, loc, svgs) {
   const t = T[loc], pick = L(loc);
-  let html = cover(t.weekLabel(week), t.labs, pick(week.title), week.labs.map((l) => `${t.level} ${l.level} · ${l.minutes} ${t.minutes}`), t.independent);
-  if (week.labs.some((l) => (l.kind ?? 'shell') === 'shell')) html += `<div class="analogy" style="border-color:#${C.terracotta}"><b>⚠</b>${esc(t.safety)}</div>`;
-  if (week.labs.some((l) => l.kind === 'sql')) html += `<div class="analogy" style="border-color:#${C.teal}"><b>▦</b>${esc(t.sqlNote)}</div>`;
-  if (week.labs.some((l) => l.kind === 'design')) html += `<div class="analogy" style="border-color:#${C.mauve}"><b>◇</b>${esc(t.designNote)}</div>`;
-  week.labs.forEach((lab, i) => {
-    const color = LESSON_COLORS[i % LESSON_COLORS.length];
-    html += `<section class="${i ? 'section' : ''}"><div class="band" style="background:#${color}"><span class="num">${i + 1}</span><div><div class="meta">${t.level} ${lab.level} · ${lab.minutes} ${t.minutes}</div><h2>${esc(pick(lab.title))}</h2></div></div>`;
-    html += `<p><b>${esc(t.goal)}:</b> ${esc(pick(lab.goal))}</p>`;
-    lab.steps.forEach((s, j) => {
-      html += `<div class="ex"><b>${j + 1}. ${esc(pick(s.title))}</b>${s.commands.length ? `<pre>${esc(s.commands.join('\n'))}</pre>` : ''}<p><b>${esc(t.expected)}:</b> ${esc(pick(s.expected))}</p><p class="hint">${esc(t.reflect)}: ${esc(t.reflectText)}</p></div>`;
-    });
-    html += '</section>';
-  });
-  html += `<section class="section"><h2>${esc(t.troubleshooting)}</h2><table><tr><th>${esc(t.symptom)}</th><th>${esc(t.cause)}</th><th>${esc(t.fix)}</th></tr>${CHEATS[week.subject].trouble.map((r) => `<tr>${r.map((c) => `<td>${esc(pick(c))}</td>`).join('')}</tr>`).join('')}</table></section>`;
-  return htmlShell(t.labs, html, loc);
+  const cheat = CHEATS[week.subject];
+  let body = '';
+  if (cheat.diagram && svgs[cheat.diagram]) body += `<figure>${svgs[cheat.diagram]}</figure>`;
+  body += `<div class="grid2">${cheat.sections.map((sec) => `<div class="card"><h3>${esc(pick(sec.title))}</h3><table>${sec.rows.map(([cmd, d]) => `<tr><td style="width:56%" class="${sec.math ? 'math' : 'mono'}">${esc(cmd)}</td><td>${esc(pick(d))}</td></tr>`).join('')}</table></div>`).join('')}</div>`;
+  body += `<h2>${esc(t.troubleshooting)}</h2><table><tr><th>${esc(t.symptom)}</th><th>${esc(t.cause)}</th><th>${esc(t.fix)}</th></tr>${cheat.trouble.map((r) => `<tr>${r.map((c) => `<td>${esc(pick(c))}</td>`).join('')}</tr>`).join('')}</table>`;
+  return page(week, loc, t.cheat, body);
 }
 
-function slidesHtml(week, loc) {
-  const t = T[loc], pick = L(loc);
-  const page = (inner, cls = '') => `<section class="slide ${cls}">${inner}<footer>SE Study Lab · ${esc(t.weekLabel(week))}</footer></section>`;
-  let html = page(`<div class="kicker">${esc(t.weekLabel(week))}</div><h1>${esc(pick(week.title))}</h1><p class="lead">${esc(pick(week.intro))}</p>`, 'title');
-  html += page(`<h2>${esc(t.objectives)}</h2><ul class="big">${week.objectives.map((o) => `<li>${esc(pick(o))}</li>`).join('')}</ul>`);
-  html += page(`<h2>${esc(t.agenda)}</h2><div class="tiles">${week.lessons.map((l, i) => `<div class="tile" style="border-color:#${LESSON_COLORS[i % LESSON_COLORS.length]}"><b style="color:#${LESSON_COLORS[i % LESSON_COLORS.length]}">${String(i + 1).padStart(2, '0')}</b><span>${esc(pick(l.title))}</span></div>`).join('')}</div>`);
-  week.lessons.forEach((l, i) => {
-    const c = LESSON_COLORS[i % LESSON_COLORS.length];
-    html += page(`<div class="band" style="background:#${c}"></div><div class="kicker" style="color:#${c}">${esc(t.lesson)} ${i + 1}</div><h2>${esc(pick(l.title))}</h2>
-      <div class="cols ${l.diagram ? '' : 'single'}"><div><h3 style="color:#${c}">${esc(t.takeaways)}</h3><ul>${l.takeaways.map((k) => `<li>${esc(pick(k))}</li>`).join('')}</ul></div>${l.diagram ? `<div class="fig">${diagramSvg(l.diagram, loc)}</div>` : ''}</div>
-      ${l.analogy ? `<div class="analogy" style="border-color:#${c}"><b style="color:#${c}">${esc(t.analogy)}</b> ${esc(pick(l.analogy))}</div>` : ''}`);
-  });
-  const cps = week.questions.filter((q) => q.options && q.options.length > 2).slice(0, 3);
-  html += page(`<h2>${esc(t.checkpoint)}</h2>${cps.map((q, i) => `<div class="q"><b>${i + 1}. ${esc(pick(q.prompt))}</b><div>${q.options.map((o, j) => `${letter(j)}. ${esc(pick(o))}`).join(' &nbsp; · &nbsp; ')}</div></div>`).join('')}`);
-  html += page(`<h1>${esc(t.closing)}</h1><p class="lead">${esc(t.closingText)}</p>`, 'title closing');
-  const css = `@page { size: 13.333in 7.5in; margin: 0; }
-  body { margin: 0; font-family: Poppins, Arial, sans-serif; color: #${C.ink}; }
-  .slide { width: 13.333in; height: 7.5in; box-sizing: border-box; padding: 0.6in 0.75in; position: relative; page-break-after: always; background: #${C.cream}; overflow: hidden; }
-  .slide.title { background: #${C.ink}; color: #${C.paper}; display: flex; flex-direction: column; justify-content: center; }
-  .slide.closing { background: #${C.teal}; }
-  .slide.title::after { content: ""; position: absolute; right: -1.5in; top: -1.5in; width: 6in; height: 6in; border-radius: 50%; background: rgba(47,111,115,0.45); }
-  .kicker { font-size: 14pt; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #${C.ochre}; margin-bottom: 10px; position: relative; z-index: 1; }
-  h1 { font-size: 40pt; margin: 0 0 18px; max-width: 9.5in; position: relative; z-index: 1; }
-  h2 { font-size: 28pt; margin: 0 0 18px; }
-  h3 { font-size: 15pt; margin: 0 0 8px; }
-  .lead { font-size: 16pt; line-height: 1.5; max-width: 9in; opacity: 0.9; position: relative; z-index: 1; }
-  ul { margin: 0; padding-left: 22px; font-size: 15pt; line-height: 1.5; } ul.big { font-size: 17pt; }
-  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-  .tile { background: #${C.paper}; border: 2.5px solid; border-radius: 16px; padding: 14px 16px; min-height: 1.6in; display: flex; flex-direction: column; gap: 8px; font-size: 13pt; font-weight: 600; }
-  .tile b { font-size: 24pt; }
-  .band { position: absolute; left: 0; top: 0; bottom: 0; width: 0.28in; }
-  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; } .cols.single { grid-template-columns: 1fr; }
-  .fig svg { width: 100%; height: auto; border: 1px solid #${C.line}; border-radius: 12px; background: #${C.paper}; }
-  .analogy { position: absolute; left: 0.75in; right: 0.75in; bottom: 0.75in; background: #${C.sand}; border-left: 6px solid; border-radius: 12px; padding: 14px 18px; font-size: 13pt; }
-  .q { margin-bottom: 18px; font-size: 14pt; } .q div { color: #${C.soft}; margin-top: 6px; font-size: 12.5pt; }
-  footer { position: absolute; left: 0.75in; bottom: 0.25in; font-size: 9pt; color: #${C.faint}; }
-  .slide.title footer { color: rgba(255,253,248,0.6); }`;
-  return `<!doctype html><html lang="${loc}"><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=block" rel="stylesheet"><style>${css}</style></head><body>${html}</body></html>`;
+// ---------- worksheet ----------
+/** Exercises and quick-check questions, numbered once for the PDF and the Word file. */
+function worksheetItems(week) {
+  const exercises = week.lessons.flatMap((l, li) => (l.exercises ?? []).map((e) => ({ ...e, lesson: li + 1 })));
+  const quick = week.questions.filter((q) => q.options && q.options.length >= 3 && !q.code).slice(0, 8);
+  return { exercises, quick };
 }
 
-// ---------- Word ----------
-function studyGuideDocx(week, loc, images) {
+function worksheetHtml(week, loc) {
   const t = T[loc], pick = L(loc);
-  const run = (text, o = {}) => new TextRun({ text, font: 'Arial', ...o });
-  const para = (text, o = {}) => new Paragraph({ spacing: { after: 120, line: 300 }, children: [run(text, o)] });
-  const heading = (text, color, size = 34) => new Paragraph({ heading: HeadingLevel.HEADING_1, spacing: { before: 200, after: 160 }, children: [run(text, { bold: true, color, size })] });
-  const sub = (text) => new Paragraph({ heading: HeadingLevel.HEADING_2, spacing: { before: 200, after: 80 }, children: [run(text, { bold: true, color: C.ink, size: 26 })] });
-  const bullet = (text) => new Paragraph({ bullet: { level: 0 }, spacing: { after: 60 }, children: [run(text)] });
-  const shaded = (title, text, color) => new Table({
-    width: { size: 100, type: WidthType.PERCENTAGE },
-    rows: [new TableRow({ children: [new TableCell({
-      shading: { type: ShadingType.CLEAR, color: 'auto', fill: C.sand },
-      borders: { left: { style: BorderStyle.SINGLE, size: 24, color }, top: { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' }, bottom: { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' }, right: { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' } },
-      margins: { top: 120, bottom: 120, left: 200, right: 200 },
-      children: [new Paragraph({ children: [run(title, { bold: true, color })] }), new Paragraph({ children: [run(text)] })],
-    })] })],
-  });
+  const { exercises, quick } = worksheetItems(week);
+  const lines = (n) => `<div class="lines">${'<i></i>'.repeat(n)}</div>`;
+  let body = `<div class="who"><span>${esc(t.name)}</span><span>${esc(t.date)}</span></div>`;
+  body += `<h2>${esc(t.partA)}</h2><p class="note">${esc(t.partAHint)}</p>`;
+  body += exercises.map((e, i) => `<div class="ex"><p><b>${i + 1}. ${esc(pick(e.title))}</b> <span class="lvl">${esc(t.level[e.level - 1])} · ${esc(t.lesson)} ${e.lesson}</span></p><p>${esc(pick(e.prompt))}</p>${lines(e.level + 1)}<p class="hint">${esc(t.hint)}: ${esc(pick(e.hint))}</p></div>`).join('');
+  body += `<h2>${esc(t.partB)}</h2><p class="note">${esc(t.partBHint)}</p>`;
+  body += quick.map((q, i) => `<div class="ex"><p><b>${exercises.length + i + 1}. ${esc(pick(q.prompt))}</b></p><p class="opts">${q.options.map((o, j) => `<span>${letter(j)}) ${esc(pick(o))}</span>`).join('')}</p></div>`).join('');
+  body += `<div class="key"><h2>${esc(t.answerKey)}</h2><ol>`;
+  body += exercises.map((e) => `<li>${esc(pick(e.solution))}</li>`).join('');
+  body += quick.map((q) => `<li><b>${letter(q.answer)}</b> — ${esc(pick(q.explanation))}</li>`).join('');
+  body += '</ol></div>';
+  const extra = `<style>
+.who { display: flex; gap: 24px; margin-bottom: 4px; } .who span { flex: 1; border-bottom: 1px solid #${C.faint}; padding-bottom: 2px; color: #${C.faint}; font-size: 8.5pt; }
+.note { color: #${C.soft}; font-size: 8.8pt; }
+.ex { break-inside: avoid; margin-bottom: 10px; }
+.lvl { font-size: 7.8pt; color: #${C.faint}; font-weight: 500; }
+.lines i { display: block; height: 7.5mm; border-bottom: 1px dotted #${C.line}; }
+.hint { font-size: 8.2pt; color: #${C.faint}; margin-top: 3px; }
+.opts { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.key { break-before: page; } .key ol { padding-left: 18px; } .key li { margin-bottom: 4px; }
+</style>`;
+  return page(week, loc, t.worksheet, extra + body);
+}
+
+function worksheetDocx(week, loc) {
+  const t = T[loc], pick = L(loc);
+  const accent = ACCENT[week.subject] ?? C.teal;
+  const { exercises, quick } = worksheetItems(week);
+  const run = (text, o = {}) => new TextRun({ text, font: 'Arial', size: 21, ...o });
+  const p = (children, o = {}) => new Paragraph({ spacing: { after: 100, line: 290 }, children, ...o });
+  const rule = () => new Paragraph({ spacing: { after: 0 }, border: { bottom: { style: BorderStyle.DOTTED, size: 6, color: C.line, space: 14 } }, children: [run(' ')] });
   const children = [
-    new Paragraph({ spacing: { before: 2400, after: 200 }, children: [run(t.weekLabel(week).toUpperCase(), { color: C.teal, bold: true, size: 20 })] }),
-    new Paragraph({ spacing: { after: 300 }, children: [run(pick(week.title), { bold: true, size: 56, color: C.ink })] }),
-    new Paragraph({ spacing: { after: 300 }, children: [run(`${t.guide} · SE Study Lab`, { size: 28, color: C.terracotta, bold: true })] }),
-    para(pick(week.intro), { size: 24, color: C.soft }),
-    new Paragraph({ spacing: { before: 1200 }, children: [run(t.independent, { italics: true, size: 18, color: C.faint })] }),
-    new Paragraph({ children: [new PageBreak()] }),
-    heading(t.objectives, C.teal),
-    ...week.objectives.map((o) => bullet(pick(o))),
+    p([run(`${t.brand} · ${pick(SUBJECT_NAME[week.subject])}`, { color: C.faint, size: 18 })], { border: { bottom: { style: BorderStyle.SINGLE, size: 12, color: accent, space: 4 } } }),
+    p([run(`${week.week}  `, { bold: true, size: 64, color: accent }), run(pick(week.title), { bold: true, size: 36, color: C.ink })], { spacing: { before: 200, after: 60 } }),
+    p([run(`${t.week} ${week.week} · ${t.worksheet}`, { color: C.soft, bold: true })]),
+    p([run(`${t.name}: ____________________________     ${t.date}: ______________`, { color: C.faint })], { spacing: { before: 200, after: 240 }, tabStops: [{ type: TabStopType.RIGHT, position: 9000 }] }),
+    p([run(t.partA, { bold: true, size: 26, color: accent })], { spacing: { before: 120, after: 60 } }),
+    p([run(t.partAHint, { color: C.soft, size: 19 })]),
   ];
-  week.lessons.forEach((l, i) => {
-    const color = LESSON_COLORS[i % LESSON_COLORS.length];
-    children.push(new Paragraph({ children: [new PageBreak()] }));
-    children.push(new Paragraph({ spacing: { after: 40 }, children: [run(`${t.lesson.toUpperCase()} ${i + 1} · ${l.minutes} ${t.minutes}`, { color, bold: true, size: 20 })] }));
-    children.push(heading(pick(l.title), color, 36));
-    l.body.forEach((p) => children.push(para(pick(p))));
-    if (l.analogy) { children.push(shaded(t.analogy, pick(l.analogy), color)); children.push(para('')); }
-    if (l.diagram && images[l.diagram]) {
-      children.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 160 }, children: [new ImageRun({ type: 'png', data: readFileSync(images[l.diagram]), transformation: { width: 600, height: 260 } })] }));
-    }
-    children.push(sub(t.takeaways));
-    l.takeaways.forEach((k) => children.push(bullet(pick(k))));
-    if (l.pitfalls?.length) {
-      children.push(sub(t.mistakes));
-      l.pitfalls.forEach((p) => children.push(bullet(`${pick(p.mistake)} → ${t.fix}: ${pick(p.fix)}`)));
-    }
-    if (l.exercises?.length) {
-      children.push(sub(t.exercises));
-      l.exercises.forEach((e, j) => {
-        children.push(new Paragraph({ spacing: { before: 120, after: 40 }, children: [run(`${i + 1}.${j + 1} ${pick(e.title)}  `, { bold: true }), run(`${t.level} ${e.level}`, { color: C.paper, bold: true, size: 16, shading: { type: ShadingType.CLEAR, color: 'auto', fill: [C.sage, C.navy, C.terracotta][e.level - 1] } })] }));
-        children.push(para(pick(e.prompt)));
-        children.push(para(`${t.hint}: ${pick(e.hint)}`, { italics: true, color: C.soft }));
-      });
-    }
+  exercises.forEach((e, i) => {
+    children.push(p([run(`${i + 1}. ${pick(e.title)}`, { bold: true }), run(`   ${t.level[e.level - 1]} · ${t.lesson} ${e.lesson}`, { color: C.faint, size: 17 })], { spacing: { before: 200, after: 60 } }));
+    children.push(p([run(pick(e.prompt))]));
+    for (let k = 0; k < e.level + 1; k++) children.push(rule());
+    children.push(p([run(`${t.hint}: ${pick(e.hint)}`, { color: C.faint, italics: true, size: 18 })], { spacing: { before: 80, after: 100 } }));
   });
-  children.push(new Paragraph({ children: [new PageBreak()] }), heading(t.solutions, C.teal));
-  week.lessons.forEach((l, i) => (l.exercises ?? []).forEach((e, j) => children.push(new Paragraph({ spacing: { after: 120 }, children: [run(`${i + 1}.${j + 1} ${pick(e.title)}. `, { bold: true }), run(pick(e.solution))] }))));
-  children.push(new Paragraph({ children: [new PageBreak()] }), heading(t.glossary, C.teal));
-  children.push(new Table({
-    width: { size: 100, type: WidthType.PERCENTAGE },
-    rows: [
-      new TableRow({ tableHeader: true, children: [t.term, t.meaning].map((h) => new TableCell({ shading: { type: ShadingType.CLEAR, color: 'auto', fill: C.teal }, children: [new Paragraph({ children: [run(h, { bold: true, color: C.paper })] })] })) }),
-      ...week.flashcards.map((c, i) => new TableRow({ children: [pick(c.front), pick(c.back)].map((x) => new TableCell({ shading: i % 2 ? { type: ShadingType.CLEAR, color: 'auto', fill: C.cream } : undefined, margins: { top: 60, bottom: 60, left: 100, right: 100 }, children: [new Paragraph({ children: [run(x, { size: 20 })] })] })) })),
-    ],
-  }));
-  children.push(new Paragraph({ children: [new PageBreak()] }), heading(t.practice, C.teal));
-  week.questions.forEach((q, i) => {
-    children.push(new Paragraph({ spacing: { before: 160, after: 60 }, children: [run(`${i + 1}. ${pick(q.prompt)}`, { bold: true })] }));
-    if (q.code) children.push(new Paragraph({ shading: { type: ShadingType.CLEAR, color: 'auto', fill: C.sand }, children: [run(q.code.replace(/\n/g, '  ·  '), { font: 'Courier New', size: 18 })] }));
-    if (q.options) q.options.forEach((o, j) => children.push(para(`${letter(j)}. ${pick(o)}`)));
-    else if (q.type === 'matching') {
-      q.left.forEach((x, j) => children.push(para(`${j + 1}. ${pick(x)}`)));
-      q.right.forEach((x, j) => children.push(para(`${letter(j)}. ${pick(x)}`, { color: C.soft })));
-    } else children.push(para(t.blank, { color: C.faint }));
+  children.push(p([run(t.partB, { bold: true, size: 26, color: accent })], { spacing: { before: 300, after: 60 } }));
+  children.push(p([run(t.partBHint, { color: C.soft, size: 19 })]));
+  quick.forEach((q, i) => {
+    children.push(p([run(`${exercises.length + i + 1}. ${pick(q.prompt)}`, { bold: true })], { spacing: { before: 160, after: 60 } }));
+    children.push(p([run(q.options.map((o, j) => `${letter(j)}) ${pick(o)}`).join('      '))]));
   });
-  children.push(new Paragraph({ children: [new PageBreak()] }), heading(t.answers, C.teal));
-  week.questions.forEach((q, i) => children.push(para(`${i + 1}. ${answerText(q, pick)}`)));
-
+  children.push(new Paragraph({ children: [new PageBreak()] }));
+  children.push(p([run(t.answerKey, { bold: true, size: 26, color: accent })]));
+  exercises.forEach((e, i) => children.push(p([run(`${i + 1}. `, { bold: true }), run(pick(e.solution))])));
+  quick.forEach((q, i) => children.push(p([run(`${exercises.length + i + 1}. ${letter(q.answer)} — `, { bold: true }), run(pick(q.explanation))])));
   return new Document({
-    creator: 'SE Study Lab',
-    title: `${t.guide} · ${pick(week.title)}`,
-    styles: { default: { document: { run: { font: 'Arial', size: 22, color: C.ink } } } },
-    sections: [{ properties: { page: { margin: { top: 1100, bottom: 1100, left: 1200, right: 1200 } } }, children }],
+    creator: t.brand,
+    title: `${t.worksheet} · ${pick(week.title)}`,
+    styles: { default: { document: { run: { font: 'Arial' } } } },
+    sections: [{ properties: { page: { margin: { top: 1000, bottom: 1000, left: 1100, right: 1100 } } }, children }],
   });
 }
 
-// ---------- PowerPoint ----------
+// ---------- slides ----------
+/** The slide plan, shared by the PowerPoint file and its PDF twin. */
+function slidePlan(week) {
+  const workflow = week.activities.find((a) => a.kind === 'order' && a.items.length <= 6);
+  const checks = week.questions.filter((q) => q.options && q.options.length >= 3 && !q.code).slice(0, 3);
+  return { workflow, checks };
+}
+
+function slidesHtml(week, loc, svgs) {
+  const t = T[loc], pick = L(loc);
+  const accent = ACCENT[week.subject] ?? C.teal;
+  const { workflow, checks } = slidePlan(week);
+  const foot = `<footer><span>${esc(t.brand)} · ${esc(pick(SUBJECT_NAME[week.subject]))} · ${esc(t.week)} ${week.week}</span></footer>`;
+  const slide = (inner, cls = '') => `<section class="slide ${cls}">${inner}${foot}</section>`;
+  let html = slide(`<div class="big-num">${week.week}</div><div><p class="kicker">${esc(pick(SUBJECT_NAME[week.subject]))} · ${esc(t.week)} ${week.week}</p><h1>${esc(pick(week.title))}</h1></div>`, 'cover');
+  week.lessons.forEach((l, i) => {
+    const svg = l.diagram ? svgs[l.diagram] : '';
+    html += slide(`<p class="kicker">${esc(t.lesson)} ${i + 1} · ${esc(pick(l.title))}</p>
+      <div class="idea ${svg ? 'with-fig' : ''}"><h2>${esc(pick(l.takeaways[0]))}</h2>${svg ? `<div class="fig">${svg}</div>` : `<ul>${l.takeaways.slice(1).map((k) => `<li>${esc(pick(k))}</li>`).join('')}</ul>`}</div>
+      ${l.analogy ? `<p class="quote"><b>${esc(t.thinkOfIt)}.</b> ${esc(pick(l.analogy))}</p>` : ''}`);
+  });
+  if (workflow) {
+    html += slide(`<p class="kicker">${esc(t.stepByStep)}</p><h2>${esc(pick(workflow.title))}</h2><ol class="flow">${workflow.items.map((it) => `<li>${esc(pick(it))}</li>`).join('')}</ol>`);
+  }
+  html += slide(`<p class="kicker">${esc(t.checkYourself)}</p>${checks.map((q, i) => `<div class="q"><b>${i + 1}. ${esc(pick(q.prompt))}</b><p>${q.options.map((o, j) => `${letter(j)}) ${esc(pick(o))}`).join('&emsp;')}</p></div>`).join('')}<p class="small">${esc(t.answersInNotes)}</p>`);
+  html += slide(`<p class="kicker">${esc(t.nextSteps)}</p><div class="next"><div><h3>${esc(t.labs)}</h3><ul>${week.labs.map((l) => `<li>${esc(pick(l.title))}</li>`).join('')}</ul></div><div><h3>${esc(t.tools)}</h3><ul>${week.tools.map((k) => `<li>${esc(t.toolNames[k])}</li>`).join('')}</ul></div></div>`);
+  const css = `${TOKENS}:root{--subject:#${accent}}${DIAGRAM_CSS}
+  @page { size: 13.333in 7.5in; margin: 0; }
+  body { margin: 0; font-family: Poppins, Arial, sans-serif; color: #${C.ink}; }
+  .slide { width: 13.333in; height: 7.5in; box-sizing: border-box; padding: 0.7in 0.85in 0.8in 1.05in; position: relative; break-after: page; background: #${C.cream}; overflow: hidden; display: flex; flex-direction: column; }
+  .slide::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 0.22in; background: #${accent}; }
+  .kicker { font-size: 13pt; font-weight: 600; color: #${accent}; margin: 0 0 14px; }
+  h1 { font-size: 44pt; line-height: 1.1; margin: 0; max-width: 10in; }
+  h2 { font-size: 30pt; line-height: 1.2; margin: 0 0 18px; font-weight: 700; }
+  h3 { font-size: 15pt; margin: 0 0 8px; color: #${accent}; }
+  .cover { flex-direction: row; align-items: center; gap: 0.5in; }
+  .big-num { font-size: 200pt; font-weight: 800; line-height: 0.8; color: #${accent}; }
+  .idea { flex: 1; display: grid; grid-template-columns: 1fr; gap: 0.4in; align-content: center; padding-bottom: 0.3in; }
+  .idea.with-fig { grid-template-columns: 1fr 1.25fr; align-items: center; }
+  .idea.with-fig h2 { font-size: 26pt; }
+  .fig svg { width: 100%; height: auto; display: block; background: #${C.paper}; border-radius: 10px; }
+  ul { margin: 0; padding-left: 24px; font-size: 17pt; line-height: 1.55; color: #${C.soft}; }
+  .quote { margin: 0; padding: 12px 16px; border-left: 4px solid #${accent}; background: #${C.paper}; font-size: 13pt; color: #${C.soft}; border-radius: 0 10px 10px 0; }
+  .flow { list-style: none; counter-reset: s; display: flex; gap: 14px; padding: 0; margin: 0.3in 0 0; }
+  .flow li { counter-increment: s; flex: 1; font-size: 13.5pt; line-height: 1.4; padding-top: 0.75in; position: relative; }
+  .flow li::before { content: counter(s); position: absolute; top: 0; left: 0; width: 0.55in; height: 0.55in; border-radius: 50%; background: #${accent}; color: #${C.paper}; font-weight: 700; font-size: 18pt; display: grid; place-items: center; }
+  .q { margin-bottom: 22px; font-size: 16pt; } .q p { color: #${C.soft}; margin: 6px 0 0; font-size: 14pt; }
+  .small { font-size: 11pt; color: #${C.faint}; margin-top: auto; }
+  .next { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6in; }
+  footer { position: absolute; left: 1.05in; bottom: 0.3in; font-size: 9pt; color: #${C.faint}; }`;
+  return `<!doctype html><html lang="${loc}"><head><meta charset="utf-8">${FONTS}<style>${css}</style></head><body>${html}</body></html>`;
+}
+
 async function slidesPptx(week, loc, images, outFile) {
   const t = T[loc], pick = L(loc);
+  const accent = ACCENT[week.subject] ?? C.teal;
+  const { workflow, checks } = slidePlan(week);
   const pptx = new PptxGenJS();
   pptx.layout = 'LAYOUT_WIDE'; // 13.33 x 7.5 in
-  pptx.title = `${pick(week.title)} · SE Study Lab`;
+  pptx.title = `${pick(week.title)} · ${t.brand}`;
+  const font = { fontFace: 'Arial' };
   pptx.defineSlideMaster({
-    title: 'CONTENT',
+    title: 'IDEA',
     background: { color: C.cream },
     objects: [
-      { rect: { x: 0, y: 0, w: 13.33, h: 0.14, fill: { color: C.teal } } },
-      { text: { text: `SE Study Lab · ${t.weekLabel(week)}`, options: { x: 0.5, y: 7.0, w: 9, h: 0.3, fontFace: 'Arial', fontSize: 10, color: C.faint } } },
+      { rect: { x: 0, y: 0, w: 0.22, h: 7.5, fill: { color: accent } } },
+      { text: { text: `${t.brand} · ${pick(SUBJECT_NAME[week.subject])} · ${t.week} ${week.week}`, options: { x: 1.05, y: 7.0, w: 9, h: 0.3, fontFace: 'Arial', fontSize: 10, color: C.faint } } },
     ],
     slideNumber: { x: 12.4, y: 7.0, fontFace: 'Arial', fontSize: 10, color: C.faint },
   });
-  const font = { fontFace: 'Arial' };
+  const kicker = (s, text) => s.addText(text, { ...font, x: 1.05, y: 0.55, w: 11.5, h: 0.45, fontSize: 14, bold: true, color: accent });
 
-  // Title slide
-  let s = pptx.addSlide();
-  s.background = { color: C.ink };
-  s.addShape(pptx.ShapeType.ellipse, { x: 9.2, y: -1.6, w: 6, h: 6, fill: { color: C.teal, transparency: 35 }, line: { color: C.teal, transparency: 100 } });
-  s.addShape(pptx.ShapeType.ellipse, { x: 10.8, y: 3.8, w: 4, h: 4, fill: { color: C.terracotta, transparency: 45 }, line: { color: C.terracotta, transparency: 100 } });
-  s.addText(t.weekLabel(week).toUpperCase(), { ...font, x: 0.7, y: 1.4, w: 9, h: 0.4, fontSize: 14, bold: true, color: C.ochre, charSpacing: 3 });
-  s.addText(pick(week.title), { ...font, x: 0.7, y: 1.9, w: 9.2, h: 2.2, fontSize: 40, bold: true, color: C.paper, valign: 'top' });
-  s.addText(pick(week.intro), { ...font, x: 0.7, y: 4.2, w: 8.6, h: 1.6, fontSize: 15, color: 'C6C0B3', valign: 'top' });
-  s.addText(t.independent, { ...font, x: 0.7, y: 6.6, w: 10, h: 0.4, fontSize: 10, italic: true, color: C.faint });
+  // Cover: the week number is the visual.
+  let s = pptx.addSlide({ masterName: 'IDEA' });
+  s.addText(String(week.week), { ...font, x: 0.9, y: 1.2, w: 3.2, h: 4.4, fontSize: 220, bold: true, color: accent, valign: 'middle' });
+  s.addText(`${pick(SUBJECT_NAME[week.subject])} · ${t.week} ${week.week}`, { ...font, x: 4.3, y: 2.6, w: 8.5, h: 0.5, fontSize: 16, bold: true, color: accent });
+  s.addText(pick(week.title), { ...font, x: 4.3, y: 3.1, w: 8.5, h: 2.0, fontSize: 40, bold: true, color: C.ink, valign: 'top' });
 
-  // Objectives
-  s = pptx.addSlide({ masterName: 'CONTENT' });
-  s.addText(t.objectives, { ...font, x: 0.6, y: 0.4, w: 12, h: 0.8, fontSize: 30, bold: true, color: C.ink });
-  s.addText(week.objectives.map((o) => ({ text: pick(o), options: { bullet: { code: '25CF' }, breakLine: true } })), { ...font, x: 0.8, y: 1.4, w: 11.6, h: 5.2, fontSize: 18, color: C.ink, paraSpaceAfter: 10, valign: 'top' });
-
-  // Agenda as coloured tiles
-  s = pptx.addSlide({ masterName: 'CONTENT' });
-  s.addText(t.agenda, { ...font, x: 0.6, y: 0.4, w: 12, h: 0.8, fontSize: 30, bold: true, color: C.ink });
+  // One idea per lesson: the core statement, with its diagram when there is one.
   week.lessons.forEach((l, i) => {
-    const col = i % 4, row = Math.floor(i / 4);
-    const x = 0.6 + col * 3.1, y = 1.5 + row * 2.6;
-    const color = LESSON_COLORS[i % LESSON_COLORS.length];
-    s.addShape(pptx.ShapeType.roundRect, { x, y, w: 2.9, h: 2.3, rectRadius: 0.15, fill: { color: C.paper }, line: { color, width: 2 } });
-    s.addText(String(i + 1).padStart(2, '0'), { ...font, x: x + 0.2, y: y + 0.15, w: 1.2, h: 0.6, fontSize: 26, bold: true, color });
-    s.addText(pick(l.title), { ...font, x: x + 0.2, y: y + 0.8, w: 2.5, h: 1.3, fontSize: 13, bold: true, color: C.ink, valign: 'top' });
-  });
-
-  // One slide per lesson
-  week.lessons.forEach((l, i) => {
-    const color = LESSON_COLORS[i % LESSON_COLORS.length];
-    const sl = pptx.addSlide({ masterName: 'CONTENT' });
-    sl.addShape(pptx.ShapeType.rect, { x: 0, y: 0.14, w: 0.28, h: 7.36, fill: { color } });
-    sl.addText(`${t.lesson.toUpperCase()} ${i + 1}`, { ...font, x: 0.6, y: 0.35, w: 6, h: 0.4, fontSize: 12, bold: true, color, charSpacing: 2 });
-    sl.addText(pick(l.title), { ...font, x: 0.6, y: 0.75, w: 12, h: 1.0, fontSize: 26, bold: true, color: C.ink, valign: 'top' });
-    const hasImage = l.diagram && images[l.diagram];
-    const textW = hasImage ? 6.2 : 12;
-    sl.addText(t.takeaways, { ...font, x: 0.6, y: 1.9, w: textW, h: 0.4, fontSize: 14, bold: true, color });
-    sl.addText(l.takeaways.map((k) => ({ text: pick(k), options: { bullet: { code: '25CF' }, breakLine: true } })), { ...font, x: 0.6, y: 2.3, w: textW, h: 2.8, fontSize: 15, color: C.ink, paraSpaceAfter: 8, valign: 'top' });
-    if (hasImage) sl.addImage({ path: images[l.diagram], x: 7.0, y: 1.9, w: 5.9, h: 2.56 });
-    if (l.analogy) {
-      sl.addShape(pptx.ShapeType.roundRect, { x: 0.6, y: 5.2, w: 12.1, h: 1.55, rectRadius: 0.12, fill: { color: C.sand }, line: { color: C.sand } });
-      sl.addShape(pptx.ShapeType.rect, { x: 0.6, y: 5.2, w: 0.1, h: 1.55, fill: { color } });
-      sl.addText([{ text: `${t.analogy}  `, options: { bold: true, color } }, { text: pick(l.analogy), options: { color: C.ink } }], { ...font, x: 0.85, y: 5.25, w: 11.7, h: 1.45, fontSize: 13.5, valign: 'middle' });
+    const sl = pptx.addSlide({ masterName: 'IDEA' });
+    kicker(sl, `${t.lesson} ${i + 1} · ${pick(l.title)}`);
+    const img = l.diagram && images[l.diagram];
+    if (img) {
+      sl.addText(pick(l.takeaways[0]), { ...font, x: 1.05, y: 1.4, w: 4.6, h: 3.6, fontSize: 26, bold: true, color: C.ink, valign: 'top' });
+      const w = 6.6, h = Math.min(4.6, w * img.ratio);
+      sl.addImage({ path: img.path, x: 6.1, y: 1.4, w, h });
+    } else {
+      sl.addText(pick(l.takeaways[0]), { ...font, x: 1.05, y: 1.4, w: 11.4, h: 1.9, fontSize: 30, bold: true, color: C.ink, valign: 'top' });
+      sl.addText(l.takeaways.slice(1).map((k) => ({ text: pick(k), options: { bullet: { code: '25CF' }, breakLine: true } })), { ...font, x: 1.05, y: 3.4, w: 11.4, h: 2.2, fontSize: 18, color: C.soft, paraSpaceAfter: 8, valign: 'top' });
     }
-    sl.addNotes(l.body.map((p) => pick(p)).join('\n\n'));
+    if (l.analogy) {
+      sl.addShape(pptx.ShapeType.rect, { x: 1.05, y: 5.75, w: 0.06, h: 0.95, fill: { color: accent }, line: { color: accent } });
+      sl.addText([{ text: `${t.thinkOfIt}. `, options: { bold: true, color: C.ink } }, { text: pick(l.analogy), options: { color: C.soft } }], { ...font, x: 1.25, y: 5.7, w: 11.2, h: 1.05, fontSize: 13, valign: 'middle' });
+    }
+    sl.addNotes([...l.takeaways.map((k) => `• ${pick(k)}`), '', ...l.body.map((p) => pick(p))].join('\n'));
   });
 
-  // Workflow drawn with shapes
-  const wf = week.activities.find((a) => a.kind === 'order' && a.items.length <= 6 && a.lessonId === week.lessons[week.lessons.length - 1].id) ?? week.activities.find((a) => a.kind === 'order');
-  if (wf) {
-    s = pptx.addSlide({ masterName: 'CONTENT' });
-    s.addText(t.workflow, { ...font, x: 0.6, y: 0.4, w: 12, h: 0.8, fontSize: 28, bold: true, color: C.ink });
-    wf.items.forEach((it, i) => {
-      const x = 0.5 + i * 2.1;
-      const color = LESSON_COLORS[i % LESSON_COLORS.length];
-      s.addShape(pptx.ShapeType.ellipse, { x: x + 0.55, y: 2.0, w: 0.8, h: 0.8, fill: { color }, line: { color } });
-      s.addText(String(i + 1), { ...font, x: x + 0.55, y: 2.0, w: 0.8, h: 0.8, align: 'center', valign: 'middle', fontSize: 18, bold: true, color: C.paper });
-      s.addText(pick(it), { ...font, x, y: 3.0, w: 1.9, h: 1.3, align: 'center', valign: 'top', fontSize: 13, color: C.ink });
-      if (i < wf.items.length - 1) s.addShape(pptx.ShapeType.rightArrow, { x: x + 1.5, y: 2.25, w: 0.5, h: 0.3, fill: { color: C.line }, line: { color: C.line } });
+  // A process drawn as numbered steps.
+  if (workflow) {
+    s = pptx.addSlide({ masterName: 'IDEA' });
+    kicker(s, t.stepByStep);
+    s.addText(pick(workflow.title), { ...font, x: 1.05, y: 1.0, w: 11.4, h: 0.8, fontSize: 28, bold: true, color: C.ink });
+    const n = workflow.items.length;
+    const colW = 11.4 / n;
+    workflow.items.forEach((it, i) => {
+      const x = 1.05 + i * colW;
+      s.addShape(pptx.ShapeType.ellipse, { x, y: 2.3, w: 0.6, h: 0.6, fill: { color: accent }, line: { color: accent } });
+      s.addText(String(i + 1), { ...font, x, y: 2.3, w: 0.6, h: 0.6, align: 'center', valign: 'middle', fontSize: 18, bold: true, color: C.paper });
+      if (i < n - 1) s.addShape(pptx.ShapeType.line, { x: x + 0.7, y: 2.6, w: colW - 0.8, h: 0, line: { color: C.line, width: 1.5 } });
+      s.addText(pick(it), { ...font, x, y: 3.1, w: colW - 0.2, h: 2.4, fontSize: 14, color: C.ink, valign: 'top' });
     });
-    s.addText(pick(wf.explanation), { ...font, x: 0.6, y: 5.0, w: 12, h: 1.0, fontSize: 15, italic: true, color: C.soft });
+    s.addNotes(pick(workflow.explanation));
   }
 
-  // Checkpoint quiz: three choice questions, answers in the notes
-  const cps = week.questions.filter((q) => q.options && q.options.length > 2).slice(0, 3);
-  s = pptx.addSlide({ masterName: 'CONTENT' });
-  s.addText(t.checkpoint, { ...font, x: 0.6, y: 0.4, w: 12, h: 0.8, fontSize: 28, bold: true, color: C.ink });
-  cps.forEach((q, i) => {
-    const y = 1.4 + i * 1.8;
-    s.addText(`${i + 1}. ${pick(q.prompt)}`, { ...font, x: 0.6, y, w: 12, h: 0.6, fontSize: 15, bold: true, color: C.ink });
-    s.addText(q.options.map((o, j) => `${letter(j)}. ${pick(o)}`).join('     '), { ...font, x: 0.9, y: y + 0.6, w: 11.8, h: 0.9, fontSize: 12.5, color: C.soft, valign: 'top' });
+  // Check yourself: answers in the notes.
+  s = pptx.addSlide({ masterName: 'IDEA' });
+  kicker(s, t.checkYourself);
+  checks.forEach((q, i) => {
+    const y = 1.2 + i * 1.75;
+    s.addText(`${i + 1}. ${pick(q.prompt)}`, { ...font, x: 1.05, y, w: 11.4, h: 0.75, fontSize: 17, bold: true, color: C.ink, valign: 'top' });
+    s.addText(q.options.map((o, j) => `${letter(j)}) ${pick(o)}`).join('      '), { ...font, x: 1.05, y: y + 0.75, w: 11.4, h: 0.7, fontSize: 14, color: C.soft, valign: 'top' });
   });
-  s.addNotes(cps.map((q, i) => `${i + 1}. ${t.answerIs}: ${answerText(q, pick)}`).join('\n'));
+  s.addText(t.answersInNotes, { ...font, x: 1.05, y: 6.45, w: 11, h: 0.35, fontSize: 11, color: C.faint });
+  s.addNotes(checks.map((q, i) => `${i + 1}. ${letter(q.answer)} — ${pick(q.explanation)}`).join('\n'));
 
-  // Practice slide
-  s = pptx.addSlide({ masterName: 'CONTENT' });
-  s.addText(t.practiceSlide, { ...font, x: 0.6, y: 0.4, w: 12, h: 0.8, fontSize: 28, bold: true, color: C.ink });
-  s.addText(t.labsList, { ...font, x: 0.6, y: 1.4, w: 6, h: 0.4, fontSize: 15, bold: true, color: C.teal });
-  s.addText(week.labs.map((l) => ({ text: `${pick(l.title)} (${t.level} ${l.level})`, options: { bullet: true, breakLine: true } })), { ...font, x: 0.6, y: 1.8, w: 6, h: 3.5, fontSize: 14, color: C.ink, valign: 'top' });
-  const practiceImage = images[CHEATS[week.subject].diagram === 'git-areas' ? 'branch-merge' : 'er-store'];
-  if (practiceImage) s.addImage({ path: practiceImage, x: 6.9, y: 1.4, w: 5.9, h: 2.56 });
-  s.addText(t.missions, { ...font, x: 6.9, y: 4.2, w: 6, h: 0.4, fontSize: 15, bold: true, color: C.terracotta });
-  s.addText(week.subject === 'database-1' ? 'SQL Lab · Design Studio · draw.io' : 'Git Playground · git commit · git switch -c · git merge', { x: 6.9, y: 4.6, w: 6, h: 0.5, fontFace: 'Courier New', fontSize: 13, color: C.ink });
-
-  // Closing
-  s = pptx.addSlide();
-  s.background = { color: C.teal };
-  s.addText(t.closing, { ...font, x: 0.8, y: 2.2, w: 11.5, h: 1.2, fontSize: 40, bold: true, color: C.paper });
-  s.addText(t.closingText, { ...font, x: 0.8, y: 3.5, w: 10.5, h: 1.6, fontSize: 18, color: C.paper, valign: 'top' });
-  s.addText(t.independent, { ...font, x: 0.8, y: 6.6, w: 11, h: 0.4, fontSize: 10, italic: true, color: 'DDE8E6' });
+  // Practise next.
+  s = pptx.addSlide({ masterName: 'IDEA' });
+  kicker(s, t.nextSteps);
+  s.addText(t.labs, { ...font, x: 1.05, y: 1.3, w: 5.5, h: 0.5, fontSize: 18, bold: true, color: accent });
+  s.addText(week.labs.map((l) => ({ text: pick(l.title), options: { bullet: true, breakLine: true } })), { ...font, x: 1.05, y: 1.85, w: 5.5, h: 4, fontSize: 17, color: C.ink, valign: 'top', paraSpaceAfter: 6 });
+  s.addText(t.tools, { ...font, x: 7.0, y: 1.3, w: 5.5, h: 0.5, fontSize: 18, bold: true, color: accent });
+  s.addText(week.tools.map((k) => ({ text: t.toolNames[k], options: { bullet: true, breakLine: true } })), { ...font, x: 7.0, y: 1.85, w: 5.5, h: 4, fontSize: 17, color: C.ink, valign: 'top', paraSpaceAfter: 6 });
 
   await pptx.writeFile({ fileName: outFile });
 }
@@ -659,23 +540,28 @@ async function slidesPptx(week, loc, images, outFile) {
 rmSync(CACHE, { recursive: true, force: true });
 mkdirSync(CACHE, { recursive: true });
 await build({ entryPoints: [join(ROOT, 'src/content/index.ts')], bundle: true, platform: 'node', format: 'esm', outfile: join(CACHE, 'content.mjs'), logLevel: 'error' });
+await build({ entryPoints: [join(ROOT, 'scripts/diagram-entry.tsx')], bundle: true, packages: 'external', platform: 'node', format: 'esm', jsx: 'automatic', outfile: join(CACHE, 'diagrams.mjs'), logLevel: 'error' });
 const { weeks } = await import(pathToFileURL(join(CACHE, 'content.mjs')).href);
+const { renderDiagram } = await import(pathToFileURL(join(CACHE, 'diagrams.mjs')).href);
 
+const only = process.argv.slice(2).filter((a) => !a.startsWith('-'));
 for (const week of weeks) {
+  if (only.length && !only.includes(week.id)) continue;
+  const accent = ACCENT[week.subject] ?? C.teal;
+  const kinds = [...new Set([...week.lessons.map((l) => l.diagram).filter(Boolean), CHEATS[week.subject]?.diagram].filter(Boolean))];
   for (const loc of LOCALES) {
-    // One folder per week, so documents of different subjects never collide.
+    // One folder per week; old files are removed so only the current set is published.
     const dir = join(OUT, loc, week.id);
+    rmSync(dir, { recursive: true, force: true });
     mkdirSync(dir, { recursive: true });
-    const images = {};
-    for (const kind of ['git-areas', 'branch-merge', 'lifecycle', 'requirements', 'context', 'files-vs-dbms', 'er-store', 'three-schema']) {
-      images[kind] = svgToPng(diagramSvg(kind, loc), join(CACHE, `${week.id}-${loc}-${kind}.png`));
-    }
-    htmlToPdf(studyGuideHtml(week, loc), join(dir, 'study-guide.pdf'));
-    htmlToPdf(cheatSheetHtml(week, loc), join(dir, 'cheat-sheet.pdf'));
-    htmlToPdf(labWorkbookHtml(week, loc), join(dir, 'lab-workbook.pdf'));
-    writeFileSync(join(dir, 'study-guide.docx'), await Packer.toBuffer(studyGuideDocx(week, loc, images)));
+    const svgs = Object.fromEntries(kinds.map((k) => [k, renderDiagram(k, loc)]));
+    const images = Object.fromEntries(kinds.map((k) => [k, svgToPng(svgs[k], accent, join(CACHE, `${week.id}-${loc}-${k}.png`))]));
+    htmlToPdf(summaryHtml(week, loc, svgs), join(dir, 'summary.pdf'));
+    htmlToPdf(cheatHtml(week, loc, svgs), join(dir, 'cheat-sheet.pdf'));
+    htmlToPdf(worksheetHtml(week, loc), join(dir, 'worksheet.pdf'));
+    writeFileSync(join(dir, 'worksheet.docx'), await Packer.toBuffer(worksheetDocx(week, loc)));
     await slidesPptx(week, loc, images, join(dir, 'slides.pptx'));
-    htmlToPdf(slidesHtml(week, loc), join(dir, 'slides.pdf'));
-    console.log(`${week.id} [${loc}] documents written to public/downloads/${loc}/${week.id}/`);
+    htmlToPdf(slidesHtml(week, loc, svgs), join(dir, 'slides.pdf'));
+    console.log(`${week.id} [${loc}] → public/downloads/${loc}/${week.id}/`);
   }
 }

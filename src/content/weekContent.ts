@@ -1,4 +1,16 @@
-import type { Activity, Story, Video, Flashcard, Lab, Lesson, Localized, Question, StudyPlanDay, ExternalResource } from './types';
+import type { Activity, Story, Video, SubjectTool, Flashcard, Lab, Lesson, Localized, Question, StudyPlanDay, ExternalResource } from './types';
+
+import type { GitMission } from '../lib/gitMissions';
+import type { SqlTask } from './db1-week1/sqlTasks';
+import type { StudioScenario } from './db1-week1/studio';
+import type { InequalityProblem } from '../lib/inequality';
+
+export interface ToolData {
+  gitMissions?: GitMission[];
+  sqlTasks?: SqlTask[];
+  studioScenarios?: StudioScenario[];
+  inequalityProblems?: InequalityProblem[];
+}
 
 /** Everything the UI needs for one week. Adding a week means adding one of these. */
 export interface WeekContent {
@@ -30,6 +42,10 @@ export interface WeekContent {
   /** Original downloadable documents. Empty until they are authored and checked. */
   activities: Activity[];
   stories: Story[];
+  /** Interactive tools for this week's topics, in the order they appear in the week. */
+  tools: SubjectTool[];
+  /** Week-specific exercises for those tools. */
+  toolData?: ToolData;
   /** One-minute concept videos; shown only once rendered (see generated/videoManifest.json). */
   videos: Video[];
   /** `preview` names a PDF twin used for in-page preview of Word and PowerPoint files. */

@@ -22,10 +22,10 @@ export interface WeekMeta {
 }
 
 /** Visual theme of a subject; decides the decoration of its pages and weeks. */
-export type SubjectTheme = 'version-control' | 'databases' | 'default';
+export type SubjectTheme = 'version-control' | 'databases' | 'math' | 'default';
 
 /** Interactive tools a subject can offer in its own navigation. */
-export type SubjectTool = 'git-playground' | 'design-studio' | 'sql-lab';
+export type SubjectTool = 'git-playground' | 'design-studio' | 'sql-lab' | 'inequality-lab';
 
 /** A subject (course) taught inside a module, with its own weeks and tools. */
 export interface SubjectMeta {
@@ -65,7 +65,8 @@ export interface Lesson {
   /** Short inline check that appears after the lesson body. */
   check?: KnowledgeCheck;
   /** Optional diagram key rendered by the lesson view. */
-  diagram?: 'lifecycle' | 'git-areas' | 'branch-merge' | 'requirements' | 'context' | 'files-vs-dbms' | 'er-store' | 'three-schema';
+  diagram?: 'lifecycle' | 'git-areas' | 'branch-merge' | 'requirements' | 'context' | 'files-vs-dbms' | 'er-store' | 'three-schema'
+    | 'real-sets' | 'number-line' | 'sign-chart' | 'abs-distance' | 'er-notation';
   /** Optional code example, always shown in English. */
   code?: { language: string; caption: Localized; source: string };
   /** A plain-language analogy that makes the core idea concrete. */
@@ -162,8 +163,8 @@ export interface LabStep {
 
 export interface Lab {
   id: string;
-  /** Where the steps run: a shell sandbox (default), the SQL Lab, or the Design Studio / draw.io. */
-  kind?: 'shell' | 'sql' | 'design';
+  /** Where the steps run: a shell sandbox (default), the SQL Lab, the Design Studio / draw.io, or paper (math). */
+  kind?: 'shell' | 'sql' | 'design' | 'math';
   level: 1 | 2 | 3;
   title: Localized;
   goal: Localized;

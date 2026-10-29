@@ -1,10 +1,9 @@
 import { useMemo, useState } from 'react';
 import { useI18n } from '../i18n';
-import { studioScenarios, type Cardinality } from '../content/db1-week1/studio';
+import type { Cardinality, StudioScenario } from '../content/db1-week1/studio';
 import { checkDesign, emptyDesign, foreignKeys, solutionDesign, toDrawio, type Design, type Issue } from '../lib/erDesign';
 import { updateState, useProgress } from '../lib/store';
 
-const SCENARIOS = studioScenarios;
 const CARDS: Cardinality[] = ['1:N', '1:1', 'N:M'];
 const BOX_W = 200;
 const ROW_H = 22;
@@ -14,7 +13,7 @@ const ROW_H = 22;
  * relationships with their cardinality, check the design against a model
  * solution, and export it to draw.io.
  */
-export default function DesignStudio() {
+export default function DesignStudio({ scenarios: SCENARIOS }: { scenarios: StudioScenario[] }) {
   const { t, pick } = useI18n();
   const progress = useProgress();
   const [scenarioId, setScenarioId] = useState(SCENARIOS[0].id);

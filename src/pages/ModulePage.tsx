@@ -45,7 +45,7 @@ export function ModulePage() {
               <h3>{pick(s.title).text}</h3>
               <p className="faint">{t('module.weeksReady', { done: s.weeks.length, total: s.plannedWeeks })}</p>
               <div className="term-progress"><span style={{ width: `${p.pct}%` }} /></div>
-              <span className="module-next">{t('subject.open')} →</span>
+              <span className="module-next">{t('subject.open')}</span>
             </Link>
           );
         })}

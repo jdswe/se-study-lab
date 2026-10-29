@@ -100,4 +100,32 @@ export const studioScenarios: StudioScenario[] = addPortuguese([
       { from: 'course', to: 'enrolment', card: '1:N' },
     ],
   },
+  {
+    id: 'clinic',
+    title: { en: 'Clinic', es: 'Clínica', pt: 'Clínica' },
+    brief: {
+      en: 'A clinic stores patients (id, name, birth date), doctors (id, name, specialty), and wards (id, name). Rooms are numbered inside each ward, so room 12 exists in several wards; each room records its number of beds. Patients see many doctors and doctors see many patients; every appointment stores its date and time. A patient may give several phone numbers.',
+      es: 'Una clínica guarda pacientes (id, nombre, fecha de nacimiento), médicos (id, nombre, especialidad) y pabellones (id, nombre). Las habitaciones se numeran dentro de cada pabellón, así que la habitación 12 existe en varios pabellones; cada habitación registra su número de camas. Los pacientes ven a muchos médicos y los médicos a muchos pacientes; cada cita guarda su fecha y hora. Un paciente puede dar varios teléfonos.',
+      pt: 'Uma clínica guarda pacientes (id, nome, data de nascimento), médicos (id, nome, especialidade) e alas (id, nome). Os quartos são numerados dentro de cada ala, então o quarto 12 existe em várias alas; cada quarto registra seu número de leitos. Pacientes consultam muitos médicos e médicos atendem muitos pacientes; cada consulta guarda sua data e hora. Um paciente pode informar vários telefones.',
+    },
+    entities: [
+      { id: 'patient', name: { en: 'Patient', es: 'Paciente', pt: 'Paciente' }, attributes: ['patient_id', 'name', 'birth_date'], pk: 'patient_id' },
+      { id: 'doctor', name: { en: 'Doctor', es: 'Médico', pt: 'Médico' }, attributes: ['doctor_id', 'name', 'specialty'], pk: 'doctor_id' },
+      { id: 'appointment', name: { en: 'Appointment', es: 'Cita', pt: 'Consulta' }, attributes: ['patient_id', 'doctor_id', 'starts_at'],
+        keyOptions: ['patient_id', 'doctor_id', 'starts_at', 'patient_id + doctor_id + starts_at'], pk: 'patient_id + doctor_id + starts_at' },
+      { id: 'ward', name: { en: 'Ward', es: 'Pabellón', pt: 'Ala' }, attributes: ['ward_id', 'name'], pk: 'ward_id' },
+      { id: 'room', name: { en: 'Room (weak)', es: 'Habitación (débil)', pt: 'Quarto (fraca)' }, attributes: ['ward_id', 'room_no', 'beds'],
+        keyOptions: ['ward_id', 'room_no', 'beds', 'ward_id + room_no'], pk: 'ward_id + room_no' },
+      { id: 'patient_phone', name: { en: 'Patient phone', es: 'Teléfono del paciente', pt: 'Telefone do paciente' }, attributes: ['patient_id', 'phone'],
+        keyOptions: ['patient_id', 'phone', 'patient_id + phone'], pk: 'patient_id + phone' },
+      { id: 'age', name: { en: 'Patient age', es: 'Edad del paciente', pt: 'Idade do paciente' }, attributes: ['patient_id', 'age'], pk: 'patient_id',
+        distractor: { en: 'Age is derived from the birth date. Storing it means it goes stale every birthday.', es: 'La edad se deriva de la fecha de nacimiento. Guardarla hace que quede desactualizada en cada cumpleaños.', pt: 'A idade deriva da data de nascimento. Guardá-la faz com que fique desatualizada a cada aniversário.' } },
+    ],
+    solution: [
+      { from: 'patient', to: 'appointment', card: '1:N' },
+      { from: 'doctor', to: 'appointment', card: '1:N' },
+      { from: 'ward', to: 'room', card: '1:N' },
+      { from: 'patient', to: 'patient_phone', card: '1:N' },
+    ],
+  },
 ]);

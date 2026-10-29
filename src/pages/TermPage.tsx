@@ -39,7 +39,7 @@ export function TermPage() {
               <h3>{ready ? m.subjects.map((s) => pick(s.title).text).join(' · ') : t('module.placeholder')}</h3>
               <p className="faint">{ready ? t('module.subjectsCount', { n: m.subjects.length }) : t('module.addMaterials')}</p>
               {ready && <div className="term-progress"><span style={{ width: `${p.pct}%` }} /></div>}
-              {ready && <span className="module-next">{t('subject.open')} →</span>}
+              {ready && <span className="module-next">{t('subject.open')}</span>}
             </>
           );
           return ready ? (

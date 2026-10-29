@@ -1,0 +1,152 @@
+import type { Localized, Question } from '../types';
+
+const L = (en: string, es: string, pt: string): Localized => ({ en, es, pt });
+const TF = [L('True', 'Verdadero', 'Verdadeiro'), L('False', 'Falso', 'Falso')];
+
+/** Calculus 1, Week 1 assessment: equations, intervals, and inequalities. */
+export const calcWeek1Questions: Question[] = [
+  {
+    id: 'calc1-q-mc-irrational', type: 'multiple-choice', lessonId: 'calc1-l1-real-numbers',
+    prompt: L('Which set contains √7?', '¿Qué conjunto contiene a √7?', 'Qual conjunto contém √7?'),
+    options: [L('The integers ℤ', 'Los enteros ℤ', 'Os inteiros ℤ'), L('The rationals ℚ', 'Los racionales ℚ', 'Os racionais ℚ'), L('The reals ℝ', 'Los reales ℝ', 'Os reais ℝ')],
+    answer: 2,
+    explanation: L('√7 is irrational: it is a real number but not a fraction.', '√7 es irracional: es un número real, pero no una fracción.', '√7 é irracional: é um número real, mas não uma fração.'),
+  },
+  {
+    id: 'calc1-q-tf-order', type: 'true-false', lessonId: 'calc1-l1-real-numbers',
+    prompt: L('True or false: −0.5 < −0.25.', 'Verdadero o falso: −0,5 < −0,25.', 'Verdadeiro ou falso: −0,5 < −0,25.'),
+    options: TF, answer: 0,
+    explanation: L('True. −0.5 is further left on the number line.', 'Verdadero. −0,5 está más a la izquierda en la recta.', 'Verdadeiro. −0,5 está mais à esquerda na reta.'),
+  },
+  {
+    id: 'calc1-q-fill-distance', type: 'fill-blank', lessonId: 'calc1-l1-real-numbers',
+    prompt: L('The distance between −3 and 4 is ___.', 'La distancia entre −3 y 4 es ___.', 'A distância entre −3 e 4 é ___.'),
+    accepted: ['7'],
+    explanation: L('|4 − (−3)| = |7| = 7.', '|4 − (−3)| = |7| = 7.', '|4 − (−3)| = |7| = 7.'),
+  },
+  {
+    id: 'calc1-q-mc-degree', type: 'multiple-choice', lessonId: 'calc1-l2-equations',
+    prompt: L('What is the degree of x(x − 1) = x² + 4?', '¿Cuál es el grado de x(x − 1) = x² + 4?', 'Qual é o grau de x(x − 1) = x² + 4?'),
+    options: [L('2', '2', '2'), L('1', '1', '1'), L('0', '0', '0')],
+    answer: 1,
+    explanation: L('x² − x = x² + 4 simplifies to −x − 4 = 0: degree 1.', 'x² − x = x² + 4 se simplifica a −x − 4 = 0: grado 1.', 'x² − x = x² + 4 se simplifica para −x − 4 = 0: grau 1.'),
+    whyWrong: [L('The x² terms cancel, so it is not quadratic.', 'Los x² se cancelan, así que no es cuadrática.', 'Os x² se cancelam, então não é quadrática.'), L('Correct.', 'Correcto.', 'Correto.'), L('There is still an x term left.', 'Todavía queda un término con x.', 'Ainda sobra um termo com x.')],
+  },
+  {
+    id: 'calc1-q-fill-linear', type: 'fill-blank', lessonId: 'calc1-l3-linear-quadratic',
+    prompt: L('Solve 7x − 3 = 2x + 12. x = ___', 'Resuelve 7x − 3 = 2x + 12. x = ___', 'Resolva 7x − 3 = 2x + 12. x = ___'),
+    accepted: ['3'],
+    explanation: L('5x = 15, so x = 3.', '5x = 15, así que x = 3.', '5x = 15, então x = 3.'),
+  },
+  {
+    id: 'calc1-q-mc-discriminant', type: 'multiple-choice', lessonId: 'calc1-l3-linear-quadratic',
+    prompt: L('How many real roots has 4x² − 4x + 1 = 0?', '¿Cuántas raíces reales tiene 4x² − 4x + 1 = 0?', 'Quantas raízes reais tem 4x² − 4x + 1 = 0?'),
+    options: [L('Two', 'Dos', 'Duas'), L('One (repeated)', 'Una (doble)', 'Uma (dupla)'), L('None', 'Ninguna', 'Nenhuma')],
+    answer: 1,
+    explanation: L('Δ = 16 − 16 = 0. In fact 4x² − 4x + 1 = (2x − 1)², so x = 1/2.', 'Δ = 16 − 16 = 0. De hecho 4x² − 4x + 1 = (2x − 1)², así que x = 1/2.', 'Δ = 16 − 16 = 0. De fato 4x² − 4x + 1 = (2x − 1)², então x = 1/2.'),
+  },
+  {
+    id: 'calc1-q-scenario-garden', type: 'scenario', lessonId: 'calc1-l3-linear-quadratic',
+    prompt: L('A rectangle is 2 m longer than it is wide and has area 63 m². Solving w(w + 2) = 63 gives w = 7 or w = −9. What is the width?', 'Un rectángulo mide 2 m más de largo que de ancho y tiene área 63 m². Resolver w(w + 2) = 63 da w = 7 o w = −9. ¿Cuál es el ancho?', 'Um retângulo tem 2 m a mais de comprimento que de largura e área 63 m². Resolver w(w + 2) = 63 dá w = 7 ou w = −9. Qual é a largura?'),
+    options: [L('7 m', '7 m', '7 m'), L('−9 m', '−9 m', '−9 m'), L('Both', 'Ambas', 'As duas')],
+    answer: 0,
+    explanation: L('A width cannot be negative, so discard −9.', 'Un ancho no puede ser negativo, así que se descarta −9.', 'Uma largura não pode ser negativa, então descarte −9.'),
+  },
+  {
+    id: 'calc1-q-troubleshoot-sqrt', type: 'troubleshooting', lessonId: 'calc1-l3-linear-quadratic',
+    prompt: L('A classmate solved x² = 16 and wrote "x = 4". What is missing?', 'Un compañero resolvió x² = 16 y escribió "x = 4". ¿Qué falta?', 'Um colega resolveu x² = 16 e escreveu "x = 4". O que falta?'),
+    options: [L('The root x = −4', 'La raíz x = −4', 'A raiz x = −4'), L('Nothing', 'Nada', 'Nada'), L('The root x = 8', 'La raíz x = 8', 'A raiz x = 8')],
+    answer: 0,
+    explanation: L('(−4)² = 16 as well: x = ±4.', '(−4)² = 16 también: x = ±4.', '(−4)² = 16 também: x = ±4.'),
+  },
+  {
+    id: 'calc1-q-mc-rational-root', type: 'multiple-choice', lessonId: 'calc1-l4-higher-degree',
+    prompt: L('Which is a root of x³ − 7x + 6 = 0?', '¿Cuál es raíz de x³ − 7x + 6 = 0?', 'Qual é raiz de x³ − 7x + 6 = 0?'),
+    options: [L('x = 3', 'x = 3', 'x = 3'), L('x = 1', 'x = 1', 'x = 1'), L('x = −1', 'x = −1', 'x = −1')],
+    answer: 1,
+    explanation: L('1 − 7 + 6 = 0. (The others: 27 − 21 + 6 = 12 and −1 + 7 + 6 = 12.)', '1 − 7 + 6 = 0. (Los otros: 27 − 21 + 6 = 12 y −1 + 7 + 6 = 12.)', '1 − 7 + 6 = 0. (Os outros: 27 − 21 + 6 = 12 e −1 + 7 + 6 = 12.)'),
+  },
+  {
+    id: 'calc1-q-tf-extraneous', type: 'true-false', lessonId: 'calc1-l4-higher-degree',
+    prompt: L('True or false: x = 1 is a solution of (x² − 1)/(x − 1) = 2.', 'Verdadero o falso: x = 1 es solución de (x² − 1)/(x − 1) = 2.', 'Verdadeiro ou falso: x = 1 é solução de (x² − 1)/(x − 1) = 2.'),
+    options: TF, answer: 1,
+    explanation: L('False. x = 1 makes the denominator zero, so the left side is undefined there.', 'Falso. x = 1 anula el denominador, así que el lado izquierdo no está definido ahí.', 'Falso. x = 1 zera o denominador, então o lado esquerdo não está definido ali.'),
+  },
+  {
+    id: 'calc1-q-matching-intervals', type: 'matching', lessonId: 'calc1-l5-intervals',
+    prompt: L('Match each inequality with its interval.', 'Une cada desigualdad con su intervalo.', 'Ligue cada desigualdade ao seu intervalo.'),
+    left: [L('x < 2', 'x < 2', 'x < 2'), L('−1 ≤ x < 2', '−1 ≤ x < 2', '−1 ≤ x < 2'), L('x ≥ −1', 'x ≥ −1', 'x ≥ −1'), L('−1 < x ≤ 2', '−1 < x ≤ 2', '−1 < x ≤ 2')],
+    right: [L('[−1, ∞)', '[−1, ∞)', '[−1, ∞)'), L('(−1, 2]', '(−1, 2]', '(−1, 2]'), L('(−∞, 2)', '(−∞, 2)', '(−∞, 2)'), L('[−1, 2)', '[−1, 2)', '[−1, 2)')],
+    answer: [2, 3, 0, 1],
+    explanation: L('≤ and ≥ take brackets; < and > and ∞ take parentheses.', '≤ y ≥ llevan corchetes; <, > e ∞ llevan paréntesis.', '≤ e ≥ levam colchetes; <, > e ∞ levam parênteses.'),
+  },
+  {
+    id: 'calc1-q-mc-intersection', type: 'multiple-choice', lessonId: 'calc1-l5-intervals',
+    prompt: L('What is (−∞, 3] ∩ (0, 5)?', '¿Qué es (−∞, 3] ∩ (0, 5)?', 'O que é (−∞, 3] ∩ (0, 5)?'),
+    options: [L('(0, 3]', '(0, 3]', '(0, 3]'), L('(−∞, 5)', '(−∞, 5)', '(−∞, 5)'), L('[0, 3)', '[0, 3)', '[0, 3)')],
+    answer: 0,
+    explanation: L('The overlap starts just after 0 and ends at 3, included.', 'La parte común empieza justo después de 0 y termina en 3, incluido.', 'A parte comum começa logo depois de 0 e termina em 3, incluído.'),
+    whyWrong: [L('Correct.', 'Correcto.', 'Correto.'), L('That is the union, not the intersection.', 'Esa es la unión, no la intersección.', 'Essa é a união, não a interseção.'), L('0 is excluded in (0, 5) and 3 is included in (−∞, 3].', '0 está excluido en (0, 5) y 3 está incluido en (−∞, 3].', '0 está excluído em (0, 5) e 3 está incluído em (−∞, 3].')],
+  },
+  {
+    id: 'calc1-q-mc-flip', type: 'multiple-choice', lessonId: 'calc1-l6-linear-inequalities',
+    prompt: L('Solve 6 − 2x ≥ 10.', 'Resuelve 6 − 2x ≥ 10.', 'Resolva 6 − 2x ≥ 10.'),
+    options: [L('x ≥ −2', 'x ≥ −2', 'x ≥ −2'), L('x ≤ −2', 'x ≤ −2', 'x ≤ −2'), L('x ≤ 2', 'x ≤ 2', 'x ≤ 2')],
+    answer: 1,
+    explanation: L('−2x ≥ 4; dividing by −2 flips the sign: x ≤ −2.', '−2x ≥ 4; dividir entre −2 invierte el signo: x ≤ −2.', '−2x ≥ 4; dividir por −2 inverte o sinal: x ≤ −2.'),
+    whyWrong: [L('The sign must flip when dividing by −2.', 'El signo debe invertirse al dividir entre −2.', 'O sinal deve se inverter ao dividir por −2.'), L('Correct.', 'Correcto.', 'Correto.'), L('Check the sign of 4/(−2).', 'Revisa el signo de 4/(−2).', 'Confira o sinal de 4/(−2).')],
+  },
+  {
+    id: 'calc1-q-fill-double', type: 'fill-blank', lessonId: 'calc1-l6-linear-inequalities',
+    prompt: L('−3 < 2x + 1 ≤ 9 gives −2 < x ≤ ___.', '−3 < 2x + 1 ≤ 9 da −2 < x ≤ ___.', '−3 < 2x + 1 ≤ 9 dá −2 < x ≤ ___.'),
+    accepted: ['4'],
+    explanation: L('Subtract 1: −4 < 2x ≤ 8. Divide by 2: −2 < x ≤ 4.', 'Resta 1: −4 < 2x ≤ 8. Divide entre 2: −2 < x ≤ 4.', 'Subtraia 1: −4 < 2x ≤ 8. Divida por 2: −2 < x ≤ 4.'),
+  },
+  {
+    id: 'calc1-q-scenario-plans', type: 'scenario', lessonId: 'calc1-l6-linear-inequalities',
+    prompt: L('Printer A costs 120 plus 0.02 per page. Printer B costs 60 plus 0.05 per page. From how many pages is A cheaper?', 'La impresora A cuesta 120 más 0,02 por página. La B cuesta 60 más 0,05 por página. ¿Desde cuántas páginas es más barata la A?', 'A impressora A custa 120 mais 0,02 por página. A B custa 60 mais 0,05 por página. A partir de quantas páginas a A é mais barata?'),
+    options: [L('More than 2,000 pages', 'Más de 2.000 páginas', 'Mais de 2.000 páginas'), L('More than 600 pages', 'Más de 600 páginas', 'Mais de 600 páginas'), L('Fewer than 2,000 pages', 'Menos de 2.000 páginas', 'Menos de 2.000 páginas')],
+    answer: 0,
+    explanation: L('120 + 0.02p < 60 + 0.05p gives 60 < 0.03p, so p > 2000.', '120 + 0,02p < 60 + 0,05p da 60 < 0,03p, así que p > 2000.', '120 + 0,02p < 60 + 0,05p dá 60 < 0,03p, então p > 2000.'),
+  },
+  {
+    id: 'calc1-q-mc-signchart', type: 'multiple-choice', lessonId: 'calc1-l7-sign-chart',
+    prompt: L('Solve (x − 1)(x + 5) < 0.', 'Resuelve (x − 1)(x + 5) < 0.', 'Resolva (x − 1)(x + 5) < 0.'),
+    options: [L('(−5, 1)', '(−5, 1)', '(−5, 1)'), L('(−∞, −5) ∪ (1, ∞)', '(−∞, −5) ∪ (1, ∞)', '(−∞, −5) ∪ (1, ∞)'), L('[−5, 1]', '[−5, 1]', '[−5, 1]')],
+    answer: 0,
+    explanation: L('The product is negative between its roots, which are excluded because < is strict.', 'El producto es negativo entre sus raíces, que se excluyen porque < es estricto.', 'O produto é negativo entre suas raízes, que ficam de fora porque < é estrito.'),
+  },
+  {
+    id: 'calc1-q-troubleshoot-denominator', type: 'troubleshooting', lessonId: 'calc1-l7-sign-chart',
+    prompt: L('For x/(x − 2) ≥ 0 a student answered (−∞, 0] ∪ [2, ∞). What is wrong?', 'Para x/(x − 2) ≥ 0 un estudiante respondió (−∞, 0] ∪ [2, ∞). ¿Qué está mal?', 'Para x/(x − 2) ≥ 0 um estudante respondeu (−∞, 0] ∪ [2, ∞). O que está errado?'),
+    options: [L('2 must be excluded: (−∞, 0] ∪ (2, ∞)', '2 debe excluirse: (−∞, 0] ∪ (2, ∞)', '2 deve ficar de fora: (−∞, 0] ∪ (2, ∞)'), L('0 must be excluded', '0 debe excluirse', '0 deve ficar de fora'), L('Nothing is wrong', 'No hay nada mal', 'Não há nada errado')],
+    answer: 0,
+    explanation: L('At x = 2 the denominator is zero: the expression does not exist, so it cannot be ≥ 0.', 'En x = 2 el denominador es cero: la expresión no existe, así que no puede ser ≥ 0.', 'Em x = 2 o denominador é zero: a expressão não existe, então não pode ser ≥ 0.'),
+  },
+  {
+    id: 'calc1-q-short-critical', type: 'short-answer', lessonId: 'calc1-l7-sign-chart',
+    prompt: L('In a sign chart, what do you call the values where a factor is zero or undefined?', 'En una tabla de signos, ¿cómo se llaman los valores donde un factor vale cero o no está definido?', 'Em um quadro de sinais, como se chamam os valores onde um fator vale zero ou não está definido?'),
+    accepted: ['critic'],
+    explanation: L('Critical points. They split the number line into intervals of constant sign.', 'Puntos críticos. Dividen la recta en intervalos de signo constante.', 'Pontos críticos. Eles dividem a reta em intervalos de sinal constante.'),
+  },
+  {
+    id: 'calc1-q-mc-abs', type: 'multiple-choice', lessonId: 'calc1-l8-absolute-systems',
+    prompt: L('Solve |x + 3| < 2.', 'Resuelve |x + 3| < 2.', 'Resolva |x + 3| < 2.'),
+    options: [L('(−5, −1)', '(−5, −1)', '(−5, −1)'), L('(1, 5)', '(1, 5)', '(1, 5)'), L('(−∞, −5) ∪ (−1, ∞)', '(−∞, −5) ∪ (−1, ∞)', '(−∞, −5) ∪ (−1, ∞)')],
+    answer: 0,
+    explanation: L('Within 2 of −3: −5 < x < −1.', 'A menos de 2 de −3: −5 < x < −1.', 'A menos de 2 de −3: −5 < x < −1.'),
+    whyWrong: [L('Correct.', 'Correcto.', 'Correto.'), L('The centre is −3, not 3: |x + 3| = |x − (−3)|.', 'El centro es −3, no 3: |x + 3| = |x − (−3)|.', 'O centro é −3, não 3: |x + 3| = |x − (−3)|.'), L('That is the answer for > 2.', 'Esa es la respuesta para > 2.', 'Essa é a resposta para > 2.')],
+  },
+  {
+    id: 'calc1-q-tf-system', type: 'true-false', lessonId: 'calc1-l8-absolute-systems',
+    prompt: L('True or false: the system x > 4 and x < 1 has no solution.', 'Verdadero o falso: el sistema x > 4 y x < 1 no tiene solución.', 'Verdadeiro ou falso: o sistema x > 4 e x < 1 não tem solução.'),
+    options: TF, answer: 0,
+    explanation: L('True. No number is both greater than 4 and less than 1: the solution is ∅.', 'Verdadero. Ningún número es a la vez mayor que 4 y menor que 1: la solución es ∅.', 'Verdadeiro. Nenhum número é ao mesmo tempo maior que 4 e menor que 1: a solução é ∅.'),
+  },
+  {
+    id: 'calc1-q-fill-tolerance', type: 'fill-blank', lessonId: 'calc1-l8-absolute-systems',
+    prompt: L('|T − 37| ≤ 0.5 means 36.5 ≤ T ≤ ___.', '|T − 37| ≤ 0,5 significa 36,5 ≤ T ≤ ___.', '|T − 37| ≤ 0,5 significa 36,5 ≤ T ≤ ___.'),
+    accepted: ['37.5', '37,5'],
+    explanation: L('37 − 0.5 ≤ T ≤ 37 + 0.5.', '37 − 0,5 ≤ T ≤ 37 + 0,5.', '37 − 0,5 ≤ T ≤ 37 + 0,5.'),
+  },
+];

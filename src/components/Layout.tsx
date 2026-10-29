@@ -3,7 +3,6 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useI18n } from '../i18n';
 import { LocalTime } from './LocalTime';
 import { Backdrop, backdropForPath } from './Backdrop';
-import { useReveal } from '../lib/useReveal';
 import type { Locale } from '../content/types';
 import { updateState, useProgress } from '../lib/store';
 
@@ -22,8 +21,6 @@ export function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const { theme } = useProgress();
   const backdrop = backdropForPath(location.pathname);
-
-  useReveal(location.pathname);
 
   // The switch flips the theme you can see right now. "Match system" lives in Settings.
   const prefersDark = useSystemDark();

@@ -4,12 +4,14 @@ import { initRepo, run, type RepoState } from '../lib/gitSim';
 import { GitGraph } from './GitGraph';
 
 const SCRIPT = [
-  'git commit -m "add README"',
+  'echo "Setup steps" >> README.md',
+  'git commit -am "add setup steps"',
   'git switch -c feature',
-  'git commit -m "add login form"',
-  'git commit -m "validate input"',
+  'echo "login()" >> app.js',
+  'git commit -am "add login"',
   'git switch main',
-  'git commit -m "fix typo"',
+  'echo "Fix typo" >> README.md',
+  'git commit -am "fix typo"',
   'git merge feature',
 ];
 

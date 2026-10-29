@@ -854,3 +854,286 @@ main { flex: 1 0 auto; width: 100%; }
 .pdf-status { margin: 0; padding: 8px 14px; font-size: 0.85rem; }
 .pdf-pages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 4px 12px 24px; }
 .pdf-page { background: #fff; box-shadow: 0 6px 18px rgb(0 0 0 / 0.18); border-radius: 4px; max-width: 100%; height: auto !important; }
+
+/* =====================================================================
+   Design pass: quieter surfaces, one strong element per page.
+   Overrides earlier decorative defaults (gradient text, hover lifts,
+   all-caps labels, shadows on every card).
+   ===================================================================== */
+.eyebrow { text-transform: none; letter-spacing: 0; font-size: 0.9rem; font-weight: 600; color: var(--ink-soft); }
+.hero h1, .stat strong, .lesson-band h2, .brand span { background: none; -webkit-background-clip: initial; background-clip: initial; color: var(--ink); }
+.brand span { color: var(--ink); }
+.btn-primary { background: var(--accent); color: var(--accent-ink); box-shadow: none; }
+.btn-primary:hover { filter: brightness(1.08); }
+.card, .section-card, .res-card, .term-card, .module-card, .week-card, .story, .video-card, .activity, .lesson { box-shadow: none; }
+.card:hover, .res-card:hover, .term-card:hover, .module-card.is-ready:hover, .week-card.is-ready:hover, .map-node:hover, .token:hover { transform: none; box-shadow: none; }
+.term-card:hover, .module-card.is-ready:hover, .week-card.is-ready:hover, .res-card:hover { border-color: var(--subject, var(--accent)); }
+.hero::after { display: none; }
+.hero { background: var(--panel); }
+.section-card::before { display: none; }
+.story-badge { background: none; color: var(--ink-soft); padding: 0; text-transform: none; letter-spacing: 0; font-size: 0.85rem; }
+.term-year { text-transform: none; letter-spacing: 0; font-size: 0.85rem; font-weight: 600; }
+.week-kicker, .week-nav-title { text-transform: none; letter-spacing: 0; }
+
+/* ---------- Week page ---------- */
+.week-page { --subject: var(--accent); }
+.week-head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 28px; align-items: end; padding: 8px 0 26px; border-bottom: 1px solid var(--line); margin-bottom: 26px; }
+.week-numeral { font-family: var(--font-display); font-weight: 800; font-size: clamp(5rem, 13vw, 9rem); line-height: 0.78; color: var(--subject); letter-spacing: -0.06em; font-variant-numeric: lining-nums; }
+.week-kicker { margin: 0 0 6px; color: var(--ink-soft); font-weight: 600; font-size: 0.95rem; }
+.week-head h1 { margin: 0 0 14px; font-size: clamp(1.7rem, 3.4vw, 2.5rem); max-width: 24ch; }
+.lesson-strip { list-style: none; margin: 0; padding: 0; display: flex; gap: 4px; max-width: 520px; }
+.lesson-strip li { flex: 1; height: 8px; border-radius: 2px; background: var(--panel-2); border: 1px solid var(--line); }
+.lesson-strip li.is-done { background: var(--subject); border-color: var(--subject); }
+.lesson-strip li a { display: block; height: 100%; }
+.lesson-strip.small { max-width: none; margin: 8px 0 4px; }
+.lesson-strip.small li { height: 6px; }
+
+.week-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 36px; align-items: start; }
+.week-nav { position: sticky; top: 84px; display: grid; gap: 18px; }
+.week-nav-title { margin: 0 0 6px; font-size: 0.8rem; font-weight: 700; color: var(--ink-faint); }
+.week-nav ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; border-left: 2px solid var(--line); }
+.week-nav a { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 7px 12px; margin-left: -2px; border-left: 2px solid transparent; color: var(--ink-soft); text-decoration: none; font-weight: 500; font-size: 0.95rem; }
+.week-nav a:hover { color: var(--ink); }
+.week-nav a[aria-current="page"] { color: var(--ink); font-weight: 700; border-left-color: var(--subject); }
+.week-nav small { font-size: 0.78rem; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.week-content { min-width: 0; }
+.week-section-title { margin: 0 0 18px; font-size: 1.5rem; }
+
+/* Overview: short and scannable */
+.overview { display: grid; gap: 30px; max-width: 72ch; }
+.overview h2 { font-size: 1.15rem; margin-bottom: 10px; }
+.overview-intro { font-size: 1.12rem; line-height: 1.65; color: var(--ink); margin: 0; }
+.objective-list { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.lesson-path { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.lesson-path li { border-bottom: 1px solid var(--line); }
+.lesson-path a { display: grid; grid-template-columns: 2.2em minmax(0, 1fr) auto; gap: 12px; align-items: baseline; padding: 11px 4px; color: var(--ink); text-decoration: none; }
+.lesson-path a:hover .lp-title { text-decoration: underline; text-underline-offset: 3px; }
+.lp-num { font-family: var(--font-display); font-weight: 700; color: var(--subject); font-variant-numeric: tabular-nums; }
+.lesson-path li.is-done .lp-num::after { content: " ✓"; color: var(--good); }
+.lp-min { font-size: 0.85rem; color: var(--ink-faint); }
+.week-facts { margin: 0; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.week-facts div { padding-top: 10px; border-top: 2px solid var(--subject); }
+.week-facts dt { font-size: 0.85rem; font-weight: 700; color: var(--ink-soft); margin-bottom: 4px; }
+.week-facts dd { margin: 0; font-size: 0.95rem; }
+
+/* Lessons read as a document: no card per lesson */
+.lessons .lesson { background: none; border: 0; border-top: 1px solid var(--line); border-radius: 0; padding: 30px 0 34px; margin: 0; }
+.lessons .lesson:first-child { border-top: 0; padding-top: 0; }
+.lesson-num { color: var(--subject); opacity: 1; }
+.lesson-band .eyebrow { color: var(--ink-faint); }
+
+@media (max-width: 900px) {
+  .week-layout { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .week-nav { position: sticky; top: var(--header-h, 57px); z-index: 5; display: flex; gap: 14px; overflow-x: auto; background: var(--bg); padding: 8px 0; margin: 0 -16px; padding-left: 16px; padding-right: 16px; border-bottom: 1px solid var(--line); scrollbar-width: none; }
+  .week-nav-title { display: none; }
+  .week-nav-group { flex: none; }
+  .week-nav ul { display: flex; border-left: 0; gap: 4px; }
+  .week-nav a { white-space: nowrap; border-left: 0; border-bottom: 2px solid transparent; margin: 0; padding: 6px 10px; }
+  .week-nav a[aria-current="page"] { border-bottom-color: var(--subject); }
+  .week-head { grid-template-columns: minmax(0, 1fr); }
+  .week-numeral { font-size: 4.5rem; }
+}
+
+/* Subject page */
+.subject-weeks { margin-top: 30px; }
+.week-card .week-num { font-size: 2.2rem; color: var(--subject); }
+.week-card.is-ready { border-left: 1px solid var(--line); box-shadow: none; }
+
+/* ===== Git Playground (practical layout) ===== */
+.gitpg { display: grid; gap: 18px; }
+.gitpg-mission { border: 1px solid var(--line); border-left: 4px solid var(--subject, var(--accent)); border-radius: 12px; padding: 16px 18px; background: var(--panel); }
+.gitpg-mission-head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.gitpg-mission-head h3 { margin: 0; font-size: 1.05rem; }
+.gitpg-current { margin: 12px 0 10px; }
+.gitpg-current-title { font-size: 1.15rem; font-weight: 700; margin: 0 0 8px; }
+.gitpg-hints { display: flex; gap: 6px; flex-wrap: wrap; }
+.gitpg-steps { margin: 6px 0 0; padding-left: 1.4em; display: grid; gap: 3px; font-size: 0.9rem; color: var(--ink-faint); }
+.gitpg-steps li.is-done { color: var(--good); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--good) 50%, transparent); }
+.gitpg-steps li.is-next { color: var(--ink); font-weight: 600; }
+.gitpg-main { display: grid; gap: 18px; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: start; }
+.gitpg-terminal { min-width: 0; }
+.gitpg-terminal .terminal-body { height: 320px; overflow-y: auto; white-space: pre-wrap; word-break: break-word; }
+.gitpg-repo { min-width: 0; display: grid; gap: 14px; }
+.gitpg-areas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.gitpg-area { border: 1px solid var(--line); border-radius: 10px; padding: 10px; background: var(--panel); min-width: 0; }
+.gitpg-area h4 { margin: 0 0 8px; font-size: 0.82rem; color: var(--ink-soft); }
+.gitpg-area h4 code { font-size: 0.72rem; }
+.gitpg-area ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; }
+.gitpg-area li { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: baseline; font-size: 0.85rem; min-width: 0; }
+.gitpg-area li code { overflow-wrap: anywhere; }
+.gitpg-area small { font-size: 0.7rem; font-weight: 700; padding: 0 6px; border-radius: 999px; }
+.gitpg-area li.is-modified small { background: color-mix(in srgb, #B98A3E 22%, transparent); color: var(--warn); }
+.gitpg-area li.is-new small { background: color-mix(in srgb, #7A6A8C 22%, transparent); color: var(--accent-2); }
+.gitpg-area li.is-staged small { background: color-mix(in srgb, #2F6F73 22%, transparent); color: var(--accent); }
+.gitpg-area li.is-conflict small { background: var(--bad-bg); color: var(--bad); }
+.gitpg-graph { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); overflow-x: auto; padding: 4px; }
+@media (max-width: 1100px) {
+  .gitpg-main { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 520px) {
+  .gitpg-areas { gap: 6px; }
+  .gitpg-area { padding: 8px; }
+  .gitpg-area h4 { font-size: 0.75rem; }
+  .gitpg-area li { font-size: 0.78rem; }
+  .gitpg-terminal .terminal-body { height: 240px; }
+}
+
+/* Header: always one row now that it only holds the brand and three controls */
+.header-inner { flex-wrap: nowrap; justify-content: space-between; }
+@media (max-width: 420px) {
+  .header-inner { gap: 8px; padding: 10px 12px; }
+  .brand { gap: 8px; font-size: 0.95rem; }
+  .header-tools { gap: 6px; }
+  .segmented button { padding: 4px 8px; }
+}
+
+/* ===== Tools respond to the width of the week column, not the window =====
+   The sidebar takes part of the screen, so viewport breakpoints were wrong:
+   a 1200px window left the tools ~900px. Container queries fix that. */
+.week-content { container: week / inline-size; }
+
+.gitpg-main { grid-template-columns: minmax(0, 1fr); }
+@container week (min-width: 880px) {
+  .gitpg-main { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+}
+
+.sqllab-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "tasks" "main" "schema"; }
+.sqllab-tasks { grid-area: tasks; }
+.sqllab-main { grid-area: main; }
+.sqllab-schema { grid-area: schema; }
+.sqllab-tasks, .sqllab-schema { position: static; }
+@container week (min-width: 760px) {
+  .sqllab-grid { grid-template-columns: 230px minmax(0, 1fr); grid-template-areas: "tasks main" "schema main"; }
+}
+@container week (min-width: 1120px) {
+  .sqllab-grid { grid-template-columns: 240px minmax(0, 1fr) 230px; grid-template-areas: "tasks main schema"; }
+}
+@container week (max-width: 759px) {
+  .sqllab-tasks .mission-list { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
+  .sqllab-tasks .mission { grid-template-columns: 22px minmax(0, 1fr); gap: 8px; padding: 7px 9px; font-size: 0.9rem; }
+  .sqllab-tasks .mission-check { width: 20px; height: 20px; font-size: 0.7rem; }
+}
+
+.studio-grid { grid-template-columns: minmax(0, 1fr); }
+.studio-palette { position: static; }
+@container week (min-width: 780px) {
+  .studio-grid { grid-template-columns: 270px minmax(0, 1fr); }
+  .studio-palette { position: sticky; top: 90px; }
+}
+
+/* ===== Inequality Lab ===== */
+.ineq { display: grid; gap: 24px; }
+.ineq > .muted { margin: 0; }
+.ineq-grid { display: grid; gap: 18px; grid-template-columns: minmax(0, 1fr); align-items: start; }
+.ineq-problems-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.ineq-problems h3 { margin: 0; font-size: 1.05rem; }
+.ineq-level { margin-top: 14px; }
+.ineq-level-name { margin: 0 0 4px; font-size: 0.8rem; font-weight: 700; color: var(--ink-faint); }
+.ineq-level ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; border-left: 2px solid var(--line); }
+.ineq-pick { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; align-items: baseline; width: 100%; text-align: left; background: none; border: 0; border-left: 2px solid transparent; margin-left: -2px; padding: 6px 8px; font: inherit; font-size: 0.88rem; line-height: 1.35; color: var(--ink-soft); cursor: pointer; border-radius: 0 8px 8px 0; }
+.ineq-pick:hover { color: var(--ink); background: var(--panel-2); }
+.ineq-pick.is-current { color: var(--ink); font-weight: 600; border-left-color: var(--subject); background: color-mix(in srgb, var(--subject) 9%, transparent); }
+.ineq-pick-num { font-size: 0.78rem; font-weight: 700; color: var(--ink-faint); font-variant-numeric: tabular-nums; text-align: right; }
+.ineq-pick.is-solved .ineq-pick-num { color: var(--good); }
+@container week (min-width: 760px) {
+  .ineq-grid { grid-template-columns: 230px minmax(0, 1fr); }
+  .ineq-problems { position: sticky; top: 90px; }
+}
+/* Narrow: numbered chips that wrap; the title shows in the problem card. */
+@container week (max-width: 759px) {
+  .ineq-problems { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: flex-end; }
+  .ineq-problems-head { width: 100%; }
+  .ineq-level { margin: 0; }
+  .ineq-level ol { display: flex; gap: 6px; border-left: 0; }
+  .ineq-pick { width: 36px; height: 36px; padding: 0; margin: 0; display: grid; place-items: center; grid-template-columns: 1fr; border: 1.5px solid var(--line); border-radius: 50%; background: var(--panel); }
+  .ineq-pick-title { display: none; }
+  .ineq-pick-num { text-align: center; font-size: 0.85rem; color: var(--ink-soft); }
+  .ineq-pick.is-current { border-color: var(--subject); background: color-mix(in srgb, var(--subject) 14%, var(--panel)); }
+  .ineq-pick.is-solved { border-color: var(--good); }
+}
+
+.ineq-main { display: grid; gap: 16px; min-width: 0; grid-template-columns: minmax(0, 1fr); }
+.ineq-problem { border: 1px solid var(--line); border-left: 4px solid var(--subject); border-radius: 12px; padding: 16px 18px; background: var(--panel); }
+.ineq-problem-title { margin: 0; font-weight: 700; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.ineq-context { margin: 8px 0 0; color: var(--ink-soft); max-width: 68ch; }
+.ineq-expr { margin: 16px 0 14px; font-family: 'Cambria Math', 'STIX Two Math', 'Latin Modern Math', Georgia, serif; font-size: clamp(1.35rem, 1rem + 1.6vw, 2rem); line-height: 1.35; color: var(--ink); display: grid; gap: 2px; overflow-x: auto; }
+.ineq-expr.is-system { border-left: 2px solid var(--subject); padding-left: 14px; }
+.ineq-tools { display: flex; gap: 8px; flex-wrap: wrap; }
+.ineq-problem .explain { margin: 12px 0 0; }
+
+.ineq-answer { display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr); }
+.ineq-answer > label { font-weight: 600; }
+.ineq-answer-row { display: flex; gap: 8px; }
+.ineq-answer-row input { flex: 1; min-width: 0; font-family: var(--font-mono); font-size: 1rem; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--ink); font-variant-ligatures: none; }
+.ineq-answer-row input:focus-visible { outline: 2px solid var(--subject); outline-offset: 1px; }
+.ineq-keys { display: flex; gap: 4px; flex-wrap: wrap; }
+.ineq-keys .token { min-width: 36px; justify-content: center; font-size: 0.95rem; }
+.ineq-help { margin: 0; font-size: 0.85rem; }
+.ineq-answer .feedback { margin: 0; }
+.ineq-solution { margin: 0; }
+.ineq-solution strong { font-family: var(--font-mono); font-variant-ligatures: none; }
+
+.numline { border: 1px solid var(--line); border-radius: 12px; background: var(--panel); padding: 4px 0; cursor: crosshair; touch-action: pan-y; user-select: none; overflow: hidden; min-width: 0; }
+.numline svg { display: block; max-width: 100%; height: auto; }
+.nl-axis { stroke: var(--ink-soft); stroke-width: 1.5; }
+.nl-tick { stroke: var(--ink-faint); }
+.nl-tick-label { fill: var(--ink-faint); font-size: 11px; font-family: var(--font-mono); }
+.nl-guide { stroke: var(--subject); stroke-dasharray: 2 4; opacity: 0.6; }
+.nl-crit { fill: var(--subject); font-size: 12px; font-weight: 700; font-family: var(--font-mono); }
+.nl-row-label { fill: currentColor; font-size: 12px; font-weight: 600; }
+.nl-row.tone-truth { color: var(--subject); }
+.nl-row.tone-answer { color: #B98A3E; }
+.nl-row.tone-part { color: var(--ink-soft); }
+.nl-base { stroke: var(--line); stroke-width: 2; }
+.nl-seg { stroke: currentColor; stroke-width: 6; }
+.nl-arrow { fill: currentColor; }
+.nl-dot { stroke: currentColor; stroke-width: 2.5; fill: var(--panel); }
+.nl-dot.is-closed { fill: currentColor; }
+.nl-probe line { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.nl-probe circle { fill: var(--ink); }
+
+.ineq-probe { display: grid; gap: 8px; grid-template-columns: minmax(0, 1fr); }
+.ineq-probe label { display: flex; align-items: center; gap: 10px; font-weight: 600; flex-wrap: wrap; }
+.ineq-probe input { width: 8rem; font-family: var(--font-mono); padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink); }
+.ineq-probe p { margin: 0; }
+.ineq-probe ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.ineq-probe li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 6px; font-size: 0.92rem; }
+.ineq-probe li code { font-variant-ligatures: none; }
+.ineq-probe li.is-true .ineq-probe-mark { color: var(--good); font-weight: 800; }
+.ineq-probe li.is-false .ineq-probe-mark { color: var(--bad); font-weight: 800; }
+
+.ineq-chart-wrap { overflow-x: auto; margin-top: 14px; }
+.ineq-chart { border-collapse: collapse; font-size: 0.88rem; min-width: 100%; }
+.ineq-chart th, .ineq-chart td { padding: 6px 10px; text-align: center; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.ineq-chart thead th { font-family: var(--font-mono); font-weight: 600; color: var(--ink-soft); }
+.ineq-chart th[scope="row"] { text-align: left; font-weight: 600; color: var(--ink-soft); font-family: inherit; }
+.ineq-chart .is-point { background: color-mix(in srgb, var(--subject) 8%, transparent); }
+.ineq-chart thead th.is-point { color: var(--subject); }
+.ineq-chart-test td { font-family: var(--font-mono); color: var(--ink-faint); font-size: 0.8rem; }
+.ineq-chart td.sign-1 { color: var(--good); font-weight: 700; }
+.ineq-chart td.sign--1 { color: var(--bad); font-weight: 700; }
+.ineq-chart td.sign-none { color: var(--ink-faint); }
+.ineq-chart tr.is-total > * { border-top: 2px solid var(--ink-faint); }
+.ineq-chart-holds td.is-yes { color: var(--good); font-weight: 800; }
+.ineq-chart-holds td.is-no { color: var(--ink-faint); }
+
+.ineq-own { border-top: 1px solid var(--line); padding-top: 22px; display: grid; gap: 12px; min-width: 0; grid-template-columns: minmax(0, 1fr); }
+.ineq-own h3, .ineq-own > p { margin: 0; }
+
+/* Calculus hero: an inequality drawn on the number line */
+.math-demo { position: relative; z-index: 1; margin: 0; display: grid; gap: 6px; align-content: center; min-width: 0; padding: 18px 20px; border: 1px solid var(--line); border-left: 4px solid var(--subject, #7A6A8C); border-radius: 14px; background: var(--panel); color: var(--subject, #7A6A8C); }
+.math-demo-expr { margin: 0; font-family: 'Cambria Math', 'STIX Two Math', 'Latin Modern Math', Georgia, serif; font-size: clamp(1.3rem, 1rem + 1.4vw, 1.8rem); color: var(--ink); animation: caption-in 400ms ease both; }
+.math-demo svg { width: 100%; height: auto; display: block; }
+.math-demo-seg { stroke: currentColor; stroke-width: 6; stroke-dasharray: 1; stroke-dashoffset: 1; animation: math-draw 900ms 150ms ease forwards; }
+.math-demo .nl-dot, .math-demo .nl-arrow { animation: caption-in 300ms 700ms ease both; }
+@keyframes math-draw { to { stroke-dashoffset: 0; } }
+.math-demo figcaption { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; color: var(--ink-soft); }
+.math-demo figcaption strong { font-family: var(--font-mono); color: var(--subject); font-variant-ligatures: none; }
+.math-demo-dots { display: flex; gap: 6px; }
+.math-demo-dots button { width: 10px; height: 10px; padding: 0; border-radius: 50%; border: 1.5px solid var(--subject); background: transparent; cursor: pointer; }
+.math-demo-dots button[aria-pressed="true"] { background: var(--subject); }
+.reduce-motion .math-demo-seg { animation: none; stroke-dashoffset: 0; }
+@media (prefers-reduced-motion: reduce) { .math-demo-seg { animation: none; stroke-dashoffset: 0; } }
+.math-lines { display: grid; gap: 6px; margin: 10px 0; }
+.math-lines p { margin: 0; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: space-between; padding: 10px 14px; border-radius: 10px; background: var(--panel-2); }
+.math-lines span { font-family: 'Cambria Math', 'STIX Two Math', 'Latin Modern Math', Georgia, serif; font-size: 1.15rem; }

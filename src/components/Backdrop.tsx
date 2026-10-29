@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { findSubject, findTerm, placeOfWeek } from '../content/curriculum';
 import type { SubjectTheme } from '../content/types';
 
-export type BackdropVariant = 'program' | 'term' | 'commits' | 'data' | 'cards' | 'quiz' | 'terminal' | 'calm';
+export type BackdropVariant = 'program' | 'term' | 'commits' | 'data' | 'math' | 'cards' | 'quiz' | 'terminal' | 'calm';
 
 /** Seeded pseudo-random numbers, so the backdrop looks the same on every visit. */
 function seeded(seed: number) {
@@ -93,14 +93,14 @@ export function Backdrop({ variant, hue }: { variant: BackdropVariant; hue?: num
             animationDuration: `${s.duration}s`,
           }}
         >
-          {variant === 'terminal' ? s.glyph : variant === 'quiz' ? (i % 2 ? '?' : '✓') : ''}
+          {variant === 'terminal' ? s.glyph : variant === 'quiz' ? (i % 2 ? '?' : '✓') : variant === 'math' ? ['≤', '≥', '∞', 'ℝ', '∪', '|x|', '√', '∅', '(a, b]'][i % 9] : ''}
         </span>
       ))}
     </div>
   );
 }
 
-const THEME_VARIANT: Record<SubjectTheme, BackdropVariant> = { 'version-control': 'commits', databases: 'data', default: 'calm' };
+const THEME_VARIANT: Record<SubjectTheme, BackdropVariant> = { 'version-control': 'commits', databases: 'data', math: 'math', default: 'calm' };
 
 /**
  * Picks the backdrop for a route: the program on the home page, the term's
@@ -109,10 +109,16 @@ const THEME_VARIANT: Record<SubjectTheme, BackdropVariant> = { 'version-control'
  */
 export function backdropForPath(path: string): { variant: BackdropVariant; hue?: number } {
   if (path === '/') return { variant: 'program' };
-  const week = path.match(/^\/week\/([^/]+)/);
+  const week = path.match(/^\/week\/([^/]+)(?:\/([^/?]+))?/);
   if (week) {
     const place = placeOfWeek(week[1]);
-    return { variant: place ? THEME_VARIANT[place.subject.theme] : 'calm', hue: place?.term.hue };
+    const theme = place ? THEME_VARIANT[place.subject.theme] : 'calm';
+    const tab = week[2] ?? 'overview';
+    if (tab === 'flashcards') return { variant: 'cards', hue: place?.term.hue };
+    if (tab === 'quiz') return { variant: 'quiz', hue: place?.term.hue };
+    if (['plan', 'progress', 'resources'].includes(tab)) return { variant: 'calm', hue: place?.term.hue };
+    if (tab === 'git-playground') return { variant: 'terminal', hue: place?.term.hue };
+    return { variant: theme, hue: place?.term.hue };
   }
   const m = path.match(/^\/term\/(\d+)(?:\/module\/(\d+)(?:\/([^/]+)(?:\/([^/]+))?)?)?/);
   if (!m) return { variant: 'calm' };

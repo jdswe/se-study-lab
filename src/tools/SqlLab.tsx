@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import initSqlJs, { type Database, type SqlJsStatic } from 'sql.js';
 import wasmUrl from 'sql.js/dist/sql-wasm.wasm?url';
 import { useI18n } from '../i18n';
-import { sqlTasks } from '../content/db1-week1/sqlTasks';
+import type { SqlTask } from '../content/db1-week1/sqlTasks';
 import { STORE_SEED_SQL, sameResult, type ResultSet } from '../lib/storeDb';
 import { updateState, useProgress } from '../lib/store';
 
@@ -27,13 +27,12 @@ interface RunOutput {
   ms: number;
 }
 
-const TASKS = sqlTasks;
 
 /**
  * SQL Lab: a real SQLite database running in the browser, preloaded with the
  * campus store. Learners run queries, see results, and solve self-checking tasks.
  */
-export default function SqlLab() {
+export default function SqlLab({ tasks: TASKS }: { tasks: SqlTask[] }) {
   const { t, pick } = useI18n();
   const progress = useProgress();
   const [params] = useSearchParams();

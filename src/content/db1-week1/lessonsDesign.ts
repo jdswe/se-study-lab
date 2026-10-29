@@ -1,0 +1,163 @@
+import type { Lesson, Localized } from '../types';
+
+/** One string in English, Spanish, and Portuguese. */
+const L = (en: string, es: string, pt: string): Localized => ({ en, es, pt });
+
+/**
+ * Databases 1, Week 1, lessons 10–12: designing a database in three stages,
+ * the ER model in detail, the rules that turn it into tables, and the SQL that
+ * defines and changes them. Uses a small clinic as the running example.
+ */
+export const dbDesignLessons: Lesson[] = [
+  {
+    id: 'db1-l10-er-model',
+    title: L('Design in three stages: the ER model', 'Diseño en tres etapas: el modelo ER', 'Projeto em três etapas: o modelo ER'),
+    minutes: 30,
+    diagram: 'er-notation',
+    body: [
+      L('A database is designed in three stages, each one less abstract than the last. The conceptual model describes the real world with an entity–relationship (ER) diagram. The logical model turns it into tables with keys. The physical model is the SQL that creates those tables in a specific DBMS.',
+        'Una base de datos se diseña en tres etapas, cada una menos abstracta que la anterior. El modelo conceptual describe el mundo real con un diagrama entidad–relación (ER). El modelo lógico lo convierte en tablas con claves. El modelo físico es el SQL que crea esas tablas en un SGBD concreto.',
+        'Um banco de dados é projetado em três etapas, cada uma menos abstrata que a anterior. O modelo conceitual descreve o mundo real com um diagrama entidade–relacionamento (ER). O modelo lógico o transforma em tabelas com chaves. O modelo físico é o SQL que cria essas tabelas em um SGBD concreto.'),
+      L('The ER model, proposed by Peter Chen in 1976, has three building blocks. Entities are things with their own existence that we want to remember, always nouns: Patient, Doctor, Appointment. They are drawn as rectangles. Relationships connect entities, are usually verbs, and are drawn as diamonds; a relationship can have its own attributes when the fact only makes sense for the pair, such as the date a doctor started at a clinic.',
+        'El modelo ER, propuesto por Peter Chen en 1976, tiene tres piezas. Las entidades son cosas con existencia propia que queremos recordar, siempre sustantivos: Paciente, Médico, Cita. Se dibujan como rectángulos. Las relaciones conectan entidades, suelen ser verbos y se dibujan como rombos; una relación puede tener atributos propios cuando el dato solo tiene sentido para la pareja, como la fecha en que un médico empezó en una clínica.',
+        'O modelo ER, proposto por Peter Chen em 1976, tem três peças. Entidades são coisas com existência própria que queremos lembrar, sempre substantivos: Paciente, Médico, Consulta. São desenhadas como retângulos. Relacionamentos ligam entidades, costumam ser verbos e são desenhados como losangos; um relacionamento pode ter atributos próprios quando o dado só faz sentido para o par, como a data em que um médico começou em uma clínica.'),
+      L('Attributes describe an entity and are drawn as ellipses. A simple attribute cannot be split (first name). A composite one can (address → street, city, country). A multivalued attribute can hold several values for one entity (a patient\'s phone numbers) and is drawn with a double ellipse. A derived attribute is calculated from others (age from birth date) and is drawn dashed. The key attribute identifies each entity and is underlined.',
+        'Los atributos describen una entidad y se dibujan como elipses. Un atributo simple no se puede dividir (nombre). Uno compuesto sí (dirección → calle, ciudad, país). Un atributo multivaluado puede tener varios valores para una misma entidad (los teléfonos de un paciente) y se dibuja con doble elipse. Un atributo derivado se calcula a partir de otros (la edad a partir de la fecha de nacimiento) y se dibuja punteado. El atributo clave identifica cada entidad y va subrayado.',
+        'Atributos descrevem uma entidade e são desenhados como elipses. Um atributo simples não pode ser dividido (nome). Um composto pode (endereço → rua, cidade, país). Um atributo multivalorado pode ter vários valores para uma mesma entidade (os telefones de um paciente) e é desenhado com elipse dupla. Um atributo derivado é calculado a partir de outros (a idade a partir da data de nascimento) e é desenhado tracejado. O atributo chave identifica cada entidade e é sublinhado.'),
+      L('Some entities cannot be identified on their own. A room is "room 12 of hospital B": without the hospital, the number means nothing. That is a weak entity, drawn as a double rectangle. Its key is the key of its owner plus its own partial key, called the discriminator.',
+        'Algunas entidades no se pueden identificar por sí solas. Una habitación es "la habitación 12 del hospital B": sin el hospital, el número no significa nada. Eso es una entidad débil y se dibuja con doble rectángulo. Su clave es la clave de su dueña más su propia clave parcial, llamada discriminante.',
+        'Algumas entidades não podem ser identificadas sozinhas. Um quarto é "o quarto 12 do hospital B": sem o hospital, o número não significa nada. Isso é uma entidade fraca, desenhada com retângulo duplo. Sua chave é a chave da entidade dona mais sua própria chave parcial, chamada discriminador.'),
+    ],
+    analogy: L('The three stages are like building a house: the sketch you discuss with the family (conceptual), the architect\'s floor plan with measurements (logical), and the construction itself with real materials (physical).',
+      'Las tres etapas son como construir una casa: el boceto que conversas con la familia (conceptual), el plano del arquitecto con medidas (lógico) y la obra con materiales reales (físico).',
+      'As três etapas são como construir uma casa: o esboço que você discute com a família (conceitual), a planta do arquiteto com medidas (lógico) e a obra com materiais reais (físico).'),
+    takeaways: [
+      L('Conceptual (ER) → logical (tables) → physical (SQL).', 'Conceptual (ER) → lógico (tablas) → físico (SQL).', 'Conceitual (ER) → lógico (tabelas) → físico (SQL).'),
+      L('Entities are nouns (rectangles); relationships are verbs (diamonds).', 'Las entidades son sustantivos (rectángulos); las relaciones, verbos (rombos).', 'Entidades são substantivos (retângulos); relacionamentos, verbos (losangos).'),
+      L('Attributes: simple, composite, multivalued (double), derived (dashed), key (underlined).', 'Atributos: simple, compuesto, multivaluado (doble), derivado (punteado), clave (subrayado).', 'Atributos: simples, composto, multivalorado (duplo), derivado (tracejado), chave (sublinhado).'),
+      L('A weak entity depends on its owner: key = owner key + discriminator.', 'Una entidad débil depende de su dueña: clave = clave de la dueña + discriminante.', 'Uma entidade fraca depende da dona: chave = chave da dona + discriminador.'),
+    ],
+    check: {
+      question: L('A patient can have several phone numbers. What kind of attribute is "phone"?', 'Un paciente puede tener varios números de teléfono. ¿Qué tipo de atributo es "teléfono"?', 'Um paciente pode ter vários números de telefone. Que tipo de atributo é "telefone"?'),
+      options: [L('Multivalued', 'Multivaluado', 'Multivalorado'), L('Derived', 'Derivado', 'Derivado'), L('Composite', 'Compuesto', 'Composto')],
+      answer: 0,
+      explanation: L('One patient, many values: multivalued. Derived would mean it is calculated; composite would mean it splits into parts.', 'Un paciente, varios valores: multivaluado. Derivado significaría que se calcula; compuesto, que se divide en partes.', 'Um paciente, vários valores: multivalorado. Derivado significaria que é calculado; composto, que se divide em partes.'),
+    },
+    pitfalls: [
+      { mistake: L('Modelling an action such as "Sell" as an entity.', 'Modelar una acción como "Vender" como entidad.', 'Modelar uma ação como "Vender" como entidade.'),
+        fix: L('Actions are relationships. If you must store each sale, the entity is the noun: Sale.', 'Las acciones son relaciones. Si debes guardar cada venta, la entidad es el sustantivo: Venta.', 'Ações são relacionamentos. Se você precisa guardar cada venda, a entidade é o substantivo: Venda.') },
+      { mistake: L('Storing age in the table.', 'Guardar la edad en la tabla.', 'Guardar a idade na tabela.'),
+        fix: L('Age changes every year. Store the birth date and calculate age when you query.', 'La edad cambia cada año. Guarda la fecha de nacimiento y calcula la edad al consultar.', 'A idade muda todo ano. Guarde a data de nascimento e calcule a idade na consulta.') },
+    ],
+    exercises: [
+      { id: 'db1-ex-10-1', level: 1, title: L('Name the attribute types', 'Nombra los tipos de atributo', 'Nomeie os tipos de atributo'),
+        prompt: L('For an Employee: employee_id, full_name (first + last), emails (several), hire_date, years_of_service. Classify each attribute.', 'Para un Empleado: employee_id, nombre_completo (nombre + apellido), correos (varios), fecha_ingreso, años_de_servicio. Clasifica cada atributo.', 'Para um Funcionário: employee_id, nome_completo (nome + sobrenome), emails (vários), data_admissao, anos_de_servico. Classifique cada atributo.'),
+        hint: L('Ask: does it identify, split, repeat, or get calculated?', 'Pregunta: ¿identifica, se divide, se repite o se calcula?', 'Pergunte: identifica, se divide, se repete ou é calculado?'),
+        solution: L('employee_id: key. full_name: composite. emails: multivalued. hire_date: simple. years_of_service: derived from hire_date.', 'employee_id: clave. nombre_completo: compuesto. correos: multivaluado. fecha_ingreso: simple. años_de_servicio: derivado de fecha_ingreso.', 'employee_id: chave. nome_completo: composto. emails: multivalorado. data_admissao: simples. anos_de_servico: derivado de data_admissao.') },
+      { id: 'db1-ex-10-2', level: 2, title: L('Spot the weak entity', 'Encuentra la entidad débil', 'Encontre a entidade fraca'),
+        prompt: L('A loan is paid in instalments numbered 1, 2, 3… for each loan. Which entity is weak, and what is its key?', 'Un préstamo se paga en cuotas numeradas 1, 2, 3… en cada préstamo. ¿Qué entidad es débil y cuál es su clave?', 'Um empréstimo é pago em parcelas numeradas 1, 2, 3… em cada empréstimo. Qual entidade é fraca e qual é sua chave?'),
+        hint: L('Instalment number 2 exists in every loan.', 'La cuota número 2 existe en todos los préstamos.', 'A parcela número 2 existe em todos os empréstimos.'),
+        solution: L('Instalment is weak. Its key is (loan_id, instalment_no).', 'Cuota es débil. Su clave es (loan_id, nro_cuota).', 'Parcela é fraca. Sua chave é (loan_id, num_parcela).') },
+    ],
+  },
+  {
+    id: 'db1-l11-er-to-tables',
+    title: L('From the ER diagram to tables', 'Del diagrama ER a las tablas', 'Do diagrama ER às tabelas'),
+    minutes: 30,
+    code: {
+      language: 'text',
+      caption: L('A clinic, mapped rule by rule (PK underlined in the diagram, marked here)', 'Una clínica, transformada regla por regla (PK subrayada en el diagrama, marcada aquí)', 'Uma clínica, transformada regra por regra (PK sublinhada no diagrama, marcada aqui)'),
+      source: 'patient(patient_id PK, first_name, last_name, street, city, birth_date)\n      -- composite address -> street, city;  age is derived -> not stored\npatient_phone(patient_id FK, phone, PK(patient_id, phone))\n      -- multivalued attribute -> its own table\ndoctor(doctor_id PK, name, specialty)\nappointment(patient_id FK, doctor_id FK, starts_at, PK(patient_id, doctor_id, starts_at))\n      -- N:M "patient sees doctor" -> junction table\nward(ward_id PK, name)\nroom(ward_id FK, room_no, beds, PK(ward_id, room_no))\n      -- weak entity -> owner key + discriminator',
+    },
+    body: [
+      L('The logical model follows a short set of rules. 1) Each strong entity becomes a table, its attributes become columns, and its key becomes the primary key. 2) A composite attribute becomes one column per part. 3) A multivalued attribute gets its own table with a foreign key back to the owner. 4) A derived attribute is not stored: it is calculated in queries.',
+        'El modelo lógico sigue un conjunto corto de reglas. 1) Cada entidad fuerte se convierte en tabla, sus atributos en columnas y su clave en clave primaria. 2) Un atributo compuesto se convierte en una columna por parte. 3) Un atributo multivaluado recibe su propia tabla con una clave foránea hacia su dueño. 4) Un atributo derivado no se guarda: se calcula en las consultas.',
+        'O modelo lógico segue um conjunto curto de regras. 1) Cada entidade forte vira tabela, seus atributos viram colunas e sua chave vira chave primária. 2) Um atributo composto vira uma coluna por parte. 3) Um atributo multivalorado ganha sua própria tabela com uma chave estrangeira para o dono. 4) Um atributo derivado não é guardado: é calculado nas consultas.'),
+      L('Relationships depend on their cardinality. 5) 1:1: put the key of one side as a foreign key in the other, preferably in the side that always participates. 6) 1:N: the key of the "1" side travels as a foreign key to the "N" side. 7) N:M: create a junction table with both keys as foreign keys. 8) A weak entity becomes a table whose primary key is the owner\'s key plus its discriminator.',
+        'Las relaciones dependen de su cardinalidad. 5) 1:1: pon la clave de un lado como clave foránea en el otro, de preferencia en el lado que siempre participa. 6) 1:N: la clave del lado "1" viaja como clave foránea al lado "N". 7) N:M: crea una tabla intermedia con ambas claves como claves foráneas. 8) Una entidad débil se convierte en una tabla cuya clave primaria es la clave de su dueña más su discriminante.',
+        'Os relacionamentos dependem da cardinalidade. 5) 1:1: coloque a chave de um lado como chave estrangeira no outro, de preferência no lado que sempre participa. 6) 1:N: a chave do lado "1" vai como chave estrangeira para o lado "N". 7) N:M: crie uma tabela de junção com as duas chaves como chaves estrangeiras. 8) Uma entidade fraca vira uma tabela cuja chave primária é a chave da dona mais seu discriminador.'),
+      L('Primary keys come in three flavours. A natural key already exists in the real world (a national ID number). A surrogate key is generated by the system, usually an auto-increment number; it never changes and carries no meaning. A composite key combines two or more columns, as in the junction and weak-entity tables. Two more words you will meet: a table\'s degree is its number of columns, and its cardinality is its number of rows.',
+        'Las claves primarias son de tres tipos. Una clave natural ya existe en el mundo real (un número de documento de identidad). Una clave sustituta (surrogate) la genera el sistema, normalmente un número autoincremental; nunca cambia y no tiene significado. Una clave compuesta combina dos o más columnas, como en las tablas intermedias y de entidades débiles. Dos palabras más que verás: el grado de una tabla es su número de columnas y su cardinalidad, su número de filas.',
+        'Chaves primárias são de três tipos. Uma chave natural já existe no mundo real (um número de documento de identidade). Uma chave substituta (surrogate) é gerada pelo sistema, normalmente um número autoincremental; nunca muda e não tem significado. Uma chave composta combina duas ou mais colunas, como nas tabelas de junção e de entidades fracas. Mais duas palavras que você vai encontrar: o grau de uma tabela é seu número de colunas e a cardinalidade, seu número de linhas.'),
+    ],
+    analogy: L('The mapping rules are a recipe: the ER diagram is the list of ingredients, and the rules tell you exactly which pot each one goes into.',
+      'Las reglas de transformación son una receta: el diagrama ER es la lista de ingredientes y las reglas te dicen exactamente en qué olla va cada uno.',
+      'As regras de transformação são uma receita: o diagrama ER é a lista de ingredientes e as regras dizem exatamente em qual panela vai cada um.'),
+    takeaways: [
+      L('Entity → table; composite → several columns; multivalued → new table; derived → not stored.', 'Entidad → tabla; compuesto → varias columnas; multivaluado → tabla nueva; derivado → no se guarda.', 'Entidade → tabela; composto → várias colunas; multivalorado → tabela nova; derivado → não se guarda.'),
+      L('1:N → FK on the N side; N:M → junction table; 1:1 → FK on either side.', '1:N → FK en el lado N; N:M → tabla intermedia; 1:1 → FK en cualquier lado.', '1:N → FK no lado N; N:M → tabela de junção; 1:1 → FK em qualquer lado.'),
+      L('Keys can be natural, surrogate, or composite.', 'Las claves pueden ser naturales, sustitutas o compuestas.', 'Chaves podem ser naturais, substitutas ou compostas.'),
+    ],
+    check: {
+      question: L('A department has many employees; each employee has one department. Where does the foreign key go?', 'Un departamento tiene muchos empleados; cada empleado tiene un departamento. ¿Dónde va la clave foránea?', 'Um departamento tem muitos funcionários; cada funcionário tem um departamento. Onde fica a chave estrangeira?'),
+      options: [L('In employee: department_id', 'En empleado: department_id', 'Em funcionário: department_id'), L('In department: employee_id', 'En departamento: employee_id', 'Em departamento: employee_id'), L('In a new junction table', 'En una tabla intermedia nueva', 'Em uma nova tabela de junção')],
+      answer: 0,
+      explanation: L('1:N puts the key of the "1" side (department) into the "N" side (employee). One department_id per employee row works; one employee_id per department row cannot.', '1:N pone la clave del lado "1" (departamento) en el lado "N" (empleado). Un department_id por fila de empleado funciona; un employee_id por fila de departamento no.', '1:N coloca a chave do lado "1" (departamento) no lado "N" (funcionário). Um department_id por linha de funcionário funciona; um employee_id por linha de departamento não.'),
+    },
+    pitfalls: [
+      { mistake: L('Storing several phones in one column: "555-1, 555-2".', 'Guardar varios teléfonos en una columna: "555-1, 555-2".', 'Guardar vários telefones em uma coluna: "555-1, 555-2".'),
+        fix: L('A multivalued attribute gets its own table: one row per phone.', 'Un atributo multivaluado tiene su propia tabla: una fila por teléfono.', 'Um atributo multivalorado ganha sua própria tabela: uma linha por telefone.') },
+    ],
+    exercises: [
+      { id: 'db1-ex-11-1', level: 2, title: L('Map a course catalogue', 'Transforma un catálogo de cursos', 'Transforme um catálogo de cursos'),
+        prompt: L('Students enrol in many courses and courses have many students; each enrolment has a grade. Write the tables.', 'Los estudiantes se inscriben en muchos cursos y los cursos tienen muchos estudiantes; cada inscripción tiene una nota. Escribe las tablas.', 'Alunos se matriculam em muitos cursos e os cursos têm muitos alunos; cada matrícula tem uma nota. Escreva as tabelas.'),
+        hint: L('N:M with an attribute on the relationship.', 'N:M con un atributo en la relación.', 'N:M com um atributo no relacionamento.'),
+        solution: L('student(student_id PK, name); course(course_id PK, title); enrolment(student_id FK, course_id FK, grade, PK(student_id, course_id)). The grade lives in the junction table because it belongs to the pair.', 'estudiante(student_id PK, nombre); curso(course_id PK, titulo); inscripcion(student_id FK, course_id FK, nota, PK(student_id, course_id)). La nota va en la tabla intermedia porque pertenece a la pareja.', 'aluno(student_id PK, nome); curso(course_id PK, titulo); matricula(student_id FK, course_id FK, nota, PK(student_id, course_id)). A nota fica na tabela de junção porque pertence ao par.') },
+      { id: 'db1-ex-11-2', level: 3, title: L('Natural or surrogate?', '¿Natural o sustituta?', 'Natural ou substituta?'),
+        prompt: L('Should a customers table use the email address as its primary key?', '¿Debería una tabla de clientes usar el correo como clave primaria?', 'Uma tabela de clientes deveria usar o e-mail como chave primária?'),
+        hint: L('Can a customer change their email?', '¿Un cliente puede cambiar su correo?', 'Um cliente pode mudar o e-mail?'),
+        solution: L('Better not. Emails change and would have to be updated in every foreign key. Use a surrogate customer_id and declare email UNIQUE.', 'Mejor no. Los correos cambian y habría que actualizarlos en cada clave foránea. Usa un customer_id sustituto y declara email como UNIQUE.', 'Melhor não. E-mails mudam e teriam de ser atualizados em cada chave estrangeira. Use um customer_id substituto e declare email como UNIQUE.') },
+    ],
+  },
+  {
+    id: 'db1-l12-ddl-dml',
+    title: L('SQL to build and change data: DDL and DML', 'SQL para construir y cambiar datos: DDL y DML', 'SQL para construir e mudar dados: DDL e DML'),
+    minutes: 30,
+    code: {
+      language: 'sql',
+      caption: L('Physical model of part of the clinic (works in the SQL Lab)', 'Modelo físico de parte de la clínica (funciona en el Laboratorio SQL)', 'Modelo físico de parte da clínica (funciona no Laboratório SQL)'),
+      source: "CREATE TABLE doctor (\n  doctor_id  INTEGER PRIMARY KEY,           -- surrogate key\n  name       VARCHAR(100) NOT NULL,\n  specialty  VARCHAR(60)\n);\n\nCREATE TABLE visit (\n  visit_id   INTEGER PRIMARY KEY,\n  doctor_id  INTEGER NOT NULL,\n  visit_date DATE NOT NULL,\n  fee        DECIMAL(8, 2) CHECK (fee >= 0),\n  FOREIGN KEY (doctor_id) REFERENCES doctor(doctor_id)\n    ON DELETE RESTRICT\n);\n\nINSERT INTO doctor (doctor_id, name, specialty) VALUES\n  (1, 'Dr. Rojas', 'Paediatrics'),\n  (2, 'Dr. Silva', 'Cardiology');\n\nALTER TABLE doctor ADD COLUMN phone VARCHAR(20);\nUPDATE doctor SET phone = '555-0101' WHERE doctor_id = 1;",
+    },
+    body: [
+      L('SQL has two families of commands. DDL (data definition language) builds the structure: CREATE DATABASE and CREATE TABLE create, ALTER TABLE changes columns, DROP TABLE removes a table and its data, and TRUNCATE empties a table but keeps its structure. DML (data manipulation language) works with rows: INSERT, SELECT, UPDATE, and DELETE.',
+        'SQL tiene dos familias de comandos. DDL (lenguaje de definición de datos) construye la estructura: CREATE DATABASE y CREATE TABLE crean, ALTER TABLE cambia columnas, DROP TABLE elimina una tabla con sus datos y TRUNCATE vacía una tabla pero conserva su estructura. DML (lenguaje de manipulación de datos) trabaja con filas: INSERT, SELECT, UPDATE y DELETE.',
+        'O SQL tem duas famílias de comandos. DDL (linguagem de definição de dados) constrói a estrutura: CREATE DATABASE e CREATE TABLE criam, ALTER TABLE muda colunas, DROP TABLE remove uma tabela com seus dados e TRUNCATE esvazia uma tabela mas mantém sua estrutura. DML (linguagem de manipulação de dados) trabalha com linhas: INSERT, SELECT, UPDATE e DELETE.'),
+      L('Each column has a data type, which is its domain. The common ones are integers (INT, BIGINT), exact decimals for money (DECIMAL(p, s)), approximate decimals (FLOAT, DOUBLE), text (CHAR(n) for a fixed length, VARCHAR(n) for a variable one), dates and times (DATE, TIME, TIMESTAMP), and BOOLEAN. Names differ a little between systems: auto-increment is AUTO_INCREMENT in MySQL and SERIAL in PostgreSQL, and SQLite, used in the SQL Lab, makes any INTEGER PRIMARY KEY auto-increment.',
+        'Cada columna tiene un tipo de dato, que es su dominio. Los comunes son enteros (INT, BIGINT), decimales exactos para dinero (DECIMAL(p, s)), decimales aproximados (FLOAT, DOUBLE), texto (CHAR(n) de longitud fija, VARCHAR(n) de longitud variable), fechas y horas (DATE, TIME, TIMESTAMP) y BOOLEAN. Los nombres cambian un poco entre sistemas: el autoincremento es AUTO_INCREMENT en MySQL y SERIAL en PostgreSQL, y SQLite, que usa el Laboratorio SQL, hace autoincremental cualquier INTEGER PRIMARY KEY.',
+        'Cada coluna tem um tipo de dado, que é seu domínio. Os comuns são inteiros (INT, BIGINT), decimais exatos para dinheiro (DECIMAL(p, s)), decimais aproximados (FLOAT, DOUBLE), texto (CHAR(n) de tamanho fixo, VARCHAR(n) de tamanho variável), datas e horas (DATE, TIME, TIMESTAMP) e BOOLEAN. Os nomes mudam um pouco entre sistemas: o autoincremento é AUTO_INCREMENT no MySQL e SERIAL no PostgreSQL, e o SQLite, usado no Laboratório SQL, torna autoincremental qualquer INTEGER PRIMARY KEY.'),
+      L('A foreign key can say what happens when the parent row is deleted or its key changes. CASCADE deletes or updates the child rows too. RESTRICT refuses the change while children exist. SET NULL keeps the children but empties their foreign key. Choose per relationship: deleting a doctor should not silently delete their visit history, so RESTRICT fits there.',
+        'Una clave foránea puede decir qué pasa cuando la fila padre se elimina o su clave cambia. CASCADE elimina o actualiza también las filas hijas. RESTRICT rechaza el cambio mientras existan hijas. SET NULL conserva las hijas pero vacía su clave foránea. Elige según la relación: eliminar un médico no debería borrar en silencio su historial de visitas, así que ahí encaja RESTRICT.',
+        'Uma chave estrangeira pode dizer o que acontece quando a linha pai é excluída ou sua chave muda. CASCADE exclui ou atualiza também as linhas filhas. RESTRICT recusa a mudança enquanto houver filhas. SET NULL mantém as filhas mas esvazia sua chave estrangeira. Escolha conforme o relacionamento: excluir um médico não deveria apagar em silêncio seu histórico de consultas, então ali cabe RESTRICT.'),
+    ],
+    analogy: L('DDL builds the shelves; DML puts things on them, moves them, and takes them off. TRUNCATE empties the shelves; DROP takes them out of the room.',
+      'DDL construye los estantes; DML pone cosas en ellos, las mueve y las quita. TRUNCATE vacía los estantes; DROP los saca de la habitación.',
+      'DDL constrói as prateleiras; DML coloca coisas nelas, move e tira. TRUNCATE esvazia as prateleiras; DROP as tira da sala.'),
+    takeaways: [
+      L('DDL: CREATE, ALTER, DROP, TRUNCATE. DML: INSERT, SELECT, UPDATE, DELETE.', 'DDL: CREATE, ALTER, DROP, TRUNCATE. DML: INSERT, SELECT, UPDATE, DELETE.', 'DDL: CREATE, ALTER, DROP, TRUNCATE. DML: INSERT, SELECT, UPDATE, DELETE.'),
+      L('Use DECIMAL for money, VARCHAR for text, DATE for dates.', 'Usa DECIMAL para dinero, VARCHAR para texto y DATE para fechas.', 'Use DECIMAL para dinheiro, VARCHAR para texto e DATE para datas.'),
+      L('ON DELETE: CASCADE, RESTRICT, or SET NULL, chosen per relationship.', 'ON DELETE: CASCADE, RESTRICT o SET NULL, según la relación.', 'ON DELETE: CASCADE, RESTRICT ou SET NULL, conforme o relacionamento.'),
+    ],
+    check: {
+      question: L('You need to empty a log table every night but keep the table. Which command?', 'Necesitas vaciar una tabla de registros cada noche pero conservar la tabla. ¿Qué comando usas?', 'Você precisa esvaziar uma tabela de registros toda noite mas manter a tabela. Qual comando?'),
+      options: [L('TRUNCATE TABLE', 'TRUNCATE TABLE', 'TRUNCATE TABLE'), L('DROP TABLE', 'DROP TABLE', 'DROP TABLE'), L('ALTER TABLE', 'ALTER TABLE', 'ALTER TABLE')],
+      answer: 0,
+      explanation: L('TRUNCATE removes every row and keeps the structure. DROP would remove the table itself.', 'TRUNCATE elimina todas las filas y conserva la estructura. DROP eliminaría la tabla misma.', 'TRUNCATE remove todas as linhas e mantém a estrutura. DROP removeria a própria tabela.'),
+    },
+    pitfalls: [
+      { mistake: L('Using FLOAT for prices.', 'Usar FLOAT para precios.', 'Usar FLOAT para preços.'),
+        fix: L('FLOAT is approximate (0.1 + 0.2 ≠ 0.3). Money needs DECIMAL.', 'FLOAT es aproximado (0,1 + 0,2 ≠ 0,3). El dinero necesita DECIMAL.', 'FLOAT é aproximado (0,1 + 0,2 ≠ 0,3). Dinheiro precisa de DECIMAL.') },
+      { mistake: L('Adding ON DELETE CASCADE everywhere "to avoid errors".', 'Poner ON DELETE CASCADE en todas partes "para evitar errores".', 'Colocar ON DELETE CASCADE em todo lugar "para evitar erros".'),
+        fix: L('Those errors protect history. Cascade only where the children truly cannot exist without the parent.', 'Esos errores protegen el historial. Usa cascada solo donde las hijas de verdad no pueden existir sin el padre.', 'Esses erros protegem o histórico. Use cascata só onde as filhas realmente não existem sem o pai.') },
+    ],
+    exercises: [
+      { id: 'db1-ex-12-1', level: 1, title: L('DDL or DML?', '¿DDL o DML?', 'DDL ou DML?'),
+        prompt: L('Classify: CREATE TABLE, UPDATE, DROP TABLE, INSERT, ALTER TABLE, DELETE.', 'Clasifica: CREATE TABLE, UPDATE, DROP TABLE, INSERT, ALTER TABLE, DELETE.', 'Classifique: CREATE TABLE, UPDATE, DROP TABLE, INSERT, ALTER TABLE, DELETE.'),
+        hint: L('Does it change the structure or the rows?', '¿Cambia la estructura o las filas?', 'Muda a estrutura ou as linhas?'),
+        solution: L('DDL: CREATE TABLE, DROP TABLE, ALTER TABLE. DML: UPDATE, INSERT, DELETE.', 'DDL: CREATE TABLE, DROP TABLE, ALTER TABLE. DML: UPDATE, INSERT, DELETE.', 'DDL: CREATE TABLE, DROP TABLE, ALTER TABLE. DML: UPDATE, INSERT, DELETE.') },
+      { id: 'db1-ex-12-2', level: 2, title: L('Write the table', 'Escribe la tabla', 'Escreva a tabela'),
+        prompt: L('Write CREATE TABLE for supplier: an id, a required name, and an email that cannot repeat.', 'Escribe CREATE TABLE para supplier: un id, un nombre obligatorio y un correo que no se puede repetir.', 'Escreva CREATE TABLE para supplier: um id, um nome obrigatório e um e-mail que não pode se repetir.'),
+        hint: L('PRIMARY KEY, NOT NULL, UNIQUE.', 'PRIMARY KEY, NOT NULL, UNIQUE.', 'PRIMARY KEY, NOT NULL, UNIQUE.'),
+        solution: L('CREATE TABLE supplier (supplier_id INTEGER PRIMARY KEY, name VARCHAR(100) NOT NULL, email VARCHAR(150) UNIQUE); Try it in the SQL Lab task "Create a table".', 'CREATE TABLE supplier (supplier_id INTEGER PRIMARY KEY, name VARCHAR(100) NOT NULL, email VARCHAR(150) UNIQUE); Pruébalo en la tarea "Crea una tabla" del Laboratorio SQL.', 'CREATE TABLE supplier (supplier_id INTEGER PRIMARY KEY, name VARCHAR(100) NOT NULL, email VARCHAR(150) UNIQUE); Teste na tarefa "Crie uma tabela" do Laboratório SQL.') },
+    ],
+  },
+];

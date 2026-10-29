@@ -3,9 +3,20 @@ import { useI18n } from '../i18n';
 import type { Lab } from '../content/types';
 import { updateState, useProgress } from '../lib/store';
 import { CodeBlock } from './CodeBlock';
+import { parseSystem, prettySource } from '../lib/inequality';
+
+/** Pretty math for a worksheet line, or the line as written when it is not an inequality. */
+function mathLine(line: string): { text: string; inequality: boolean } {
+  try {
+    parseSystem(line);
+    return { text: prettySource(line).join(';  '), inequality: true };
+  } catch {
+    return { text: line.replace(/\^2/g, '²').replace(/\^3/g, '³').replace(/-/g, '−'), inequality: false };
+  }
+}
 
 /** Lab instructions with copyable steps. Step completion is saved in local progress. */
-export function LabList({ labs, sqlLabPath }: { labs: Lab[]; sqlLabPath?: string }) {
+export function LabList({ labs, sqlLabPath, ineqLabPath }: { labs: Lab[]; sqlLabPath?: string; ineqLabPath?: string }) {
   const { t, pick } = useI18n();
   const progress = useProgress();
 
@@ -41,7 +52,21 @@ export function LabList({ labs, sqlLabPath }: { labs: Lab[]; sqlLabPath?: string
                       <input type="checkbox" checked={done} onChange={() => toggleStep(step.id)} /> {t('labs.stepDone')}
                     </label>
                   </div>
-                  {step.commands.length > 0 && <CodeBlock code={step.commands.join('\n')} label={`${lab.id} step ${i + 1}`} />}
+                  {lab.kind === 'math' ? (
+                    <div className="math-lines">
+                      {step.commands.map((c) => {
+                        const m = mathLine(c);
+                        return (
+                          <p key={c}>
+                            <span>{m.text}</span>
+                            {m.inequality && ineqLabPath && (
+                              <Link className="btn btn-small" to={`${ineqLabPath}?q=${encodeURIComponent(c)}`}>{t('labs.checkInLab')}</Link>
+                            )}
+                          </p>
+                        );
+                      })}
+                    </div>
+                  ) : step.commands.length > 0 && <CodeBlock code={step.commands.join('\n')} label={`${lab.id} step ${i + 1}`} />}
                   {lab.kind === 'sql' && sqlLabPath && step.commands.length > 0 && (
                     <Link className="btn btn-small" to={`${sqlLabPath}?q=${encodeURIComponent(step.commands.join('\n'))}`}>▶ {t('sqllab.openInLab')}</Link>
                   )}

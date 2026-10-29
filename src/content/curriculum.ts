@@ -57,6 +57,21 @@ terms[0].modules[2].subjects = [
       },
     ],
   },
+  {
+    slug: 'calculus-1',
+    title: { en: 'Calculus 1', es: 'Cálculo 1', pt: 'Cálculo 1' },
+    theme: 'math',
+    plannedWeeks: 8,
+    tools: ['inequality-lab'],
+    weeks: [
+      {
+        id: 'y1-t1-m3-calc-w1',
+        number: 1,
+        title: { en: 'Introduction and inequalities', es: 'Introducción y desigualdades', pt: 'Introdução e desigualdades' },
+        status: 'published',
+      },
+    ],
+  },
 ];
 
 addPortuguese(program);

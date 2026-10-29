@@ -39,3 +39,6 @@ Thumbs.db
 *.log
 npm-debug.log*
 *.tmp
+
+# TypeScript incremental build info
+*.tsbuildinfo

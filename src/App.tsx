@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { HashRouter, Navigate, Route, Routes, useParams } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { I18nProvider } from './i18n';
 import { useProgress } from './lib/store';
@@ -28,6 +28,12 @@ function DocumentSync() {
   return null;
 }
 
+/** Subject sections moved into each week; old links land on the subject's week list. */
+function SubjectRedirect() {
+  const { term, module, subject } = useParams();
+  return <Navigate to={`/term/${term}/module/${module}/${subject}`} replace />;
+}
+
 export default function App() {
   return (
     <I18nProvider>
@@ -39,11 +45,11 @@ export default function App() {
             <Route path="/term/:term" element={<TermPage />} />
             <Route path="/term/:term/module/:module" element={<ModulePage />} />
             <Route path="/term/:term/module/:module/:subject" element={<SubjectPage />} />
-            <Route path="/term/:term/module/:module/:subject/:section" element={<SubjectPage />} />
+            <Route path="/term/:term/module/:module/:subject/:section" element={<SubjectRedirect />} />
             <Route path="/week/:weekId" element={<WeekPage />} />
             <Route path="/week/:weekId/:tab" element={<WeekPage />} />
             <Route path="/settings" element={<Settings />} />
-            {/* Old top-level study pages now live inside each subject. */}
+            {/* Old top-level study pages now live inside each week. */}
             {['/curriculum', '/flashcards', '/quizzes', '/quizzes/:id', '/labs', '/planner', '/progress', '/resources', '/playground'].map((path) => (
               <Route key={path} path={path} element={<Navigate to="/" replace />} />
             ))}

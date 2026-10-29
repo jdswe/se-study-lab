@@ -13,7 +13,7 @@ const PAD_Y = 34;
  * creation order, branch labels at each tip, and HEAD on the current branch.
  * New commits animate in; existing ones stay put because they are keyed by id.
  */
-export function GitGraph({ state, label, compact = false }: { state: RepoState; label: string; compact?: boolean }) {
+export function GitGraph({ state, label, compact = false, natural = false }: { state: RepoState; label: string; compact?: boolean; natural?: boolean }) {
   const laneOf = (branch: string) => state.lanes[branch] ?? 0;
   const pos = new Map(state.commits.map((c) => [c.id, { x: PAD_X + c.seq * DX, y: PAD_Y + laneOf(c.branch) * DY, lane: laneOf(c.branch) }]));
   const maxLane = Math.max(0, ...Object.values(state.lanes));
@@ -29,6 +29,8 @@ export function GitGraph({ state, label, compact = false }: { state: RepoState; 
     <svg
       className={`git-graph ${compact ? 'is-compact' : ''}`}
       viewBox={`0 0 ${width} ${height}`}
+      // Natural size scrolls inside its box instead of shrinking as history grows.
+      style={natural ? { width: `${width}px`, height: `${height}px`, maxWidth: 'none' } : undefined}
       role="img"
       aria-label={label}
       preserveAspectRatio="xMinYMid meet"
