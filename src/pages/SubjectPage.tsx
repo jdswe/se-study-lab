@@ -56,7 +56,7 @@ export function SubjectPage() {
               return (
                 <li key={n} className="week-card is-soon">
                   <span className="week-num">{n}</span>
-                  <h3>{t('module.weekN', { n })}</h3>
+                  <h3>{meta ? pick(meta.title).text : t('module.weekN', { n })}</h3>
                   <p className="faint">{t('common.comingSoon')}</p>
                 </li>
               );
