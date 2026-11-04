@@ -3,7 +3,7 @@ import type { Activity, Flashcard, Localized, Question } from '../types';
 const L = (en: string, es: string, pt: string): Localized => ({ en, es, pt });
 const TF = [L('True', 'Verdadero', 'Verdadeiro'), L('False', 'Falso', 'Falso')];
 
-/** Flashcards for lessons 10–12 (ER model, mapping, DDL/DML). */
+/** Flashcards for lessons 10–14 (ER, mapping, DDL/DML, DBMS dialects, and local setup). */
 export const dbDesignFlashcards: Flashcard[] = [
   { id: 'db1-fc-d1', lessonId: 'db1-l10-er-model', kind: 'concept',
     front: L('The three stages of database design', 'Las tres etapas del diseño de bases de datos', 'As três etapas do projeto de banco de dados'),
@@ -44,9 +44,18 @@ export const dbDesignFlashcards: Flashcard[] = [
   { id: 'db1-fc-d13', lessonId: 'db1-l12-ddl-dml', kind: 'command',
     front: L('Add a column to an existing table', 'Agregar una columna a una tabla existente', 'Adicionar uma coluna a uma tabela existente'),
     back: L('ALTER TABLE customer ADD COLUMN phone VARCHAR(20);', 'ALTER TABLE customer ADD COLUMN phone VARCHAR(20);', 'ALTER TABLE customer ADD COLUMN phone VARCHAR(20);') },
+  { id: 'db1-fc-d14', lessonId: 'db1-l13-mysql-postgresql', kind: 'distinction',
+    front: L('MySQL vs PostgreSQL: generated primary-key syntax?', 'MySQL frente a PostgreSQL: ¿sintaxis de clave autogenerada?', 'MySQL vs PostgreSQL: sintaxe de chave gerada?'),
+    back: L('MySQL: AUTO_INCREMENT. PostgreSQL: GENERATED ALWAYS AS IDENTITY.', 'MySQL: AUTO_INCREMENT. PostgreSQL: GENERATED ALWAYS AS IDENTITY.', 'MySQL: AUTO_INCREMENT. PostgreSQL: GENERATED ALWAYS AS IDENTITY.') },
+  { id: 'db1-fc-d15', lessonId: 'db1-l13-mysql-postgresql', kind: 'distinction',
+    front: L('Which database runs in the browser SQL Lab?', '¿Qué base de datos se ejecuta en el Laboratorio SQL del navegador?', 'Qual banco de dados roda no Laboratório SQL do navegador?'),
+    back: L('SQLite, embedded in the page. It is not a PostgreSQL or MySQL server.', 'SQLite, integrado en la página. No es un servidor PostgreSQL ni MySQL.', 'SQLite, embutido na página. Não é um servidor PostgreSQL nem MySQL.') },
+  { id: 'db1-fc-d16', lessonId: 'db1-l14-install-dbms', kind: 'command',
+    front: L('Default local ports: PostgreSQL? MySQL?', 'Puertos locales predeterminados: ¿PostgreSQL? ¿MySQL?', 'Portas locais padrão: PostgreSQL? MySQL?'),
+    back: L('PostgreSQL: 5432. MySQL: 3306.', 'PostgreSQL: 5432. MySQL: 3306.', 'PostgreSQL: 5432. MySQL: 3306.') },
 ];
 
-/** Quiz questions for lessons 10–12. */
+/** Quiz questions for lessons 10–14. */
 export const dbDesignQuestions: Question[] = [
   {
     id: 'db1-q-d-stages', type: 'multiple-choice', lessonId: 'db1-l10-er-model',
@@ -65,10 +74,10 @@ export const dbDesignQuestions: Question[] = [
   },
   {
     id: 'db1-q-d-weak', type: 'scenario', lessonId: 'db1-l10-er-model',
-    prompt: L('Hotel rooms are numbered 101, 102… in every hotel of a chain. How do you identify a room?', 'Las habitaciones se numeran 101, 102… en cada hotel de una cadena. ¿Cómo se identifica una habitación?', 'Os quartos são numerados 101, 102… em cada hotel de uma rede. Como se identifica um quarto?'),
-    options: [L('(hotel_id, room_no): it is a weak entity', '(hotel_id, nro_habitacion): es una entidad débil', '(hotel_id, num_quarto): é uma entidade fraca'), L('room_no alone', 'Solo nro_habitacion', 'Só num_quarto'), L('The hotel name', 'El nombre del hotel', 'O nome do hotel')],
+    prompt: L('A workbench is numbered 2 inside each room of a makerspace. How do you identify it?', 'Un banco de trabajo tiene el número 2 dentro de cada sala de un taller maker. ¿Cómo se identifica?', 'Uma bancada tem o número 2 dentro de cada sala de uma oficina maker. Como identificá-la?'),
+    options: [L('(room_id, bench_no): it is a weak entity', '(room_id, nro_banco): es una entidad débil', '(room_id, num_bancada): é uma entidade fraca'), L('bench_no alone', 'Solo nro_banco', 'Só num_bancada'), L('The room name', 'El nombre de la sala', 'O nome da sala')],
     answer: 0,
-    explanation: L('Room 101 exists in every hotel, so the number only identifies a room together with its hotel.', 'La habitación 101 existe en todos los hoteles, así que el número solo identifica una habitación junto con su hotel.', 'O quarto 101 existe em todos os hotéis, então o número só identifica um quarto junto com seu hotel.'),
+    explanation: L('Workbench 2 can exist in every room, so its number only identifies it together with its room.', 'El banco 2 puede existir en cada sala, así que su número solo lo identifica junto con la sala.', 'A bancada 2 pode existir em cada sala, então seu número só a identifica junto com a sala.'),
   },
   {
     id: 'db1-q-d-nm', type: 'multiple-choice', lessonId: 'db1-l11-er-to-tables',
@@ -104,21 +113,35 @@ export const dbDesignQuestions: Question[] = [
     accepted: ['DECIMAL', 'NUMERIC'],
     explanation: L('DECIMAL (or NUMERIC) stores exact values; FLOAT is approximate.', 'DECIMAL (o NUMERIC) guarda valores exactos; FLOAT es aproximado.', 'DECIMAL (ou NUMERIC) guarda valores exatos; FLOAT é aproximado.'),
   },
+  {
+    id: 'db1-q-d-dialect', type: 'multiple-choice', lessonId: 'db1-l13-mysql-postgresql',
+    prompt: L('Which statement about SQLite in the SQL Lab is accurate?', '¿Qué afirmación sobre SQLite en el Laboratorio SQL es correcta?', 'Qual afirmação sobre o SQLite no Laboratório SQL está correta?'),
+    options: [L('It runs in the browser and is not a PostgreSQL or MySQL server.', 'Se ejecuta en el navegador y no es un servidor PostgreSQL ni MySQL.', 'Roda no navegador e não é um servidor PostgreSQL nem MySQL.'), L('It is a remote PostgreSQL server.', 'Es un servidor PostgreSQL remoto.', 'É um servidor PostgreSQL remoto.'), L('It is the MySQL Workbench client.', 'Es el cliente MySQL Workbench.', 'É o cliente MySQL Workbench.')],
+    answer: 0,
+    explanation: L('The SQL Lab embeds SQLite locally. PostgreSQL and MySQL are separate server products.', 'El Laboratorio SQL incorpora SQLite localmente. PostgreSQL y MySQL son productos de servidor separados.', 'O Laboratório SQL incorpora SQLite localmente. PostgreSQL e MySQL são produtos de servidor separados.'),
+  },
+  {
+    id: 'db1-q-d-port', type: 'multiple-choice', lessonId: 'db1-l14-install-dbms',
+    prompt: L('Which default port does a local PostgreSQL connection usually use?', '¿Qué puerto predeterminado suele usar una conexión local a PostgreSQL?', 'Qual porta padrão uma conexão local ao PostgreSQL costuma usar?'),
+    options: [L('5432', '5432', '5432'), L('3306', '3306', '3306'), L('80', '80', '80')],
+    answer: 0,
+    explanation: L('PostgreSQL uses 5432 by default. MySQL commonly uses 3306.', 'PostgreSQL usa 5432 por defecto. MySQL suele usar 3306.', 'PostgreSQL usa 5432 por padrão. MySQL costuma usar 3306.'),
+  },
 ];
 
-/** Interactive puzzles for lessons 10–12. */
+/** Interactive puzzles for lessons 10–14. */
 export const dbDesignActivities: Activity[] = [
   {
     id: 'db1-act-attr-types', kind: 'classify', lessonId: 'db1-l10-er-model',
     title: L('Store it or calculate it?', '¿Se guarda o se calcula?', 'Guardar ou calcular?'),
-    prompt: L('For a clinic patient, decide which attributes are stored and which are derived.', 'Para un paciente de una clínica, decide qué atributos se guardan y cuáles se derivan.', 'Para um paciente de uma clínica, decida quais atributos são guardados e quais são derivados.'),
+    prompt: L('For a makerspace member, decide which attributes are stored and which are derived.', 'Para un miembro del taller maker, decide qué atributos se guardan y cuáles se derivan.', 'Para um membro da oficina maker, decida quais atributos são guardados e quais são derivados.'),
     buckets: [L('Stored', 'Se guarda', 'Guardado'), L('Derived', 'Derivado', 'Derivado')],
     items: [
-      { text: L('birth_date', 'fecha_nacimiento', 'data_nascimento'), bucket: 0 },
-      { text: L('age', 'edad', 'idade'), bucket: 1 },
-      { text: L('number of visits', 'número de visitas', 'número de consultas'), bucket: 1 },
-      { text: L('blood type', 'tipo de sangre', 'tipo sanguíneo'), bucket: 0 },
-      { text: L('days since last visit', 'días desde la última visita', 'dias desde a última consulta'), bucket: 1 },
+      { text: L('joined_on', 'fecha_ingreso', 'data_entrada'), bucket: 0 },
+      { text: L('years as a member', 'años como miembro', 'anos como membro'), bucket: 1 },
+      { text: L('number of reservations', 'número de reservas', 'número de reservas'), bucket: 1 },
+      { text: L('preferred contact method', 'medio de contacto preferido', 'meio de contato preferido'), bucket: 0 },
+      { text: L('days until next reservation', 'días hasta la próxima reserva', 'dias até a próxima reserva'), bucket: 1 },
     ],
     explanation: L('Anything you can calculate from stored data goes stale if stored. Keep the source, compute the rest.', 'Todo lo que puedes calcular a partir de datos guardados queda desactualizado si se guarda. Conserva la fuente y calcula lo demás.', 'Tudo que pode ser calculado a partir de dados guardados fica desatualizado se for guardado. Mantenha a fonte e calcule o resto.'),
   },
@@ -128,10 +151,10 @@ export const dbDesignActivities: Activity[] = [
     prompt: L('Sort each ER element by what it becomes in the relational model.', 'Clasifica cada elemento ER según en qué se convierte en el modelo relacional.', 'Classifique cada elemento ER pelo que ele vira no modelo relacional.'),
     buckets: [L('A new table', 'Una tabla nueva', 'Uma tabela nova'), L('A foreign key column', 'Una columna de clave foránea', 'Uma coluna de chave estrangeira'), L('Not stored', 'No se guarda', 'Não se guarda')],
     items: [
-      { text: L('Strong entity Doctor', 'Entidad fuerte Médico', 'Entidade forte Médico'), bucket: 0 },
-      { text: L('N:M Patient–Doctor', 'N:M Paciente–Médico', 'N:M Paciente–Médico'), bucket: 0 },
+      { text: L('Strong entity Machine', 'Entidad fuerte Máquina', 'Entidade forte Máquina'), bucket: 0 },
+      { text: L('N:M Member–Machine', 'N:M Miembro–Máquina', 'N:M Membro–Máquina'), bucket: 0 },
       { text: L('Multivalued phones', 'Teléfonos multivaluados', 'Telefones multivalorados'), bucket: 0 },
-      { text: L('1:N Ward–Room', '1:N Pabellón–Habitación', '1:N Ala–Quarto'), bucket: 1 },
+      { text: L('1:N Room–Workbench', '1:N Sala–Banco de trabajo', '1:N Sala–Bancada'), bucket: 1 },
       { text: L('1:1 Employee–Desk', '1:1 Empleado–Escritorio', '1:1 Funcionário–Mesa'), bucket: 1 },
       { text: L('Derived age', 'Edad derivada', 'Idade derivada'), bucket: 2 },
     ],
@@ -140,9 +163,9 @@ export const dbDesignActivities: Activity[] = [
   {
     id: 'db1-act-ddl-fill', kind: 'code-fill', lessonId: 'db1-l12-ddl-dml',
     title: L('Finish the table', 'Completa la tabla', 'Complete a tabela'),
-    prompt: L('Fill in the blanks so every visit must belong to an existing doctor.', 'Completa los espacios para que cada visita deba pertenecer a un médico existente.', 'Preencha as lacunas para que cada consulta pertença a um médico existente.'),
-    template: 'CREATE TABLE visit (\n  visit_id INTEGER {0} KEY,\n  doctor_id INTEGER NOT NULL,\n  {1} KEY (doctor_id) REFERENCES doctor(doctor_id)\n);',
+    prompt: L('Fill in the blanks so every reservation must refer to an existing machine.', 'Completa los espacios para que cada reserva se refiera a una máquina existente.', 'Preencha os espaços para que cada reserva se refira a uma máquina existente.'),
+    template: 'CREATE TABLE reservation (\n  reservation_id INTEGER {0} KEY,\n  machine_id INTEGER NOT NULL,\n  {1} KEY (machine_id) REFERENCES machine(machine_id)\n);',
     blanks: ['PRIMARY', 'FOREIGN'],
-    explanation: L('PRIMARY KEY identifies each visit; FOREIGN KEY … REFERENCES ties it to a doctor.', 'PRIMARY KEY identifica cada visita; FOREIGN KEY … REFERENCES la vincula a un médico.', 'PRIMARY KEY identifica cada consulta; FOREIGN KEY … REFERENCES a liga a um médico.'),
+    explanation: L('PRIMARY KEY identifies each reservation; FOREIGN KEY … REFERENCES ties it to a machine.', 'PRIMARY KEY identifica cada reserva; FOREIGN KEY … REFERENCES la vincula a una máquina.', 'PRIMARY KEY identifica cada reserva; FOREIGN KEY … REFERENCES a liga a uma máquina.'),
   },
 ];

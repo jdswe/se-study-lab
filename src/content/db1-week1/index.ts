@@ -39,6 +39,7 @@ export const dbWeek1: WeekContent = {
     L('Write SELECT queries with WHERE, ORDER BY, and JOIN.', 'Escribir consultas SELECT con WHERE, ORDER BY y JOIN.'),
     { en: 'Draw an ER diagram with attribute types and weak entities, and map it to tables.', es: 'Dibujar un diagrama ER con tipos de atributos y entidades débiles, y transformarlo en tablas.', pt: 'Desenhar um diagrama ER com tipos de atributos e entidades fracas, e transformá-lo em tabelas.' },
     { en: 'Create and change tables with DDL, and rows with DML.', es: 'Crear y cambiar tablas con DDL, y filas con DML.', pt: 'Criar e alterar tabelas com DDL, e linhas com DML.' },
+    { en: 'Compare MySQL and PostgreSQL, and install and connect to one local server.', es: 'Comparar MySQL y PostgreSQL e instalar y conectarse a un servidor local.', pt: 'Comparar MySQL e PostgreSQL e instalar e conectar-se a um servidor local.' },
   ],
   prerequisites: [
     L('No previous database experience is needed.', 'No se necesita experiencia previa con bases de datos.'),
@@ -48,13 +49,15 @@ export const dbWeek1: WeekContent = {
     L('DBMS', 'SGBD'), L('Metadata', 'Metadatos'), L('Table, row, column', 'Tabla, fila, columna'),
     L('Primary and foreign keys', 'Claves primaria y foránea'), L('Transaction', 'Transacción'),
     L('Three-schema architecture', 'Arquitectura de tres esquemas'), L('SELECT … FROM … WHERE', 'SELECT … FROM … WHERE'),
+    { en: 'SQL dialect and RDBMS', es: 'Dialectos SQL y SGBDR', pt: 'Dialeto SQL e SGBDR' },
   ],
-  estimatedMinutes: 660,
+  estimatedMinutes: 720,
   sequence: [
     L('Read lessons 1–4: why databases, what a DBMS is, and who uses it.', 'Lee las lecciones 1–4: por qué las bases de datos, qué es un SGBD y quién lo usa.'),
     L('Read lessons 5–6 and build the campus store in the Design Studio.', 'Lee las lecciones 5–6 y construye la tienda del campus en el Estudio de diseño.'),
     L('Read lessons 7–9 and do the three SQL Lab exercises.', 'Lee las lecciones 7–9 y haz los tres ejercicios del Laboratorio SQL.'),
-    { en: 'Read lessons 10–12: ER model, mapping, and DDL. Design the clinic and do SQL Lab tasks 9–10.', es: 'Lee las lecciones 10–12: modelo ER, transformación y DDL. Diseña la clínica y haz las tareas 9–10 del Laboratorio SQL.', pt: 'Leia as lições 10–12: modelo ER, transformação e DDL. Projete a clínica e faça as tarefas 9–10 do Laboratório SQL.' },
+    { en: 'Read lessons 10–12: ER model, mapping, and DDL. Design the makerspace and do SQL Lab tasks 9–10.', es: 'Lee las lecciones 10–12: modelo ER, transformación y DDL. Diseña el taller maker y haz las tareas 9–10 del Laboratorio SQL.', pt: 'Leia as lições 10–12: modelo ER, transformação e DDL. Projete a oficina maker e faça as tarefas 9–10 do Laboratório SQL.' },
+    { en: 'Read lessons 13–14: compare MySQL with PostgreSQL, install one on your system, and create study_lab.', es: 'Lee las lecciones 13–14: compara MySQL y PostgreSQL, instala uno en tu sistema y crea study_lab.', pt: 'Leia as lições 13–14: compare MySQL e PostgreSQL, instale um no seu sistema e crie study_lab.' },
     L('Design the library, review your cards, and take the quiz.', 'Diseña la biblioteca, repasa tus tarjetas y haz el cuestionario.'),
   ],
   outcomes: [
@@ -63,8 +66,9 @@ export const dbWeek1: WeekContent = {
     L('You can query related tables with SQL.', 'Puedes consultar tablas relacionadas con SQL.'),
   ],
   checklist: [
-    { en: 'Read all twelve lessons', es: 'Leer las doce lecciones', pt: 'Ler as doze lições' },
+    { en: 'Read all fourteen lessons', es: 'Leer las catorce lecciones', pt: 'Ler as catorce lições' },
     L('Complete the activities in each lesson', 'Completar las actividades de cada lección'),
+    { en: 'Install one local database server and create study_lab', es: 'Instalar un servidor local de bases de datos y crear study_lab', pt: 'Instalar um servidor local de banco de dados e criar study_lab' },
     L('Finish SQL Labs 1–3', 'Terminar los Laboratorios SQL 1–3'),
     L('Design the library and the store in the Design Studio', 'Diseñar la biblioteca y la tienda en el Estudio de diseño'),
     L('Score at least 80% on the quiz', 'Obtener al menos 80% en el cuestionario'),

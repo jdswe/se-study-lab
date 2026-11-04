@@ -20,6 +20,8 @@ const forbidden = [
 // Only example addresses are allowed in content.
 const emailPattern = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g;
 const allowedEmail = /@(example\.com|users\.noreply\.github\.com)$/;
+// GitLab's documented SSH remote uses this account@host form; it is not an email.
+const allowedSshEndpoint = 'git@gitlab.com';
 
 const failures = [];
 let scanned = 0;
@@ -53,7 +55,7 @@ function check(path) {
   // minified third-party code, whose random strings can look like addresses.
   if (rel.startsWith('dist/')) return;
   for (const m of text.matchAll(emailPattern)) {
-    if (!allowedEmail.test(m[0])) failures.push(`${rel}: email "${m[0]}"`);
+    if (!allowedEmail.test(m[0]) && m[0] !== allowedSshEndpoint) failures.push(`${rel}: email "${m[0]}"`);
   }
 }
 

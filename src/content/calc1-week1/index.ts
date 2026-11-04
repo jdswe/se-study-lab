@@ -48,10 +48,11 @@ export const calcWeek1: WeekContent = {
   ],
   estimatedMinutes: 540,
   sequence: [
-    L('Lessons 1–2 with the Graph Lab: degree, roots, and the parabola.', 'Lecciones 1–2 con el Laboratorio de gráficas: grado, raíces y la parábola.', 'Lições 1–2 com o Laboratório de gráficos: grau, raízes e a parábola.'),
-    L('Lessons 3–5 and Labs 1–2: special equations, word problems, Ruffini.', 'Lecciones 3–5 y Laboratorios 1–2: ecuaciones especiales, problemas de texto, Ruffini.', 'Lições 3–5 e Laboratórios 1–2: equações especiais, problemas com texto, Briot–Ruffini.'),
-    L('Lessons 6–7, Lab 3, and the Inequality Lab: intervals and sign tables.', 'Lecciones 6–7, Laboratorio 3 y el Laboratorio de desigualdades: intervalos y tablas de signos.', 'Lições 6–7, Laboratório 3 e o Laboratório de desigualdades: intervalos e quadros de sinais.'),
-    L('Lesson 8 and Lab 4: systems, cases, regions. Then the quiz.', 'Lección 8 y Laboratorio 4: sistemas, casos, regiones. Luego el cuestionario.', 'Lição 8 e Laboratório 4: sistemas, casos, regiões. Depois o questionário.'),
+    L('Lesson 1 first if you need it: numbers, sets, and the algebra the week assumes.', 'Primero la Lección 1 si la necesitas: números, conjuntos y el álgebra que la semana da por sabida.', 'Primeiro a Lição 1 se precisar: números, conjuntos e a álgebra que a semana pressupõe.'),
+    L('Lessons 2–3 with the Graph Lab: degree, roots, and the parabola.', 'Lecciones 2–3 con el Laboratorio de gráficas: grado, raíces y la parábola.', 'Lições 2–3 com o Laboratório de gráficos: grau, raízes e a parábola.'),
+    L('Lessons 4–6 and Labs 1–2: special equations, word problems, Ruffini.', 'Lecciones 4–6 y Laboratorios 1–2: ecuaciones especiales, problemas de texto, Ruffini.', 'Lições 4–6 e Laboratórios 1–2: equações especiais, problemas com texto, Briot–Ruffini.'),
+    L('Lessons 7–8, Lab 3, and the Inequality Lab: intervals and sign tables.', 'Lecciones 7–8, Laboratorio 3 y el Laboratorio de desigualdades: intervalos y tablas de signos.', 'Lições 7–8, Laboratório 3 e o Laboratório de desigualdades: intervalos e quadros de sinais.'),
+    L('Lesson 9 and Lab 4: systems, cases, regions. Then the quiz.', 'Lección 9 y Laboratorio 4: sistemas, casos, regiones. Luego el cuestionario.', 'Lição 9 e Laboratório 4: sistemas, casos, regiões. Depois o questionário.'),
   ],
   outcomes: [
     L('You can solve any inequality of this week with a clear method.', 'Puedes resolver cualquier desigualdad de esta semana con un método claro.', 'Você consegue resolver qualquer desigualdade desta semana com um método claro.'),
@@ -59,7 +60,7 @@ export const calcWeek1: WeekContent = {
     L('You check answers by testing values instead of guessing.', 'Compruebas respuestas probando valores en lugar de adivinar.', 'Você confere respostas testando valores em vez de adivinhar.'),
   ],
   checklist: [
-    L('Read all eight lessons', 'Leer las ocho lecciones', 'Ler as oito lições'),
+    L('Read all nine lessons', 'Leer las nueve lecciones', 'Ler as nove lições'),
     L('Complete the activities in each lesson', 'Completar las actividades de cada lección', 'Completar as atividades de cada lição'),
     L('Finish Labs 1–4 on paper', 'Terminar en papel los Laboratorios 1–4', 'Terminar no papel os Laboratórios 1–4'),
     L('Explore every preset in the Graph Lab', 'Explorar cada ejemplo del Laboratorio de gráficas', 'Explorar cada exemplo do Laboratório de gráficos'),

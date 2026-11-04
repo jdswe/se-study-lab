@@ -4,6 +4,18 @@ const L = (en: string, es: string, pt: string): Localized => ({ en, es, pt });
 
 /** Flashcards for Calculus 1, Week 1. */
 export const calcWeek1Flashcards: Flashcard[] = [
+  { id: 'calc1-fc-0a', lessonId: 'calc1-l0-foundations', kind: 'concept',
+    front: L('ℕ, ℤ, ℚ, ℝ: how do they nest?', 'ℕ, ℤ, ℚ, ℝ: ¿cómo se contienen?', 'ℕ, ℤ, ℚ, ℝ: como se contêm?'),
+    back: L('ℕ ⊆ ℤ ⊆ ℚ ⊆ ℝ. The irrationals (√2, π) are the reals that are not fractions.', 'ℕ ⊆ ℤ ⊆ ℚ ⊆ ℝ. Los irracionales (√2, π) son los reales que no son fracciones.', 'ℕ ⊆ ℤ ⊆ ℚ ⊆ ℝ. Os irracionais (√2, π) são os reais que não são frações.') },
+  { id: 'calc1-fc-0b', lessonId: 'calc1-l0-foundations', kind: 'distinction',
+    front: L('A ∪ B vs A ∩ B', 'A ∪ B vs A ∩ B', 'A ∪ B vs A ∩ B'),
+    back: L('∪ (union): in A or in B — "or". ∩ (intersection): in both — "and".', '∪ (unión): en A o en B, "o". ∩ (intersección): en ambos, "y".', '∪ (união): em A ou em B, "ou". ∩ (interseção): nos dois, "e".') },
+  { id: 'calc1-fc-0c', lessonId: 'calc1-l0-foundations', kind: 'concept',
+    front: L('Zero product property', 'Propiedad del producto cero', 'Propriedade do produto zero'),
+    back: L('If ab = 0, then a = 0 or b = 0. It is why factoring solves equations.', 'Si ab = 0, entonces a = 0 o b = 0. Por eso factorizar resuelve ecuaciones.', 'Se ab = 0, então a = 0 ou b = 0. É por isso que fatorar resolve equações.') },
+  { id: 'calc1-fc-0d', lessonId: 'calc1-l0-foundations', kind: 'concept',
+    front: L('(a + b)², (a + b)(a − b), √(a²)', '(a + b)², (a + b)(a − b), √(a²)', '(a + b)², (a + b)(a − b), √(a²)'),
+    back: L('a² + 2ab + b² · a² − b² · |a|', 'a² + 2ab + b² · a² − b² · |a|', 'a² + 2ab + b² · a² − b² · |a|') },
   { id: 'calc1-fc-1', lessonId: 'calc1-l1-equations', kind: 'concept',
     front: L('How do you find the degree of an equation?', '¿Cómo se encuentra el grado de una ecuación?', 'Como se encontra o grau de uma equação?'),
     back: L('Expand, move everything to one side, simplify, and take the highest power of x that remains.', 'Desarrolla, pasa todo a un lado, simplifica y toma la mayor potencia de x que quede.', 'Expanda, passe tudo para um lado, simplifique e pegue a maior potência de x que sobrar.') },

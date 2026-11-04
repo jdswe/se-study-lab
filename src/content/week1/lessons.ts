@@ -239,6 +239,9 @@ export const week1Lessons: Lesson[] = [
       {
         en: 'A branch is a movable pointer to a commit. Creating a branch does not copy files. It lets you develop a feature without changing main. When the feature is ready, you merge it back. If both branches changed the same lines, Git stops and marks a conflict: the file contains markers <<<<<<<, =======, and >>>>>>> showing both versions. You edit the file to the intended result, stage it, and commit.',
       },
+      {
+        en: 'Git records an author name and email on every commit. Set them for just this repository with git config user.name "Your Name" and git config user.email "you@example.com"; adding --global applies them to all your repositories. These values are commit metadata, not your GitLab password or login.',
+      },
     ],
     takeaways: [
       {
@@ -284,8 +287,8 @@ export const week1Lessons: Lesson[] = [
   {
     id: 'w1-l6-github-and-collaboration',
     title: {
-      en: 'GitHub, remotes, and collaboration workflows',
-      es: 'GitHub, remotos y flujos de colaboración',
+      en: 'Git hosting, remotes, and collaboration workflows',
+      es: 'Alojamiento Git, remotos y flujos de colaboración',
     },
     minutes: 25,
     diagram: 'branch-merge',
@@ -295,6 +298,12 @@ export const week1Lessons: Lesson[] = [
       },
       {
         en: 'A common team workflow is feature branches with pull requests (called merge requests on GitLab). You create a branch, push it, and open a request. Reviewers read the diff, comment, and approve. Only after approval is the branch merged into main. The review step is where teams catch defects and share knowledge.',
+      },
+      {
+        en: 'GitLab and GitHub provide the same core steps for this exercise. Your class uses GitLab: after pushing the feature branch, open a merge request there. On GitHub, the equivalent is called a pull request. The names differ; Git commands such as branch, push, and fetch do not.',
+      },
+      {
+        en: 'For GitLab over SSH, use a key pair so Git can authenticate without a password prompt each time. Reuse an existing key if you have one; add only its public .pub key in your GitLab profile and never share the private key. The official SSH guide below has steps for each operating system.',
       },
       {
         en: 'Good collaboration also means keeping main stable, updating your local copy before you start work, and writing commits that a reviewer can understand one at a time.',

@@ -13,6 +13,12 @@ import { week1Videos } from './videos';
 import { week1GitMissions } from './gitMissions';
 import { lessonBodyEs, questionEs } from './translations';
 
+// Requirements engineering and detailed modelling belong to later course weeks.
+// Keep their source material available, but do not teach it as Week 1 content.
+const laterWeekLessonIds = new Set(['w1-l7-requirements-engineering', 'w1-l8-modelling-software']);
+const publishedWeek1Lessons = week1Lessons.filter((lesson) => !laterWeekLessonIds.has(lesson.id));
+const publishedLessonIds = new Set(publishedWeek1Lessons.map((lesson) => lesson.id));
+
 /** Adds Spanish paragraphs to each lesson body and merges exercises and analogies. */
 function localiseLesson(l: Lesson): Lesson {
   const bodyEs = lessonBodyEs[l.id];
@@ -59,36 +65,33 @@ export const week1: WeekContentType = {
     es: 'Introducción a la gestión de la ingeniería de software',
   },
   intro: {
-    en: 'Software is built by teams, changes constantly, and must be traceable. This week you learn how development is organised as a process, how configuration management keeps the product under control, and how Git and GitHub let people work on the same code without losing each other\'s changes.',
-    es: 'El software lo construyen equipos, cambia constantemente y debe ser trazable. Esta semana aprendes cómo se organiza el desarrollo como proceso, cómo la gestión de configuración mantiene el producto bajo control y cómo Git y GitHub permiten trabajar sobre el mismo código sin perder cambios.',
+    en: 'Software is built by teams, changes constantly, and must be traceable. This week introduces the engineering process, configuration management, and Git workflows for sharing changes safely. The examples use small products and sandbox repositories so you can practise without copying the class assignment.',
+    es: 'El software lo construyen equipos, cambia constantemente y debe ser trazable. Esta semana presenta el proceso de ingeniería, la gestión de configuración y los flujos de Git para compartir cambios con seguridad. Los ejemplos usan productos pequeños y repositorios de prueba, sin copiar el trabajo de clase.',
   },
   objectives: [
     { en: 'Explain the difference between programming and software engineering.', es: 'Explicar la diferencia entre programar e ingeniería de software.' },
     { en: 'Describe a software development lifecycle and two process models.', es: 'Describir un ciclo de vida de desarrollo y dos modelos de proceso.' },
-    { en: 'Write checkable requirements and tell functional from non-functional ones.', es: 'Escribir requisitos comprobables y distinguir los funcionales de los no funcionales.' },
-    { en: 'Read and sketch basic models: context diagram, ER model, state machine.', es: 'Leer y bosquejar modelos básicos: diagrama de contexto, modelo ER y máquina de estados.' },
     { en: 'Define software configuration management and its main activities.', es: 'Definir la gestión de configuración del software y sus actividades principales.' },
     { en: 'Use basic Git commands to initialise, stage, commit, branch, and merge.', es: 'Usar comandos básicos de Git para inicializar, preparar, confirmar, crear ramas y fusionar.' },
     { en: 'Connect a local repository to a remote and describe a pull request workflow.', es: 'Conectar un repositorio local con un remoto y describir un flujo con solicitudes de cambio.' },
   ],
   prerequisites: [
     { en: 'Comfortable using a terminal or command prompt.', es: 'Cómodo usando una terminal o consola de comandos.' },
-    { en: 'A free GitHub account (optional, needed only for the remote steps).', es: 'Una cuenta gratuita de GitHub (opcional; solo para los pasos con remoto).' },
+    { en: 'A GitLab or GitHub account (optional; the remote lesson works with either host).', es: 'Una cuenta de GitLab o GitHub (opcional; la lección de remotos funciona con cualquiera).' },
   ],
   keyConcepts: [
     { en: 'Software process', es: 'Proceso de software' },
     { en: 'Lifecycle and baseline', es: 'Ciclo de vida y línea base' },
-    { en: 'Functional vs non-functional', es: 'Funcional frente a no funcional' },
-    { en: 'Models and UML', es: 'Modelos y UML' },
     { en: 'Configuration item', es: 'Elemento de configuración' },
     { en: 'Repository, commit, branch', es: 'Repositorio, commit, rama' },
     { en: 'Staging area', es: 'Área de preparación' },
     { en: 'Remote and pull request', es: 'Remoto y solicitud de cambio' },
   ],
-  estimatedMinutes: 600,
+  estimatedMinutes: 540,
   sequence: [
-    { en: 'Read lessons 1–4 for the engineering context: process, requirements, and models.', es: 'Lee las lecciones 1–4 para el contexto de ingeniería: proceso, requisitos y modelos.' },
-    { en: 'Read lessons 5–8, practise in the Git Playground, and do Labs 1–3 in order.', es: 'Lee las lecciones 5–8, practica en el simulador de Git y haz los Laboratorios 1–3 en orden.' },
+    { en: 'Read lessons 1–2: what software engineering adds and how process models organise work.', es: 'Lee las lecciones 1–2: qué aporta la ingeniería de software y cómo organizan el trabajo los modelos de proceso.' },
+    { en: 'Read lessons 3–4: configuration management and version control; do Lab 1.', es: 'Lee las lecciones 3–4: gestión de configuración y control de versiones; haz el Laboratorio 1.' },
+    { en: 'Read lessons 5–6, practise in the Git Playground, and do Labs 2–4 in order.', es: 'Lee las lecciones 5–6, practica en el simulador de Git y haz los Laboratorios 2–4 en orden.' },
     { en: 'Connect a remote with Lab 4, then take the quiz.', es: 'Conecta un remoto con el Laboratorio 4 y luego haz el cuestionario.' },
     { en: 'Review cards until each reaches the Review or Mastered state.', es: 'Repasa las tarjetas hasta que cada una llegue a Repaso o Dominada.' },
   ],
@@ -98,7 +101,7 @@ export const week1: WeekContentType = {
     { en: 'You can resolve a simple conflict and describe a review workflow.', es: 'Puedes resolver un conflicto simple y describir un flujo de revisión.' },
   ],
   checklist: [
-    { en: 'Read all eight lessons and watch the three mini stories', es: 'Leer las ocho lecciones y ver las tres mini historias' },
+    { en: 'Read all six lessons and watch the process story', es: 'Leer las seis lecciones y ver la historia del proceso' },
     { en: 'Complete the lesson checks', es: 'Completar las comprobaciones de cada lección' },
     { en: 'Complete Labs 1–4 in the sandbox', es: 'Completar los Laboratorios 1–4 en la carpeta de prueba' },
     { en: 'Review every flashcard once', es: 'Repasar cada tarjeta una vez' },
@@ -109,17 +112,17 @@ export const week1: WeekContentType = {
     { mistake: { en: 'Confusing Git with GitHub.', es: 'Confundir Git con GitHub.' }, fix: { en: 'Git is the tool on your machine; GitHub hosts repositories.', es: 'Git es la herramienta de tu equipo; GitHub aloja repositorios.' } },
     { mistake: { en: 'Forgetting to read git status before committing.', es: 'Olvidar leer git status antes de hacer commit.' }, fix: { en: 'Make git status a habit before and after every commit.', es: 'Haz de git status un hábito antes y después de cada commit.' } },
   ],
-  lessons: week1Lessons.map(localiseLesson),
-  flashcards: week1Flashcards,
-  questions: week1Questions.map(localiseQuestion),
+  lessons: publishedWeek1Lessons.map(localiseLesson),
+  flashcards: week1Flashcards.filter((card) => publishedLessonIds.has(card.lessonId)),
+  questions: week1Questions.filter((question) => publishedLessonIds.has(question.lessonId)).map(localiseQuestion),
   labs: week1Labs,
   plan: week1Plan,
   resources: week1Resources,
-  activities: week1Activities,
-  stories: week1Stories,
+  activities: week1Activities.filter((activity) => publishedLessonIds.has(activity.lessonId)),
+  stories: week1Stories.filter((story) => publishedLessonIds.has(story.lessonId)),
   tools: ['git-playground'],
   toolData: { gitMissions: week1GitMissions },
-  videos: week1Videos,
+  videos: week1Videos.filter((video) => publishedLessonIds.has(video.lessonId)),
   // Files live in public/downloads/<locale>/ and are generated by `npm run docs`.
   documents: [
     { title: { en: 'Week summary', es: 'Resumen de la semana', pt: 'Resumo da semana' }, file: 'summary.pdf', kind: 'pdf' },

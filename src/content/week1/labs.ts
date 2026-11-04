@@ -1,8 +1,9 @@
 import type { Lab } from '../types';
 
 /**
- * Practice labs. Every command works inside ~/se-lab-sandbox or a sibling
- * bare repository created for the lab. None of them touch real projects.
+ * Practice labs. Commands stay in ~/se-lab-sandbox or its disposable bare
+ * remote. The optional GitLab step pushes only to a personal empty sandbox
+ * project, never to a class assignment or an existing project.
  */
 export const week1Labs: Lab[] = [
   {
@@ -17,8 +18,8 @@ export const week1Labs: Lab[] = [
         commands: [
           'mkdir -p ~/se-lab-sandbox && cd ~/se-lab-sandbox',
           'git init -b main',
-          'git config user.name "Lab Student"',
-          'git config user.email "student@example.com"',
+          'git config --local user.name "Lab Student"',
+          'git config --local user.email "student@example.com"',
         ],
         expected: { en: 'A message says the empty repository was initialised with main as the branch.', es: 'Un mensaje indica que se inicializó un repositorio vacío con main como rama.' },
       },
@@ -115,8 +116,8 @@ export const week1Labs: Lab[] = [
     minutes: 40,
     title: { en: 'Connect to a remote and simulate a review', es: 'Conectar un remoto y simular una revisión' },
     goal: {
-      en: 'Use a local bare repository as "origin", push a branch, and practise the fetch and pull difference. Real GitHub steps are listed afterwards.',
-      es: 'Usa un repositorio bare local como "origin", sube una rama y practica la diferencia entre fetch y pull. Los pasos reales de GitHub se explican después.',
+      en: 'Use a local bare repository as "origin", push a branch, and practise the fetch and pull difference. Then repeat the hosting steps on GitLab (used in class) or GitHub.',
+      es: 'Usa un repositorio bare local como "origin", sube una rama y practica la diferencia entre fetch y pull. Después repite los pasos de alojamiento en GitLab (usado en clase) o GitHub.',
     },
     steps: [
       {
@@ -136,7 +137,7 @@ export const week1Labs: Lab[] = [
           'git push -u origin feature-docs',
           'git branch -r',
         ],
-        expected: { en: 'origin/feature-docs appears in the remote branch list. In GitHub, you would open a pull request from this branch.', es: 'origin/feature-docs aparece en la lista de ramas remotas. En GitHub abrirías una solicitud de cambio desde esta rama.' },
+        expected: { en: 'origin/feature-docs appears in the remote branch list. In GitLab, create a merge request; in GitHub, create a pull request.', es: 'origin/feature-docs aparece en la lista de ramas remotas. En GitLab crea una solicitud de fusión; en GitHub, una solicitud de cambio.' },
       },
       {
         id: 'l4-s3', title: { en: 'Fetch versus pull', es: 'Fetch frente a pull' },
@@ -146,6 +147,21 @@ export const week1Labs: Lab[] = [
           'git pull origin main',
         ],
         expected: { en: 'fetch updates origin/* references; pull integrates origin/main into the current branch.', es: 'fetch actualiza las referencias origin/*; pull integra origin/main en la rama actual.' },
+      },
+      {
+        id: 'l4-s4', title: { en: 'Push the sandbox to GitLab with SSH', es: 'Subir el repositorio de prueba a GitLab por SSH' },
+        commands: [
+          '# Reuse an existing key if you have one; do not overwrite it.',
+          'ls ~/.ssh/id_ed25519.pub',
+          '# If it is missing, create a key: ssh-keygen -t ed25519 -C "you@example.com"',
+          '# Add only the .pub file to GitLab > Preferences > SSH Keys; keep the private key secret.',
+          'cat ~/.ssh/id_ed25519.pub',
+          'ssh -T git@gitlab.com',
+          '# Create an empty GitLab project named se-lab-sandbox, then replace YOUR-USERNAME.',
+          'git remote add gitlab git@gitlab.com:YOUR-USERNAME/se-lab-sandbox.git',
+          'git push -u gitlab feature-docs',
+        ],
+        expected: { en: 'GitLab welcomes your account after the SSH check, and the feature-docs branch appears in your personal sandbox project.', es: 'GitLab reconoce tu cuenta tras la comprobación SSH y la rama feature-docs aparece en tu proyecto personal de prueba.' },
       },
     ],
   },

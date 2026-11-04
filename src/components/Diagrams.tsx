@@ -152,37 +152,37 @@ export function DiagramView({ kind, locale }: { kind: DiagramKey; locale: Locale
     );
     return (
       <svg className="diagram" viewBox="0 0 720 330" role="img" aria-label={label(
-        'ER diagram of a clinic: Patient and Doctor are entities joined by the relationship "sees", which has its own attribute starts_at. Patient has a key attribute patient_id, a composite address, multivalued phones (double ellipse), and derived age (dashed). Ward owns the weak entity Room (double rectangle).',
-        'Diagrama ER de una clínica: Paciente y Médico son entidades unidas por la relación "atiende", que tiene su propio atributo fecha_hora. Paciente tiene el atributo clave patient_id, una dirección compuesta, teléfonos multivaluados (doble elipse) y edad derivada (punteada). Pabellón es dueño de la entidad débil Habitación (doble rectángulo).',
-        'Diagrama ER de uma clínica: Paciente e Médico são entidades ligadas pelo relacionamento "consulta", que tem o atributo próprio data_hora. Paciente tem o atributo chave patient_id, um endereço composto, telefones multivalorados (elipse dupla) e idade derivada (tracejada). Ala é dona da entidade fraca Quarto (retângulo duplo).')}>
-        {/* attributes of Patient */}
+        'ER diagram of a makerspace: Member and Machine are entities joined by the relationship "reserves", which has its own attribute starts_at. Member has a key member_id, a composite address, multivalued contacts (double ellipse), and derived membership years (dashed). Room owns the weak entity Workbench (double rectangle).',
+        'Diagrama ER de un taller maker: Miembro y Máquina son entidades unidas por la relación "reserva", que tiene su propio atributo starts_at. Miembro tiene la clave member_id, una dirección compuesta, contactos multivaluados (doble elipse) y años de membresía derivados (punteado). Sala es dueña de la entidad débil Banco de trabajo (doble rectángulo).',
+        'Diagrama ER de uma oficina maker: Membro e Máquina são entidades ligadas pelo relacionamento "reserva", que tem o atributo próprio starts_at. Membro tem a chave member_id, um endereço composto, contatos multivalorados (elipse dupla) e anos de associação derivados (tracejado). Sala é dona da entidade fraca Bancada (retângulo duplo).')}>
+        {/* attributes of Member */}
         {[[80, 40], [80, 110], [210, 30], [250, 210]].map(([x, y]) => <line key={`${x}${y}`} x1={150} y1={150} x2={x} y2={y} stroke={ink} strokeOpacity={0.5} />)}
-        {attr(80, 40, 'patient_id', { key: true })}
+        {attr(80, 40, 'member_id', { key: true })}
         {attr(80, 110, label('address', 'dirección', 'endereço'))}
-        {attr(210, 30, label('phones', 'teléfonos', 'telefones'), { double: true })}
-        {attr(250, 210, label('age', 'edad', 'idade'), { dashed: true })}
+        {attr(210, 30, label('contacts', 'contactos', 'contatos'), { double: true })}
+        {attr(250, 210, label('member years', 'años de socio', 'anos de membro'), { dashed: true })}
         <rect x={100} y={130} width={110} height={44} rx={4} fill="var(--panel-2)" stroke={ink} strokeWidth={2.2} />
-        <text x={155} y={157} textAnchor="middle" fontWeight="700">{label('Patient', 'Paciente', 'Paciente')}</text>
+        <text x={155} y={157} textAnchor="middle" fontWeight="700">{label('Member', 'Miembro', 'Membro')}</text>
         {/* relationship */}
         <line x1={210} y1={152} x2={300} y2={152} stroke={ink} strokeWidth={1.8} />
         <polygon points="360,118 420,152 360,186 300,152" fill="var(--panel)" stroke={ink} strokeWidth={2.2} />
-        <text x={360} y={157} textAnchor="middle" fontSize="13">{label('sees', 'atiende', 'consulta')}</text>
+        <text x={360} y={157} textAnchor="middle" fontSize="13">{label('reserves', 'reserva', 'reserva')}</text>
         <line x1={360} y1={118} x2={360} y2={80} stroke={ink} strokeOpacity={0.5} />
         {attr(360, 60, 'starts_at')}
         <line x1={420} y1={152} x2={510} y2={152} stroke={ink} strokeWidth={1.8} />
         <text x={250} y={144} textAnchor="middle" className="sub">N</text>
         <text x={470} y={144} textAnchor="middle" className="sub">M</text>
         <rect x={510} y={130} width={110} height={44} rx={4} fill="var(--panel-2)" stroke={ink} strokeWidth={2.2} />
-        <text x={565} y={157} textAnchor="middle" fontWeight="700">{label('Doctor', 'Médico', 'Médico')}</text>
+        <text x={565} y={157} textAnchor="middle" fontWeight="700">{label('Machine', 'Máquina', 'Máquina')}</text>
         <line x1={600} y1={130} x2={640} y2={80} stroke={ink} strokeOpacity={0.5} />
-        {attr(640, 60, 'doctor_id', { key: true })}
+        {attr(640, 60, 'machine_id', { key: true })}
         {/* weak entity */}
         <rect x={430} y={258} width={110} height={44} rx={4} fill="var(--panel-2)" stroke={ink} strokeWidth={2.2} />
-        <text x={485} y={285} textAnchor="middle" fontWeight="700">{label('Ward', 'Pabellón', 'Ala')}</text>
+        <text x={485} y={285} textAnchor="middle" fontWeight="700">{label('Room', 'Sala', 'Sala')}</text>
         <line x1={540} y1={280} x2={580} y2={280} stroke={ink} strokeWidth={1.8} />
         <rect x={580} y={254} width={124} height={52} rx={4} fill="var(--panel-2)" stroke={ink} strokeWidth={2} />
         <rect x={586} y={260} width={112} height={40} rx={3} fill="none" stroke={ink} strokeWidth={1.4} />
-        <text x={642} y={285} textAnchor="middle" fontWeight="700">{label('Room', 'Habitación', 'Quarto')}</text>
+        <text x={642} y={285} textAnchor="middle" fontWeight="700">{label('Workbench', 'Banco', 'Bancada')}</text>
         <text x={30} y={262} className="sub">{label('Rectangle: entity · Diamond: relationship', 'Rectángulo: entidad · Rombo: relación', 'Retângulo: entidade · Losango: relacionamento')}</text>
         <text x={30} y={282} className="sub">{label('Double ellipse: multivalued · Dashed: derived', 'Doble elipse: multivaluado · Punteado: derivado', 'Elipse dupla: multivalorado · Tracejado: derivado')}</text>
         <text x={30} y={302} className="sub">{label('Underlined: key · Double rectangle: weak entity', 'Subrayado: clave · Doble rectángulo: entidad débil', 'Sublinhado: chave · Retângulo duplo: entidade fraca')}</text>
