@@ -190,6 +190,86 @@ export function DiagramView({ kind, locale }: { kind: DiagramKey; locale: Locale
     );
   }
 
+  if (kind === 'degrees') {
+    const accent = 'var(--subject, #7A6A8C)';
+    const panels = [
+      { title: label('1st degree · linear', '1.er grado · lineal', '1.º grau · linear'), form: 'ax + b = 0', max: label('at most 1 root', 'como máximo 1 raíz', 'no máximo 1 raiz'), f: (x: number) => x - 1, roots: [1] },
+      { title: label('2nd degree · quadratic', '2.º grado · cuadrática', '2.º grau · quadrática'), form: 'ax² + bx + c = 0', max: label('at most 2 roots', 'como máximo 2 raíces', 'no máximo 2 raízes'), f: (x: number) => x * x - 1, roots: [-1, 1] },
+      { title: label('3rd degree · cubic', '3.er grado · cúbica', '3.º grau · cúbica'), form: 'ax³ + bx² + cx + d = 0', max: label('at most 3 roots', 'como máximo 3 raíces', 'no máximo 3 raízes'), f: (x: number) => (x * x * x - 4 * x) / 2, roots: [-2, 0, 2] },
+    ];
+    return (
+      <svg className="diagram" viewBox="0 0 720 300" role="img" aria-label={label(
+        'Three graphs: a first-degree equation is a line that crosses the x-axis once; a second-degree equation is a parabola that crosses it at most twice; a third-degree equation is a cubic that crosses it at most three times. Degree n means at most n real roots.',
+        'Tres gráficas: una ecuación de primer grado es una recta que corta el eje x una vez; una de segundo grado es una parábola que lo corta como máximo dos veces; una de tercer grado es una cúbica que lo corta como máximo tres veces. Grado n significa como máximo n raíces reales.',
+        'Três gráficos: uma equação de primeiro grau é uma reta que corta o eixo x uma vez; uma de segundo grau é uma parábola que o corta no máximo duas vezes; uma de terceiro grau é uma cúbica que o corta no máximo três vezes. Grau n significa no máximo n raízes reais.')}>
+        <defs>
+          {panels.map((_, i) => <clipPath key={i} id={`deg-clip-${i}`}><rect x={12 + i * 240} y={64} width={216} height={156} /></clipPath>)}
+        </defs>
+        {panels.map((p, i) => {
+          const x0 = 12 + i * 240;
+          const X = (x: number) => x0 + 108 + x * 34;
+          const Y = (y: number) => 142 - y * 24;
+          const pts = Array.from({ length: 121 }, (_, k) => -3.2 + k * 0.0533).map((x) => `${X(x).toFixed(1)},${Y(p.f(x)).toFixed(1)}`).join(' ');
+          return (
+            <g key={p.form}>
+              <rect x={x0} y={8} width={216} height={284} rx={14} fill="var(--panel)" stroke="var(--line)" />
+              <text x={x0 + 12} y={32} fontWeight="700">{p.title}</text>
+              <text x={x0 + 12} y={52} fontFamily="var(--font-mono)" fontSize="12">{p.form}</text>
+              <line x1={x0 + 6} x2={x0 + 210} y1={Y(0)} y2={Y(0)} stroke="var(--ink-faint)" />
+              <line x1={X(0)} x2={X(0)} y1={66} y2={218} stroke="var(--line)" />
+              <polyline points={pts} fill="none" stroke={accent} strokeWidth={3} clipPath={`url(#deg-clip-${i})`} />
+              {p.roots.map((r) => <circle key={r} cx={X(r)} cy={Y(0)} r={5.5} fill="var(--bad)" />)}
+              <text x={x0 + 12} y={250} fontWeight="600">{p.max}</text>
+              <text x={x0 + 12} y={272} className="sub">{label('red dots = roots', 'puntos rojos = raíces', 'pontos vermelhos = raízes')}</text>
+            </g>
+          );
+        })}
+      </svg>
+    );
+  }
+
+  if (kind === 'parabola') {
+    const accent = 'var(--subject, #7A6A8C)';
+    // y = −x² + 2x + 3 = −(x − 1)² + 4: roots −1 and 3, vertex (1, 4), y-intercept 3.
+    const f = (x: number) => -x * x + 2 * x + 3;
+    const X = (x: number) => 60 + (x + 2.5) * 56;
+    const Y = (y: number) => 24 + (5 - y) * 34;
+    const pts = Array.from({ length: 141 }, (_, k) => -2.4 + k * 0.05).map((x) => `${X(x).toFixed(1)},${Y(f(x)).toFixed(1)}`).join(' ');
+    return (
+      <svg className="diagram" viewBox="0 0 720 320" role="img" aria-label={label(
+        'The parabola y = −x² + 2x + 3. Because a = −1 is negative it opens downward. Its vertex, the highest point, is (1, 4); the axis of symmetry is x = 1; it crosses the x-axis at the roots −1 and 3 and the y-axis at 3. Between the roots the graph is above the x-axis (y > 0); outside them it is below (y < 0).',
+        'La parábola y = −x² + 2x + 3. Como a = −1 es negativo, abre hacia abajo. Su vértice, el punto más alto, es (1, 4); el eje de simetría es x = 1; corta el eje x en las raíces −1 y 3 y el eje y en 3. Entre las raíces la gráfica está sobre el eje x (y > 0); fuera de ellas está debajo (y < 0).',
+        'A parábola y = −x² + 2x + 3. Como a = −1 é negativo, ela abre para baixo. Seu vértice, o ponto mais alto, é (1, 4); o eixo de simetria é x = 1; ela corta o eixo x nas raízes −1 e 3 e o eixo y em 3. Entre as raízes o gráfico fica acima do eixo x (y > 0); fora delas fica abaixo (y < 0).')}>
+        <rect x={20} y={10} width={440} height={300} rx={14} fill="var(--panel)" stroke="var(--line)" />
+        {[-2, -1, 0, 1, 2, 3, 4].map((v) => <line key={`gx${v}`} x1={X(v)} x2={X(v)} y1={Y(5)} y2={Y(-3)} stroke="var(--line)" strokeWidth={0.8} />)}
+        {[-2, -1, 1, 2, 3, 4].map((v) => <line key={`gy${v}`} x1={X(-2.5)} x2={X(4.5)} y1={Y(v)} y2={Y(v)} stroke="var(--line)" strokeWidth={0.8} />)}
+        <line x1={X(-2.5)} x2={X(4.5)} y1={Y(0)} y2={Y(0)} stroke="var(--ink-soft)" strokeWidth={1.5} />
+        <line x1={X(0)} x2={X(0)} y1={Y(5)} y2={Y(-3)} stroke="var(--ink-soft)" strokeWidth={1.5} />
+        <line x1={X(-1)} x2={X(3)} y1={Y(0)} y2={Y(0)} stroke="var(--good)" strokeWidth={5} opacity={0.75} />
+        <line x1={X(1)} x2={X(1)} y1={Y(4.6)} y2={Y(-3)} stroke={accent} strokeDasharray="5 5" />
+        <polyline points={pts} fill="none" stroke={accent} strokeWidth={3.5} />
+        <circle cx={X(1)} cy={Y(4)} r={6} fill={accent} />
+        <text x={X(1) + 10} y={Y(4) - 6} fontWeight="700">V(1, 4)</text>
+        {[-1, 3].map((r) => <circle key={r} cx={X(r)} cy={Y(0)} r={6} fill="var(--bad)" />)}
+        <text x={X(-1)} y={Y(0) + 22} textAnchor="middle" fontWeight="700">−1</text>
+        <text x={X(3)} y={Y(0) + 22} textAnchor="middle" fontWeight="700">3</text>
+        <circle cx={X(0)} cy={Y(3)} r={5} fill="var(--panel)" stroke="var(--ink)" strokeWidth={2} />
+        <text x={X(0) - 8} y={Y(3) - 8} textAnchor="end" className="sub">(0, 3)</text>
+        <text x={X(1) + 6} y={Y(-2.6)} className="sub">x = 1</text>
+        <text x={490} y={40} fontWeight="700" fontFamily="var(--font-mono)">y = −x² + 2x + 3</text>
+        <text x={490} y={72}>{label('a = −1 < 0: opens down', 'a = −1 < 0: abre hacia abajo', 'a = −1 < 0: abre para baixo')}</text>
+        <text x={490} y={100}>{label('Vertex = maximum', 'Vértice = máximo', 'Vértice = máximo')}</text>
+        <text x={490} y={122} fontFamily="var(--font-mono)" fontSize="13">V = (−b/2a, −Δ/4a)</text>
+        <text x={490} y={144} fontFamily="var(--font-mono)" fontSize="13">= (−2/(−2), −16/(−4))</text>
+        <text x={490} y={166} fontFamily="var(--font-mono)" fontSize="13">= (1, 4)</text>
+        <text x={490} y={196}>{label('Axis: x = 1', 'Eje: x = 1', 'Eixo: x = 1')}</text>
+        <text x={490} y={222}>{label('Roots: −1 and 3 (Δ = 16 > 0)', 'Raíces: −1 y 3 (Δ = 16 > 0)', 'Raízes: −1 e 3 (Δ = 16 > 0)')}</text>
+        <text x={490} y={248} fill="var(--good)">{label('Green: y > 0 between the roots', 'Verde: y > 0 entre las raíces', 'Verde: y > 0 entre as raízes')}</text>
+        <text x={490} y={274} className="sub">{label('y-intercept: c = 3', 'Corte con y: c = 3', 'Corte com y: c = 3')}</text>
+      </svg>
+    );
+  }
+
   if (kind === 'real-sets') {
     const sets = [
       { x: 20, y: 18, w: 680, h: 224, name: 'ℝ', title: label('Real numbers', 'Números reales', 'Números reais'), ex: '' },
@@ -218,37 +298,57 @@ export function DiagramView({ kind, locale }: { kind: DiagramKey; locale: Locale
   }
 
   if (kind === 'number-line') {
-    const sx = (v: number) => 300 + (v / 8) * 390;
-    const rows = [
-      { notation: '[2, 5]', ineq: '2 ≤ x ≤ 5', lo: 2, hi: 5, loIn: true, hiIn: true },
-      { notation: '(2, 5)', ineq: '2 < x < 5', lo: 2, hi: 5, loIn: false, hiIn: false },
-      { notation: '[2, 5)', ineq: '2 ≤ x < 5', lo: 2, hi: 5, loIn: true, hiIn: false },
-      { notation: '(3, ∞)', ineq: 'x > 3', lo: 3, hi: Infinity, loIn: false, hiIn: false },
+    const accent = 'var(--subject, #7A6A8C)';
+    const groups = [
+      { title: label('Bounded', 'Acotados', 'Limitados'), x0: 16, rows: [
+        { n: '(a, b)', c: 'a < x < b', name: label('open', 'abierto', 'aberto'), lo: 2, hi: 5, loIn: false, hiIn: false },
+        { n: '[a, b]', c: 'a ≤ x ≤ b', name: label('closed', 'cerrado', 'fechado'), lo: 2, hi: 5, loIn: true, hiIn: true },
+        { n: '[a, b)', c: 'a ≤ x < b', name: label('half-open', 'semiabierto', 'semiaberto'), lo: 2, hi: 5, loIn: true, hiIn: false },
+        { n: '(a, b]', c: 'a < x ≤ b', name: label('half-open', 'semiabierto', 'semiaberto'), lo: 2, hi: 5, loIn: false, hiIn: true },
+      ] },
+      { title: label('Infinite', 'Infinitos', 'Infinitos'), x0: 372, rows: [
+        { n: '(a, ∞)', c: 'x > a', name: '', lo: 3, hi: Infinity, loIn: false, hiIn: false },
+        { n: '[a, ∞)', c: 'x ≥ a', name: '', lo: 3, hi: Infinity, loIn: true, hiIn: false },
+        { n: '(−∞, a)', c: 'x < a', name: '', lo: -Infinity, hi: 3, loIn: false, hiIn: false },
+        { n: '(−∞, a]', c: 'x ≤ a', name: '', lo: -Infinity, hi: 3, loIn: false, hiIn: true },
+      ] },
     ];
     return (
-      <svg className="diagram" viewBox="0 0 720 270" role="img" aria-label={label(
-        'Four intervals on number lines: [2, 5] with both ends filled, (2, 5) with both ends hollow, [2, 5) with a filled left end and a hollow right end, and (3, ∞) with a hollow dot at 3 and an arrow to the right.',
-        'Cuatro intervalos en rectas numéricas: [2, 5] con ambos extremos rellenos, (2, 5) con ambos huecos, [2, 5) con el extremo izquierdo relleno y el derecho hueco, y (3, ∞) con un punto hueco en 3 y una flecha a la derecha.',
-        'Quatro intervalos em retas numéricas: [2, 5] com as duas extremidades cheias, (2, 5) com as duas vazias, [2, 5) com a extremidade esquerda cheia e a direita vazia, e (3, ∞) com um ponto vazio em 3 e uma seta para a direita.')}>
-        <text x={30} y={26} className="sub">{label('Interval', 'Intervalo', 'Intervalo')}</text>
-        <text x={140} y={26} className="sub">{label('Inequality', 'Desigualdad', 'Desigualdade')}</text>
-        {rows.map((r, i) => {
-          const y = 66 + i * 54;
-          const x2 = r.hi === Infinity ? 700 : sx(r.hi);
+      <svg className="diagram" viewBox="0 0 720 330" role="img" aria-label={label(
+        'The eight types of interval. Bounded: open (a, b), closed [a, b], and the half-open [a, b) and (a, b]. Infinite: (a, ∞), [a, ∞), (−∞, a), and (−∞, a]. Filled dots are included endpoints, hollow dots are excluded, and arrows continue forever.',
+        'Los ocho tipos de intervalo. Acotados: abierto (a, b), cerrado [a, b] y los semiabiertos [a, b) y (a, b]. Infinitos: (a, ∞), [a, ∞), (−∞, a) y (−∞, a]. Los puntos rellenos son extremos incluidos, los huecos excluidos, y las flechas siguen sin fin.',
+        'Os oito tipos de intervalo. Limitados: aberto (a, b), fechado [a, b] e os semiabertos [a, b) e (a, b]. Infinitos: (a, ∞), [a, ∞), (−∞, a) e (−∞, a]. Pontos cheios são extremidades incluídas, vazios são excluídas, e as setas continuam sem fim.')}>
+        {groups.map((g) => {
+          const lineL = g.x0 + 196;
+          const lineR = g.x0 + 330;
+          const sx = (v: number) => lineL + 8 + (v / 7) * (lineR - lineL - 16);
           return (
-            <g key={r.notation}>
-              <text x={30} y={y + 5} fontWeight="700" fontFamily="var(--font-mono)">{r.notation}</text>
-              <text x={140} y={y + 5}>{r.ineq}</text>
-              <line x1={sx(0) - 10} x2={706} y1={y} y2={y} stroke="var(--line)" strokeWidth={2} />
-              {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((v) => <line key={v} x1={sx(v)} x2={sx(v)} y1={y - 4} y2={y + 4} stroke="var(--ink-faint)" />)}
-              <line x1={sx(r.lo)} x2={x2} y1={y} y2={y} stroke="var(--subject, #7A6A8C)" strokeWidth={6} />
-              {r.hi === Infinity && <path d={`M712,${y} l-10,-7 v14 z`} fill="var(--subject, #7A6A8C)" />}
-              <circle cx={sx(r.lo)} cy={y} r={6} fill={r.loIn ? 'var(--subject, #7A6A8C)' : 'var(--panel)'} stroke="var(--subject, #7A6A8C)" strokeWidth={2.5} />
-              {r.hi !== Infinity && <circle cx={sx(r.hi)} cy={y} r={6} fill={r.hiIn ? 'var(--subject, #7A6A8C)' : 'var(--panel)'} stroke="var(--subject, #7A6A8C)" strokeWidth={2.5} />}
+            <g key={g.title}>
+              <text x={g.x0} y={30} fontWeight="700">{g.title}</text>
+              {g.rows.map((r, i) => {
+                const y = 76 + i * 64;
+                const x1 = r.lo === -Infinity ? lineL : sx(r.lo);
+                const x2 = r.hi === Infinity ? lineR : sx(r.hi);
+                return (
+                  <g key={r.n}>
+                    <text x={g.x0} y={y + 5} fontWeight="700" fontFamily="var(--font-mono)">{r.n}</text>
+                    <text x={g.x0 + 82} y={y + 5}>{r.c}</text>
+                    {r.name && <text x={g.x0 + 82} y={y + 23} className="sub">{r.name}</text>}
+                    <line x1={lineL} x2={lineR} y1={y} y2={y} stroke="var(--line)" strokeWidth={2} />
+                    <line x1={x1} x2={x2} y1={y} y2={y} stroke={accent} strokeWidth={6} />
+                    {r.hi === Infinity && <path d={`M${lineR + 6},${y} l-10,-7 v14 z`} fill={accent} />}
+                    {r.lo === -Infinity && <path d={`M${lineL - 6},${y} l10,-7 v14 z`} fill={accent} />}
+                    {Number.isFinite(r.lo) && <circle cx={sx(r.lo)} cy={y} r={6} fill={r.loIn ? accent : 'var(--panel)'} stroke={accent} strokeWidth={2.5} />}
+                    {Number.isFinite(r.hi) && <circle cx={sx(r.hi)} cy={y} r={6} fill={r.hiIn ? accent : 'var(--panel)'} stroke={accent} strokeWidth={2.5} />}
+                    {Number.isFinite(r.lo) && <text x={sx(r.lo)} y={y + 22} textAnchor="middle" className="sub">a</text>}
+                    {Number.isFinite(r.hi) && <text x={sx(r.hi)} y={y + 22} textAnchor="middle" className="sub">{r.lo === -Infinity ? 'a' : 'b'}</text>}
+                  </g>
+                );
+              })}
             </g>
           );
         })}
-        {[0, 2, 4, 6, 8].map((v) => <text key={v} x={sx(v)} y={262} textAnchor="middle" className="sub">{v}</text>)}
+        <text x={16} y={322} className="sub">{label('● included   ○ excluded   ∞ always takes ( )', '● incluido   ○ excluido   ∞ siempre lleva ( )', '● incluído   ○ excluído   ∞ sempre leva ( )')}</text>
       </svg>
     );
   }

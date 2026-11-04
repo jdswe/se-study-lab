@@ -21,6 +21,7 @@ export interface InequalityProblem {
 export type Node =
   | { k: 'num'; v: number }
   | { k: 'x' }
+  | { k: 'y' }
   | { k: 'neg'; a: Node }
   | { k: 'bin'; op: '+' | '-' | '*' | '/' | '^'; a: Node; b: Node }
   | { k: 'abs'; a: Node }
@@ -41,7 +42,7 @@ export class InequalityError extends Error {
   }
 }
 
-type Tok = { t: 'num'; v: number } | { t: 'x' } | { t: 'fn'; v: 'abs' | 'sqrt' } | { t: 'op'; v: string };
+type Tok = { t: 'num'; v: number } | { t: 'x' } | { t: 'y' } | { t: 'fn'; v: 'abs' | 'sqrt' } | { t: 'op'; v: string };
 
 function normalize(src: string): string {
   return src
@@ -55,7 +56,8 @@ function normalize(src: string): string {
     .replace(/,(?=\d)/g, '.');
 }
 
-function tokenize(src: string): Tok[] {
+/** Splits an expression into tokens. `y` is accepted only for two-variable graphs. */
+function tokenize(src: string, allowY = false): Tok[] {
   const s = normalize(src);
   const out: Tok[] = [];
   let i = 0;
@@ -67,9 +69,18 @@ function tokenize(src: string): Tok[] {
     const word = /^[a-z]+/i.exec(s.slice(i));
     if (word) {
       const w = word[0].toLowerCase();
-      if (w === 'x') out.push({ t: 'x' });
-      else if (w === 'abs' || w === 'sqrt') out.push({ t: 'fn', v: w });
-      else throw new InequalityError('syntax');
+      // Juxtaposed letters such as "xy" or "yx" read as a product.
+      let j = 0;
+      while (j < w.length) {
+        const rest = w.slice(j);
+        if (rest.startsWith('abs') || rest.startsWith('sqrt')) {
+          const fn = rest.startsWith('abs') ? 'abs' : 'sqrt';
+          out.push({ t: 'fn', v: fn });
+          j += fn.length;
+        } else if (rest[0] === 'x') { out.push({ t: 'x' }); j++; }
+        else if (rest[0] === 'y' && allowY) { out.push({ t: 'y' }); j++; }
+        else throw new InequalityError('syntax');
+      }
       i += w.length;
       continue;
     }
@@ -103,7 +114,7 @@ class Parser {
   private startsAtom(): boolean {
     const p = this.peek();
     if (!p) return false;
-    if (p.t === 'x' || p.t === 'fn') return true;
+    if (p.t === 'x' || p.t === 'y' || p.t === 'fn') return true;
     if (p.t === 'op' && p.v === '(') return true;
     return p.t === 'op' && p.v === '|' && this.absDepth === 0;
   }
@@ -144,6 +155,7 @@ class Parser {
     if (!p) throw new InequalityError('syntax');
     if (p.t === 'num') return { k: 'num', v: p.v };
     if (p.t === 'x') return { k: 'x' };
+    if (p.t === 'y') return { k: 'y' };
     if (p.t === 'fn') {
       const a = this.isOp('(') ? this.atom() : this.power();
       return { k: p.v, a };
@@ -166,8 +178,8 @@ class Parser {
   }
 }
 
-export function parseExpression(src: string): Node {
-  const toks = tokenize(src);
+export function parseExpression(src: string, allowY = false): Node {
+  const toks = tokenize(src, allowY);
   if (!toks.length) throw new InequalityError('empty');
   const p = new Parser(toks);
   const n = p.expr();
@@ -179,30 +191,31 @@ export function parseExpression(src: string): Node {
  * Parse one inequality, a chain such as "-1 < 2x + 3 <= 5", or a system
  * separated by ";". Returns the inequalities that must all hold.
  */
-export function parseSystem(src: string): Ineq[] {
+export function parseSystem(src: string, allowY = false): Ineq[] {
   const parts = normalize(src).split(/;|\n/).map((s) => s.trim()).filter(Boolean);
   if (!parts.length) throw new InequalityError('empty');
   const out: Ineq[] = [];
   for (const part of parts) {
     const pieces = part.split(/(<=|>=|<|>)/).map((s) => s.trim());
     if (pieces.length < 3 || pieces.length % 2 === 0) throw new InequalityError('relation');
-    const exprs = pieces.filter((_, i) => i % 2 === 0).map(parseExpression);
+    const exprs = pieces.filter((_, i) => i % 2 === 0).map((e) => parseExpression(e, allowY));
     const rels = pieces.filter((_, i) => i % 2 === 1) as Rel[];
     rels.forEach((rel, i) => out.push({ lhs: exprs[i], rel, rhs: exprs[i + 1] }));
   }
   return out;
 }
 
-export function evaluate(n: Node, x: number): number {
+export function evaluate(n: Node, x: number, y = 0): number {
   switch (n.k) {
     case 'num': return n.v;
     case 'x': return x;
-    case 'neg': return -evaluate(n.a, x);
-    case 'abs': return Math.abs(evaluate(n.a, x));
-    case 'sqrt': { const v = evaluate(n.a, x); return v < 0 ? NaN : Math.sqrt(v); }
+    case 'y': return y;
+    case 'neg': return -evaluate(n.a, x, y);
+    case 'abs': return Math.abs(evaluate(n.a, x, y));
+    case 'sqrt': { const v = evaluate(n.a, x, y); return v < 0 ? NaN : Math.sqrt(v); }
     case 'bin': {
-      const a = evaluate(n.a, x);
-      const b = evaluate(n.b, x);
+      const a = evaluate(n.a, x, y);
+      const b = evaluate(n.b, x, y);
       if (n.op === '+') return a + b;
       if (n.op === '-') return a - b;
       if (n.op === '*') return a * b;
@@ -217,9 +230,9 @@ function nearZero(d: number, scale: number): boolean {
 }
 
 /** Whether x satisfies one inequality. Undefined values never satisfy it. */
-export function holds(q: Ineq, x: number): boolean {
-  const l = evaluate(q.lhs, x);
-  const r = evaluate(q.rhs, x);
+export function holds(q: Ineq, x: number, y = 0): boolean {
+  const l = evaluate(q.lhs, x, y);
+  const r = evaluate(q.rhs, x, y);
   if (!Number.isFinite(l) || !Number.isFinite(r)) return false;
   const d = l - r;
   const zero = nearZero(d, Math.max(Math.abs(l), Math.abs(r)));
@@ -404,6 +417,7 @@ export function printNode(n: Node): string {
   switch (n.k) {
     case 'num': return n.v < 0 ? `−${-n.v}` : String(n.v);
     case 'x': return 'x';
+    case 'y': return 'y';
     case 'abs': return `|${printNode(n.a)}|`;
     case 'sqrt': return n.a.k === 'num' || n.a.k === 'x' ? `√${printNode(n.a)}` : `√(${printNode(n.a)})`;
     case 'neg': return `−${wrap(n.a, PREC.neg)}`;
@@ -421,7 +435,7 @@ export function printNode(n: Node): string {
       }
       if (op === '/') return `${wrap(a, 3)}/${wrap(b, 3)}`;
       // Multiplication is written by juxtaposition: 2x, 3(x + 1), (x + 1)(x − 2).
-      const juxtapose = b.k !== 'num' && b.k !== 'neg' && !(a.k === 'x' && b.k === 'x');
+      const juxtapose = b.k !== 'num' && b.k !== 'neg' && !(a.k === b.k && (a.k === 'x' || a.k === 'y'));
       const left = a.k === 'bin' && a.op === '/' ? `(${printNode(a)})` : wrap(a, 2);
       return juxtapose ? `${left}${wrap(b, 4)}` : `${left}·${wrap(b, 3)}`;
     }

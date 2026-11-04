@@ -9,6 +9,8 @@ import { calcWeek1Labs } from './labs';
 import { calcWeek1Plan } from './plan';
 import { calcWeek1Resources } from './resources';
 import { inequalityProblems } from './inequalityProblems';
+import { graphPresets } from './graphPresets';
+import { ruffiniProblems } from './ruffiniProblems';
 
 const L = (en: string, es: string, pt: string): Localized => ({ en, es, pt });
 
@@ -22,34 +24,34 @@ export const calcWeek1: WeekContent = {
   subject: 'calculus-1',
   title: L('Introduction and inequalities', 'Introducción y desigualdades', 'Introdução e desigualdades'),
   intro: L(
-    'Calculus is built on the real numbers and on knowing exactly where an expression is positive, negative, or zero. This week you review equations of every degree, then learn to solve inequalities: linear, polynomial, rational, and with absolute value. You will write answers in interval notation and check them on a live number line.',
-    'El cálculo se apoya en los números reales y en saber exactamente dónde una expresión es positiva, negativa o cero. Esta semana repasas ecuaciones de todo grado y luego aprendes a resolver desigualdades: lineales, polinómicas, racionales y con valor absoluto. Escribirás las respuestas en notación de intervalos y las comprobarás en una recta numérica interactiva.',
-    'O cálculo se apoia nos números reais e em saber exatamente onde uma expressão é positiva, negativa ou zero. Nesta semana você revisa equações de todo grau e depois aprende a resolver desigualdades: lineares, polinomiais, racionais e com valor absoluto. Você vai escrever as respostas em notação de intervalos e conferi-las em uma reta numérica interativa.',
+    'This week reviews equations of every degree and then moves to inequalities, the tool calculus uses to say where an expression is positive, negative, or zero. You will classify equations by degree, solve second-degree equations and read their parabolas (vertex, axis, roots, maximum and minimum), handle radicals, absolute values, and fractions, factor with Ruffini\'s rule, and solve inequalities with sign tables, including systems and two variables.',
+    'Esta semana repasa las ecuaciones de todo grado y pasa a las desigualdades, la herramienta que usa el cálculo para decir dónde una expresión es positiva, negativa o cero. Clasificarás ecuaciones por grado, resolverás ecuaciones de segundo grado y leerás sus parábolas (vértice, eje, raíces, máximo y mínimo), tratarás raíces, valores absolutos y fracciones, factorizarás con la regla de Ruffini y resolverás desigualdades con tablas de signos, incluidos sistemas y dos variables.',
+    'Esta semana revisa as equações de todo grau e passa às desigualdades, a ferramenta que o cálculo usa para dizer onde uma expressão é positiva, negativa ou zero. Você vai classificar equações pelo grau, resolver equações de segundo grau e ler suas parábolas (vértice, eixo, raízes, máximo e mínimo), tratar raízes, valores absolutos e frações, fatorar com a regra de Briot–Ruffini e resolver desigualdades com quadros de sinais, incluindo sistemas e duas variáveis.',
   ),
   objectives: [
-    L('Place real numbers on the number line and read |a − b| as a distance.', 'Ubicar números reales en la recta y leer |a − b| como una distancia.', 'Localizar números reais na reta e ler |a − b| como uma distância.'),
-    L('Find the degree and the roots of an equation, and check them.', 'Encontrar el grado y las raíces de una ecuación, y comprobarlas.', 'Encontrar o grau e as raízes de uma equação, e conferi-las.'),
-    L('Solve linear, quadratic, and higher-degree equations, discarding extraneous answers.', 'Resolver ecuaciones lineales, cuadráticas y de grado mayor, descartando respuestas extrañas.', 'Resolver equações lineares, quadráticas e de grau maior, descartando respostas estranhas.'),
-    L('Write solution sets in interval notation, with unions and intersections.', 'Escribir conjuntos solución en notación de intervalos, con uniones e intersecciones.', 'Escrever conjuntos solução em notação de intervalos, com uniões e interseções.'),
-    L('Solve polynomial and rational inequalities with a sign chart.', 'Resolver desigualdades polinómicas y racionales con una tabla de signos.', 'Resolver desigualdades polinomiais e racionais com um quadro de sinais.'),
-    L('Solve absolute value inequalities and systems of inequalities.', 'Resolver desigualdades con valor absoluto y sistemas de desigualdades.', 'Resolver desigualdades com valor absoluto e sistemas de desigualdades.'),
+    L('Classify an equation by its degree and check its roots by substitution.', 'Clasificar una ecuación por su grado y comprobar sus raíces sustituyendo.', 'Classificar uma equação pelo grau e conferir suas raízes substituindo.'),
+    L('Solve second-degree equations and read the parabola: vertex, axis, roots, maximum or minimum.', 'Resolver ecuaciones de segundo grado y leer la parábola: vértice, eje, raíces, máximo o mínimo.', 'Resolver equações de segundo grau e ler a parábola: vértice, eixo, raízes, máximo ou mínimo.'),
+    L('Solve radical, absolute value, and fraction equations, discarding false answers.', 'Resolver ecuaciones con raíces, valor absoluto y fracciones, descartando respuestas falsas.', 'Resolver equações com raízes, valor absoluto e frações, descartando respostas falsas.'),
+    L('Turn real situations into equations and interpret the answer.', 'Convertir situaciones reales en ecuaciones e interpretar la respuesta.', 'Transformar situações reais em equações e interpretar a resposta.'),
+    L('Factor higher-degree polynomials with Ruffini\'s rule.', 'Factorizar polinomios de grado mayor con la regla de Ruffini.', 'Fatorar polinômios de grau maior com a regra de Briot–Ruffini.'),
+    L('Write the eight types of interval and solve inequalities with sign tables, systems, and absolute values by cases.', 'Escribir los ocho tipos de intervalo y resolver desigualdades con tablas de signos, sistemas y valores absolutos por casos.', 'Escrever os oito tipos de intervalo e resolver desigualdades com quadros de sinais, sistemas e valores absolutos por casos.'),
   ],
   prerequisites: [
     L('Operations with fractions, powers, and simple factoring.', 'Operaciones con fracciones, potencias y factorización sencilla.', 'Operações com frações, potências e fatoração simples.'),
     L('Paper and pencil: write each step before checking it here.', 'Papel y lápiz: escribe cada paso antes de comprobarlo aquí.', 'Papel e lápis: escreva cada passo antes de conferi-lo aqui.'),
   ],
   keyConcepts: [
-    L('Real numbers ℝ', 'Números reales ℝ', 'Números reais ℝ'), L('Degree and roots', 'Grado y raíces', 'Grau e raízes'),
-    L('Discriminant', 'Discriminante', 'Discriminante'), L('Interval notation', 'Notación de intervalos', 'Notação de intervalos'),
-    L('Sign chart', 'Tabla de signos', 'Quadro de sinais'), L('Absolute value', 'Valor absoluto', 'Valor absoluto'),
-    L('Systems of inequalities', 'Sistemas de desigualdades', 'Sistemas de desigualdades'),
+    L('Degree of an equation', 'Grado de una ecuación', 'Grau de uma equação'), L('Discriminant', 'Discriminante', 'Discriminante'),
+    L('Parabola and vertex', 'Parábola y vértice', 'Parábola e vértice'), L('Ruffini\'s rule', 'Regla de Ruffini', 'Regra de Briot–Ruffini'),
+    L('Types of interval', 'Tipos de intervalo', 'Tipos de intervalo'), L('Sign table', 'Tabla de signos', 'Quadro de sinais'),
+    L('Absolute value by cases', 'Valor absoluto por casos', 'Valor absoluto por casos'), L('Systems of inequalities', 'Sistemas de desigualdades', 'Sistemas de desigualdades'),
   ],
-  estimatedMinutes: 480,
+  estimatedMinutes: 540,
   sequence: [
-    L('Read lessons 1–4 and do Lab 1: numbers and equations.', 'Lee las lecciones 1–4 y haz el Laboratorio 1: números y ecuaciones.', 'Leia as lições 1–4 e faça o Laboratório 1: números e equações.'),
-    L('Read lessons 5–6, do Lab 2, and solve the warm-ups in the Inequality Lab.', 'Lee las lecciones 5–6, haz el Laboratorio 2 y resuelve los calentamientos del Laboratorio de desigualdades.', 'Leia as lições 5–6, faça o Laboratório 2 e resolva os aquecimentos do Laboratório de desigualdades.'),
-    L('Read lesson 7, do Lab 3, and solve the practice problems.', 'Lee la lección 7, haz el Laboratorio 3 y resuelve los problemas de práctica.', 'Leia a lição 7, faça o Laboratório 3 e resolva os problemas de prática.'),
-    L('Read lesson 8, do Lab 4 and the challenges, then take the quiz.', 'Lee la lección 8, haz el Laboratorio 4 y los desafíos, y luego el cuestionario.', 'Leia a lição 8, faça o Laboratório 4 e os desafios, e depois o questionário.'),
+    L('Lessons 1–2 with the Graph Lab: degree, roots, and the parabola.', 'Lecciones 1–2 con el Laboratorio de gráficas: grado, raíces y la parábola.', 'Lições 1–2 com o Laboratório de gráficos: grau, raízes e a parábola.'),
+    L('Lessons 3–5 and Labs 1–2: special equations, word problems, Ruffini.', 'Lecciones 3–5 y Laboratorios 1–2: ecuaciones especiales, problemas de texto, Ruffini.', 'Lições 3–5 e Laboratórios 1–2: equações especiais, problemas com texto, Briot–Ruffini.'),
+    L('Lessons 6–7, Lab 3, and the Inequality Lab: intervals and sign tables.', 'Lecciones 6–7, Laboratorio 3 y el Laboratorio de desigualdades: intervalos y tablas de signos.', 'Lições 6–7, Laboratório 3 e o Laboratório de desigualdades: intervalos e quadros de sinais.'),
+    L('Lesson 8 and Lab 4: systems, cases, regions. Then the quiz.', 'Lección 8 y Laboratorio 4: sistemas, casos, regiones. Luego el cuestionario.', 'Lição 8 e Laboratório 4: sistemas, casos, regiões. Depois o questionário.'),
   ],
   outcomes: [
     L('You can solve any inequality of this week with a clear method.', 'Puedes resolver cualquier desigualdad de esta semana con un método claro.', 'Você consegue resolver qualquer desigualdade desta semana com um método claro.'),
@@ -60,6 +62,7 @@ export const calcWeek1: WeekContent = {
     L('Read all eight lessons', 'Leer las ocho lecciones', 'Ler as oito lições'),
     L('Complete the activities in each lesson', 'Completar las actividades de cada lección', 'Completar as atividades de cada lição'),
     L('Finish Labs 1–4 on paper', 'Terminar en papel los Laboratorios 1–4', 'Terminar no papel os Laboratórios 1–4'),
+    L('Explore every preset in the Graph Lab', 'Explorar cada ejemplo del Laboratorio de gráficas', 'Explorar cada exemplo do Laboratório de gráficos'),
     L('Solve every problem in the Inequality Lab', 'Resolver todos los problemas del Laboratorio de desigualdades', 'Resolver todos os problemas do Laboratório de desigualdades'),
     L('Score at least 80% on the quiz', 'Obtener al menos 80% en el cuestionario', 'Tirar pelo menos 80% no questionário'),
   ],
@@ -75,8 +78,8 @@ export const calcWeek1: WeekContent = {
   resources: calcWeek1Resources,
   activities: calcWeek1Activities,
   stories: calcWeek1Stories,
-  tools: ['inequality-lab'],
-  toolData: { inequalityProblems },
+  tools: ['graph-lab', 'ruffini-lab', 'inequality-lab'],
+  toolData: { inequalityProblems, graphPresets, ruffiniProblems },
   videos: [],
   // Files live in public/downloads/<locale>/<week id>/ and are generated by `npm run docs`.
   documents: [

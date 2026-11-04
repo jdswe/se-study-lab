@@ -76,7 +76,7 @@ terms[0].modules[2].subjects = [
     title: { en: 'Calculus 1', es: 'Cálculo 1', pt: 'Cálculo 1' },
     theme: 'math',
     plannedWeeks: 8,
-    tools: ['inequality-lab'],
+    tools: ['graph-lab', 'ruffini-lab', 'inequality-lab'],
     weeks: [
       {
         id: 'y1-t1-m3-calc-w1',

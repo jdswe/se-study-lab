@@ -10,7 +10,8 @@ const roots = ['dist', 'public', 'src', 'index.html', 'scripts/build-docs.mjs'];
 // academic words (course, teacher, enrolment) are allowed: the content uses
 // them in its own examples.
 const forbidden = [
-  /jala/i, /universidad/i, /\buniversity\b/i,
+  // Not after a letter, so Spanish words like "dibújala" (draw it) pass.
+  /(?<!\p{L})jala/iu, /universidad/i, /\buniversity\b/i,
   /\bsection\s*b\b/i, /\.edu\b/i, /\bmoodle\b/i, /\blms\b/i,
   /carranza/i, /jdca/i, /jdswe/i,
   /Master_Class/i, /Sistemas de control de versiones/i, /Lab 1_/i, /Introduccion_Bases_de_Datos/i,

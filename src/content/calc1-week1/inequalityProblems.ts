@@ -87,4 +87,15 @@ export const inequalityProblems: InequalityProblem[] = [
     title: L('A square is almost always positive', 'Un cuadrado casi siempre es positivo', 'Um quadrado quase sempre é positivo'),
     hint: L('A square is never negative. When is it exactly zero?', 'Un cuadrado nunca es negativo. ¿Cuándo vale exactamente cero?', 'Um quadrado nunca é negativo. Quando ele vale exatamente zero?'),
   },
+  {
+    id: 'iq17', level: 3, inequality: 'abs(x - 1) + abs(x + 2) <= 5',
+    title: L('Two absolute values', 'Dos valores absolutos', 'Dois valores absolutos'),
+    hint: L('Split the line at −2 and 1. In the middle case the sum is always 3.', 'Divide la recta en −2 y 1. En el caso del medio la suma siempre vale 3.', 'Divida a reta em −2 e 1. No caso do meio a soma sempre vale 3.'),
+  },
+  {
+    id: 'iq18', level: 2, inequality: '-x^2 + 14x - 40 > 0', factors: ['x - 4', 'x - 10'],
+    title: L('A bakery\'s profit', 'La ganancia de una panadería', 'O lucro de uma padaria'),
+    context: L('Daily profit is P(x) = −x² + 14x − 40, with x in hundreds of loaves. When is there profit?', 'La ganancia diaria es P(x) = −x² + 14x − 40, con x en cientos de panes. ¿Cuándo hay ganancia?', 'O lucro diário é P(x) = −x² + 14x − 40, com x em centenas de pães. Quando há lucro?'),
+    hint: L('The parabola opens down; it is positive between its roots 4 and 10.', 'La parábola abre hacia abajo; es positiva entre sus raíces 4 y 10.', 'A parábola abre para baixo; é positiva entre as raízes 4 e 10.'),
+  },
 ];

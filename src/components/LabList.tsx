@@ -16,7 +16,7 @@ function mathLine(line: string): { text: string; inequality: boolean } {
 }
 
 /** Lab instructions with copyable steps. Step completion is saved in local progress. */
-export function LabList({ labs, sqlLabPath, ineqLabPath }: { labs: Lab[]; sqlLabPath?: string; ineqLabPath?: string }) {
+export function LabList({ labs, sqlLabPath, ineqLabPath, graphLabPath, ruffiniLabPath }: { labs: Lab[]; sqlLabPath?: string; ineqLabPath?: string; graphLabPath?: string; ruffiniLabPath?: string }) {
   const { t, pick } = useI18n();
   const progress = useProgress();
 
@@ -61,6 +61,12 @@ export function LabList({ labs, sqlLabPath, ineqLabPath }: { labs: Lab[]; sqlLab
                             <span>{m.text}</span>
                             {m.inequality && ineqLabPath && (
                               <Link className="btn btn-small" to={`${ineqLabPath}?q=${encodeURIComponent(c)}`}>{t('labs.checkInLab')}</Link>
+                            )}
+                            {!m.inequality && graphLabPath && /^\s*(y\s*[<>]|[^=]*\by\b.*[<>])|^\s*(y|h\(x\))\s*=/.test(c) && (
+                              <Link className="btn btn-small" to={`${graphLabPath}?q=${encodeURIComponent(c.replace(/^h\(x\)/, 'y'))}`}>{t('labs.drawInGraph')}</Link>
+                            )}
+                            {!m.inequality && ruffiniLabPath && /x\^[3-8]/.test(c) && /=\s*0\s*$/.test(c) && (
+                              <Link className="btn btn-small" to={`${ruffiniLabPath}?q=${encodeURIComponent(c)}`}>{t('labs.factorInRuffini')}</Link>
                             )}
                           </p>
                         );

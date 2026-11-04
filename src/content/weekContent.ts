@@ -4,12 +4,16 @@ import type { GitMission } from '../lib/gitMissions';
 import type { SqlTask } from './db1-week1/sqlTasks';
 import type { StudioScenario } from './db1-week1/studio';
 import type { InequalityProblem } from '../lib/inequality';
+import type { GraphPreset } from '../lib/graph';
+import type { RuffiniProblem } from '../lib/ruffini';
 
 export interface ToolData {
   gitMissions?: GitMission[];
   sqlTasks?: SqlTask[];
   studioScenarios?: StudioScenario[];
   inequalityProblems?: InequalityProblem[];
+  graphPresets?: GraphPreset[];
+  ruffiniProblems?: RuffiniProblem[];
 }
 
 /** Everything the UI needs for one week. Adding a week means adding one of these. */

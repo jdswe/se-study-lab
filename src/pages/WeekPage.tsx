@@ -23,12 +23,16 @@ const GitPlayground = lazy(() => import('../tools/GitPlayground'));
 const DesignStudio = lazy(() => import('../tools/DesignStudio'));
 const SqlLab = lazy(() => import('../tools/SqlLab'));
 const InequalityLab = lazy(() => import('../tools/InequalityLab'));
+const GraphLab = lazy(() => import('../tools/GraphLab'));
+const RuffiniLab = lazy(() => import('../tools/RuffiniLab'));
 
 const TOOL_LABEL: Record<SubjectTool, string> = {
   'git-playground': 'playground.title',
   'design-studio': 'studio.title',
   'sql-lab': 'sqllab.title',
   'inequality-lab': 'ineq.title',
+  'graph-lab': 'graph.title',
+  'ruffini-lab': 'ruffini.title',
 };
 
 interface NavItem {
@@ -46,7 +50,7 @@ function weekSections(week: WeekContent, tools: SubjectTool[], s: ProgressState,
   const labsDone = week.labs.filter((lab) => lab.steps.every((st) => s.stepsDone[st.id])).length;
   const planDone = week.plan.filter((_, i) => s.planStatus[`${week.id}:${i}`] === 'done').length;
   const toolStatus = (tool: SubjectTool): string | undefined => {
-    const prefix = { 'git-playground': 'gitpg:', 'sql-lab': 'sqllab:', 'design-studio': 'studio:', 'inequality-lab': 'ineq:' }[tool];
+    const prefix = { 'git-playground': 'gitpg:', 'sql-lab': 'sqllab:', 'design-studio': 'studio:', 'inequality-lab': 'ineq:', 'graph-lab': 'graph:', 'ruffini-lab': 'ruffini:' }[tool];
     const n = Object.keys(s.stepsDone).filter((k) => k.startsWith(prefix)).length;
     return n ? t('week.solvedN', { n }) : undefined;
   };
@@ -97,11 +101,13 @@ export function WeekPage() {
   else if (tab === 'lessons') body = <LessonsWithAnchor lessons={week.lessons} activities={week.activities} stories={week.stories} videos={renderedVideos(week.videos)} />;
   else if (tab === 'flashcards') body = <Deck cards={week.flashcards} />;
   else if (tab === 'quiz') body = <QuizRunner quizId={week.id} weekId={week.id} questions={week.questions} lessonTitles={lessonTitles} />;
-  else if (tab === 'labs') body = <LabList labs={week.labs} sqlLabPath={tools.includes('sql-lab') ? path('sql-lab') : undefined} ineqLabPath={tools.includes('inequality-lab') ? path('inequality-lab') : undefined} />;
+  else if (tab === 'labs') body = <LabList labs={week.labs} sqlLabPath={tools.includes('sql-lab') ? path('sql-lab') : undefined} ineqLabPath={tools.includes('inequality-lab') ? path('inequality-lab') : undefined} graphLabPath={tools.includes('graph-lab') ? path('graph-lab') : undefined} ruffiniLabPath={tools.includes('ruffini-lab') ? path('ruffini-lab') : undefined} />;
   else if (tab === 'git-playground') body = <Suspense fallback={loading}><GitPlayground missions={data.gitMissions ?? []} /></Suspense>;
   else if (tab === 'design-studio') body = <Suspense fallback={loading}><DesignStudio scenarios={data.studioScenarios ?? []} /></Suspense>;
   else if (tab === 'sql-lab') body = <Suspense fallback={loading}><SqlLab tasks={data.sqlTasks ?? []} /></Suspense>;
   else if (tab === 'inequality-lab') body = <Suspense fallback={loading}><InequalityLab problems={data.inequalityProblems ?? []} /></Suspense>;
+  else if (tab === 'ruffini-lab') body = <Suspense fallback={loading}><RuffiniLab problems={data.ruffiniProblems ?? []} /></Suspense>;
+  else if (tab === 'graph-lab') body = <Suspense fallback={loading}><GraphLab presets={data.graphPresets ?? []} /></Suspense>;
   else if (tab === 'plan') body = <PlannerSection weeks={[week]} />;
   else if (tab === 'progress') body = <ProgressSection weeks={[week]} />;
   else if (tab === 'resources') body = <Resources week={week} />;

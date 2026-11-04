@@ -25,7 +25,7 @@ export interface WeekMeta {
 export type SubjectTheme = 'version-control' | 'databases' | 'math' | 'default';
 
 /** Interactive tools a subject can offer in its own navigation. */
-export type SubjectTool = 'git-playground' | 'design-studio' | 'sql-lab' | 'inequality-lab';
+export type SubjectTool = 'git-playground' | 'design-studio' | 'sql-lab' | 'inequality-lab' | 'graph-lab' | 'ruffini-lab';
 
 /** A subject (course) taught inside a module, with its own weeks and tools. */
 export interface SubjectMeta {
@@ -66,7 +66,7 @@ export interface Lesson {
   check?: KnowledgeCheck;
   /** Optional diagram key rendered by the lesson view. */
   diagram?: 'lifecycle' | 'git-areas' | 'branch-merge' | 'requirements' | 'context' | 'files-vs-dbms' | 'er-store' | 'three-schema'
-    | 'real-sets' | 'number-line' | 'sign-chart' | 'abs-distance' | 'er-notation';
+    | 'real-sets' | 'number-line' | 'sign-chart' | 'abs-distance' | 'er-notation' | 'degrees' | 'parabola';
   /** Optional code example, always shown in English. */
   code?: { language: string; caption: Localized; source: string };
   /** A plain-language analogy that makes the core idea concrete. */
