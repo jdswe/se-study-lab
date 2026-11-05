@@ -6,6 +6,7 @@ import { Breadcrumbs } from '../components/Breadcrumbs';
 import { HeroDemo } from '../components/HeroDemo';
 import { DataHeroDemo } from '../components/DataHeroDemo';
 import { MathHeroDemo } from '../components/MathHeroDemo';
+import { CodeHeroDemo, DiscreteHeroDemo, HistoryHeroDemo, LogicHeroDemo, SystemsHeroDemo } from '../components/AreaHeroDemos';
 import { useProgress } from '../lib/store';
 import { progressOf } from '../lib/stats';
 import { SUBJECT_ACCENT } from '../lib/subjectStyle';
@@ -44,6 +45,11 @@ export function SubjectPage() {
         {subject.theme === 'version-control' && <HeroDemo />}
         {subject.theme === 'databases' && <DataHeroDemo />}
         {subject.theme === 'math' && <MathHeroDemo />}
+        {subject.theme === 'logic' && <LogicHeroDemo />}
+        {subject.theme === 'programming' && <CodeHeroDemo />}
+        {subject.theme === 'systems' && <SystemsHeroDemo />}
+        {subject.theme === 'history' && <HistoryHeroDemo />}
+        {subject.theme === 'discrete' && <DiscreteHeroDemo />}
       </header>
 
       <section aria-labelledby="weeks-title" className="subject-weeks">

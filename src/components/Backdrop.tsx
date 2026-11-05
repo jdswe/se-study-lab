@@ -100,7 +100,7 @@ export function Backdrop({ variant, hue }: { variant: BackdropVariant; hue?: num
   );
 }
 
-const THEME_VARIANT: Record<SubjectTheme, BackdropVariant> = { 'version-control': 'commits', databases: 'data', math: 'math', default: 'calm' };
+const THEME_VARIANT: Record<SubjectTheme, BackdropVariant> = { 'version-control': 'commits', databases: 'data', math: 'math', logic: 'math', programming: 'terminal', systems: 'terminal', history: 'calm', discrete: 'math', default: 'calm' };
 
 /**
  * Picks the backdrop for a route: the program on the home page, the term's

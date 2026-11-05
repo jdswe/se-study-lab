@@ -30,7 +30,7 @@ terms[0].modules[0].subjects = [
   {
     slug: 'logic',
     title: { en: 'Logic', es: 'Lógica', pt: 'Lógica' },
-    theme: 'math',
+    theme: 'logic',
     plannedWeeks: 8,
     tools: [],
     weeks: [
@@ -47,7 +47,7 @@ terms[0].modules[0].subjects = [
   {
     slug: 'programming-1',
     title: { en: 'Programming 1', es: 'Programación 1', pt: 'Programação 1' },
-    theme: 'default',
+    theme: 'programming',
     plannedWeeks: 8,
     tools: [],
     weeks: [
@@ -67,7 +67,7 @@ terms[0].modules[1].subjects = [
   {
     slug: 'operating-systems-1',
     title: { en: 'Operating Systems 1', es: 'Sistemas Operativos 1', pt: 'Sistemas Operacionais 1' },
-    theme: 'default',
+    theme: 'systems',
     plannedWeeks: 7,
     tools: [],
     weeks: [

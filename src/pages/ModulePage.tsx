@@ -7,7 +7,7 @@ import { TermArt } from '../components/TermArt';
 import { useProgress } from '../lib/store';
 import { progressOf } from '../lib/stats';
 
-const THEME_GLYPH: Record<string, string> = { 'version-control': '⑂', databases: '▦', default: '◆' };
+const THEME_GLYPH: Record<string, string> = { 'version-control': '⑂', databases: '▦', math: '∫', logic: '⊢', programming: '{}', systems: '⚙', history: '⌛', discrete: '◎', default: '◆' };
 
 /** A module: the subjects taught in it, each with its own weeks and tools. */
 export function ModulePage() {

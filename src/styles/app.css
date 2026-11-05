@@ -1216,3 +1216,32 @@ main { flex: 1 0 auto; width: 100%; }
 @media (prefers-reduced-motion: no-preference) {
   .rf-cell.is-ok { animation: gg-pop 300ms ease both; }
 }
+
+/* ===== Area hero demos (logic, programming, systems, history, discrete) ===== */
+.area-demo { border-left-color: var(--subject); }
+.area-demo-title { font-size: clamp(1.05rem, 0.9rem + 0.9vw, 1.4rem); }
+.area-demo-body { min-width: 0; overflow-x: auto; overflow-y: hidden; animation: caption-in 300ms ease both; }
+.area-demo figcaption strong { font-size: 0.92rem; }
+.area-truth { border-collapse: collapse; font-family: var(--font-mono); font-variant-ligatures: none; font-size: 0.86rem; margin: 0 auto; }
+.area-truth th, .area-truth td { padding: 2px 10px; text-align: center; border-bottom: 1px solid var(--line); }
+.area-truth th { color: var(--ink-soft); font-weight: 700; }
+.area-truth .is-result { border-left: 2px solid var(--subject); }
+.area-truth td.is-t { color: var(--good); font-weight: 700; }
+.area-truth td.is-f { color: var(--ink-faint); }
+.area-truth tbody tr { animation: caption-in 260ms ease both; }
+.area-code { margin: 0; padding: 10px 12px; border-radius: 10px; background: var(--panel-2); font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.5; color: var(--ink); white-space: pre; }
+.area-code-line { display: inline; animation: caption-in 240ms ease both; }
+.area-demo svg { width: 100%; height: auto; display: block; }
+.area-gantt-slice { animation: caption-in 300ms ease both; }
+.area-gantt-slice text { font-family: var(--font-mono); font-size: 11px; font-weight: 700; fill: #FFFDF8; }
+.area-gantt-P1 { fill: var(--subject); }
+.area-gantt-P2 { fill: color-mix(in srgb, var(--subject) 70%, #C2873F); }
+.area-gantt-P3 { fill: color-mix(in srgb, var(--subject) 55%, #3A4E74); }
+.area-gantt-P4 { fill: color-mix(in srgb, var(--subject) 45%, #8A5A6E); }
+.area-tl-now { fill: var(--subject); stroke: var(--subject); }
+.area-graph-edge { stroke: var(--line); stroke-width: 2; }
+.area-graph-node { animation: caption-in 300ms ease both; }
+.area-graph-node circle { fill: var(--subject); }
+.area-graph-node text { font-family: var(--font-mono); font-size: 11px; font-weight: 700; fill: #FFFDF8; }
+.reduce-motion .area-demo *, .reduce-motion .area-demo { animation: none !important; }
+@media (prefers-reduced-motion: reduce) { .area-demo, .area-demo * { animation: none !important; } }
