@@ -16,7 +16,7 @@ describe('Willow Lane Bakery database', () => {
     const db = await fresh();
     const tables = db.exec("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")[0].values.flat();
     expect(tables).toEqual(['customer', 'order_item', 'orders', 'product']);
-    expect(db.exec('SELECT COUNT(*) FROM product')[0].values[0][0]).toBe(5);
+    expect(db.exec('SELECT COUNT(*) FROM product')[0].values[0][0]).toBe(6);
   });
 
   it('enforces foreign keys and CHECK constraints', async () => {

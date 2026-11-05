@@ -62,7 +62,7 @@ terms[0].modules[2].subjects = [
         title: { en: 'Database management systems', es: 'Sistemas de gestión de bases de datos' },
         status: 'published',
       },
-      { id: 'y1-t1-m3-db-w2', number: 2, status: 'planned', title: { en: 'The relational model: ER modelling', es: 'El modelo relacional: modelado ER', pt: 'O modelo relacional: modelagem ER' } },
+      { id: 'y1-t1-m3-db-w2', number: 2, status: 'published', title: { en: 'The relational model: ER modelling', es: 'El modelo relacional: modelado ER', pt: 'O modelo relacional: modelagem ER' } },
       { id: 'y1-t1-m3-db-w3', number: 3, status: 'planned', title: { en: 'Normalisation', es: 'Normalización', pt: 'Normalização' } },
       { id: 'y1-t1-m3-db-w4', number: 4, status: 'planned', title: { en: 'Basic SQL 1', es: 'SQL básico 1', pt: 'SQL básico 1' } },
       { id: 'y1-t1-m3-db-w5', number: 5, status: 'planned', title: { en: 'Basic SQL 2', es: 'SQL básico 2', pt: 'SQL básico 2' } },

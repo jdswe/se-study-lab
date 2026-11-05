@@ -32,7 +32,7 @@ CREATE TABLE order_item (
 );
 
 INSERT INTO customer VALUES (301, 'Elena', 'Bogotá'), (302, 'Rafael', 'Lima'), (303, 'Inés', 'Santiago'), (304, 'Tomás', 'Quito');
-INSERT INTO product VALUES (611, 'Sourdough loaf', 12000, 18), (612, 'Cinnamon roll', 4500, 30), (613, 'Rye baguette', 8500, 9), (614, 'Lemon tart', 16000, 4), (615, 'Cold brew', 7000, 0);
+INSERT INTO product VALUES (611, 'Sourdough loaf', 12000, 18), (612, 'Cinnamon roll', 4500, 30), (613, 'Rye baguette', 8500, 9), (614, 'Lemon tart', 16000, 4), (615, 'Cold brew', 7000, 0), (620, 'Oat cookie', 3000, 25);
 INSERT INTO orders VALUES (201, 301, '2026-03-02'), (202, 302, '2026-03-03'), (203, 301, '2026-03-05'), (204, 303, '2026-03-06');
 INSERT INTO order_item VALUES (201, 611, 1), (201, 612, 2), (202, 613, 2), (203, 614, 1), (204, 611, 5), (204, 615, 2);
 `;
