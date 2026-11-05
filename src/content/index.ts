@@ -6,13 +6,14 @@ import { dbWeek2 } from './db1-week2';
 import { calcWeek1 } from './calc1-week1';
 import { calcWeek2 } from './calc1-week2';
 import { sd1Week2 } from './sd1-week2';
+import { discWeek1 } from './disc-week1';
 import { addPortuguese } from './localize';
 
 /**
  * Registry of all published weeks. To add a week, create its folder with the
  * same shape as week1 and register it here.
  */
-export const weeks: WeekContent[] = [week1, sd1Week2, dbWeek1, dbWeek2, calcWeek1, calcWeek2].map(addPortuguese);
+export const weeks: WeekContent[] = [week1, sd1Week2, dbWeek1, dbWeek2, calcWeek1, calcWeek2, discWeek1].map(addPortuguese);
 
 export function findWeek(id: string): WeekContent | undefined {
   return weeks.find((w) => w.id === id);

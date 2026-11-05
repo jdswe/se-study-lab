@@ -104,7 +104,7 @@ terms[0].modules[1].subjects = [
     plannedWeeks: 8,
     tools: [],
     weeks: [
-      { id: 'y1-t1-m2-disc-w1', number: 1, status: 'planned', title: { en: 'The principle of induction', es: 'El principio de inducción', pt: 'O princípio da indução' } },
+      { id: 'y1-t1-m2-disc-w1', number: 1, status: 'published', title: { en: 'The principle of induction', es: 'El principio de inducción', pt: 'O princípio da indução' } },
       { id: 'y1-t1-m2-disc-w2', number: 2, status: 'planned', title: { en: 'Sets', es: 'Conjuntos', pt: 'Conjuntos' } },
       { id: 'y1-t1-m2-disc-w3', number: 3, status: 'planned', title: { en: 'Relations', es: 'Relaciones', pt: 'Relações' } },
       { id: 'y1-t1-m2-disc-w4', number: 4, status: 'planned', title: { en: 'Functions', es: 'Funciones', pt: 'Funções' } },
