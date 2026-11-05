@@ -61,6 +61,23 @@ terms[0].modules[0].subjects = [
       { id: 'y1-t1-m1-prog-w8', number: 8, status: 'planned', title: { en: 'Final project', es: 'Proyecto final', pt: 'Projeto final' } },
     ],
   },
+  {
+    slug: 'history-of-software-engineering',
+    title: { en: 'History of Software Engineering', es: 'Historia de la Ingeniería de Software', pt: 'História da Engenharia de Software' },
+    theme: 'history',
+    plannedWeeks: 8,
+    tools: [],
+    weeks: [
+      { id: 'y1-t1-m1-hist-w1', number: 1, status: 'planned', title: { en: 'The evolution of computing', es: 'Evolución de la computación', pt: 'Evolução da computação' } },
+      { id: 'y1-t1-m1-hist-w2', number: 2, status: 'planned', title: { en: 'Introduction to software engineering', es: 'Introducción a la ingeniería de software', pt: 'Introdução à engenharia de software' } },
+      { id: 'y1-t1-m1-hist-w3', number: 3, status: 'planned', title: { en: 'Software pioneers and innovators', es: 'Pioneros e innovadores del software', pt: 'Pioneiros e inovadores do software' } },
+      { id: 'y1-t1-m1-hist-w4', number: 4, status: 'planned', title: { en: 'The evolution of programming languages', es: 'Evolución de los lenguajes de programación', pt: 'Evolução das linguagens de programação' } },
+      { id: 'y1-t1-m1-hist-w5', number: 5, status: 'planned', title: { en: 'The evolution of the software industry', es: 'Evolución de la industria del software', pt: 'Evolução da indústria de software' } },
+      { id: 'y1-t1-m1-hist-w6', number: 6, status: 'planned', title: { en: 'The evolution of development methodologies', es: 'Evolución de las metodologías de desarrollo', pt: 'Evolução das metodologias de desenvolvimento' } },
+      { id: 'y1-t1-m1-hist-w7', number: 7, status: 'planned', title: { en: 'Modern trends', es: 'Tendencias modernas', pt: 'Tendências modernas' } },
+      { id: 'y1-t1-m1-hist-w8', number: 8, status: 'planned', title: { en: 'Final project', es: 'Proyecto final', pt: 'Projeto final' } },
+    ],
+  },
 ];
 
 terms[0].modules[1].subjects = [
@@ -78,6 +95,23 @@ terms[0].modules[1].subjects = [
       { id: 'y1-t1-m2-os-w5', number: 5, status: 'planned', title: { en: 'Mass-storage structure', es: 'Estructura de almacenamiento masivo', pt: 'Estrutura de armazenamento em massa' } },
       { id: 'y1-t1-m2-os-w6', number: 6, status: 'planned', title: { en: 'File systems', es: 'Sistemas de archivos', pt: 'Sistemas de arquivos' } },
       { id: 'y1-t1-m2-os-w7', number: 7, status: 'planned', title: { en: 'Protection and security', es: 'Protección y seguridad', pt: 'Proteção e segurança' } },
+    ],
+  },
+  {
+    slug: 'discrete-mathematics',
+    title: { en: 'Discrete Mathematics', es: 'Matemática Discreta', pt: 'Matemática Discreta' },
+    theme: 'discrete',
+    plannedWeeks: 8,
+    tools: [],
+    weeks: [
+      { id: 'y1-t1-m2-disc-w1', number: 1, status: 'planned', title: { en: 'The principle of induction', es: 'El principio de inducción', pt: 'O princípio da indução' } },
+      { id: 'y1-t1-m2-disc-w2', number: 2, status: 'planned', title: { en: 'Sets', es: 'Conjuntos', pt: 'Conjuntos' } },
+      { id: 'y1-t1-m2-disc-w3', number: 3, status: 'planned', title: { en: 'Relations', es: 'Relaciones', pt: 'Relações' } },
+      { id: 'y1-t1-m2-disc-w4', number: 4, status: 'planned', title: { en: 'Functions', es: 'Funciones', pt: 'Funções' } },
+      { id: 'y1-t1-m2-disc-w5', number: 5, status: 'planned', title: { en: 'Counting, combinatorics, and probability', es: 'Conteo, combinatoria y probabilidad', pt: 'Contagem, combinatória e probabilidade' } },
+      { id: 'y1-t1-m2-disc-w6', number: 6, status: 'planned', title: { en: 'Number theory', es: 'Teoría de números', pt: 'Teoria dos números' } },
+      { id: 'y1-t1-m2-disc-w7', number: 7, status: 'planned', title: { en: 'Graphs and trees', es: 'Grafos y árboles', pt: 'Grafos e árvores' } },
+      { id: 'y1-t1-m2-disc-w8', number: 8, status: 'planned', title: { en: 'General review and wrap-up', es: 'Repaso general y finalización', pt: 'Revisão geral e encerramento' } },
     ],
   },
 ];
