@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import type { Activity } from '../content/types';
 import { useI18n } from '../i18n';
 import { normalise } from '../lib/grading';
+import { Rich } from './Rich';
 
 /** Interactive puzzles: order steps, fill in code, or rebuild a command from tokens. */
 export function ActivityList({ activities }: { activities: Activity[] }) {
@@ -30,8 +31,8 @@ function ActivityCard({ activity }: { activity: Activity }) {
         <span className="badge">{kindLabel}</span>
         {done === true && <span className="badge badge-good">✓ {t('activity.solved')}</span>}
       </header>
-      <h4>{pick(activity.title).text}</h4>
-      <p className="muted">{pick(activity.prompt).text}</p>
+      <h4><Rich text={pick(activity.title).text} /></h4>
+      <p className="muted"><Rich text={pick(activity.prompt).text} /></p>
       {activity.kind === 'order' && <OrderPuzzle items={activity.items.map((i) => pick(i).text)} onSolved={setDone} />}
       {activity.kind === 'code-fill' && <CodeFill template={activity.template} blanks={activity.blanks} onSolved={setDone} />}
       {activity.kind === 'scramble' && <Scramble tokens={activity.tokens} onSolved={setDone} />}
@@ -43,7 +44,7 @@ function ActivityCard({ activity }: { activity: Activity }) {
         />
       )}
       {done !== null && <p className={`feedback ${done ? 'good' : 'bad'}`} role="status">{done ? t('activity.correct') : t('activity.tryAgain')}</p>}
-      {done === true && <p className="explain">{pick(activity.explanation).text}</p>}
+      {done === true && <p className="explain"><Rich text={pick(activity.explanation).text} /></p>}
     </article>
   );
 }
@@ -169,12 +170,12 @@ function Scramble({ tokens, onSolved }: { tokens: string[]; onSolved: (ok: boole
     <div>
       <div className="scramble-line" aria-live="polite">
         {picked.length === 0 ? <span className="faint">{t('activity.empty')}</span> : picked.map((x) => (
-          <span key={x.id} className="token token-picked">{x.text}</span>
+          <span key={x.id} className="token token-picked"><Rich text={x.text} /></span>
         ))}
       </div>
       <div className="scramble-pool">
         {pool.map((x) => (
-          <button key={x.id} type="button" className="token" onClick={() => pick(x)}>{x.text}</button>
+          <button key={x.id} type="button" className="token" onClick={() => pick(x)}><Rich text={x.text} /></button>
         ))}
       </div>
       <div className="toolbar">
@@ -207,7 +208,7 @@ function Classify({ buckets, items, onSolved }: {
           const state = checked && choice[i] !== null ? (choice[i] === it.bucket ? 'is-right' : 'is-wrong') : '';
           return (
             <li key={i} className={`classify-item ${state}`}>
-              <span>{it.text}</span>
+              <span><Rich text={it.text} /></span>
               <span className="classify-buttons" role="group" aria-label={it.text}>
                 {buckets.map((b, j) => (
                   <button

@@ -26,11 +26,65 @@ export const terms: TermMeta[] = TERM_HUES.map((hue, i) => ({
   modules: [emptyModule(1), emptyModule(2), emptyModule(3)],
 }));
 
+terms[0].modules[0].subjects = [
+  {
+    slug: 'logic',
+    title: { en: 'Logic', es: 'Lógica', pt: 'Lógica' },
+    theme: 'logic',
+    plannedWeeks: 8,
+    tools: [],
+    weeks: [
+      { id: 'y1-t1-m1-logic-w1', number: 1, status: 'published', title: { en: 'Why logic matters for software engineering', es: '¿Por qué la lógica es importante para la ingeniería de software?', pt: 'Por que a lógica é importante para a engenharia de software?' } },
+      { id: 'y1-t1-m1-logic-w2', number: 2, status: 'published', title: { en: 'Syntax and semantics of propositional logic', es: 'Sintaxis y semántica de la lógica proposicional', pt: 'Sintaxe e semântica da lógica proposicional' } },
+      { id: 'y1-t1-m1-logic-w3', number: 3, status: 'published', title: { en: 'Properties and relations of propositional formulas', es: 'Propiedades y relaciones de las fórmulas proposicionales', pt: 'Propriedades e relações das fórmulas proposicionais' } },
+      { id: 'y1-t1-m1-logic-w4', number: 4, status: 'published', title: { en: 'Logical modelling of language', es: 'Modelamiento lógico del lenguaje', pt: 'Modelagem lógica da linguagem' } },
+      { id: 'y1-t1-m1-logic-w5', number: 5, status: 'published', title: { en: 'SAT solving and normal forms', es: 'SAT-solving y formas normales', pt: 'SAT-solving e formas normais' } },
+      { id: 'y1-t1-m1-logic-w6', number: 6, status: 'published', title: { en: 'The resolution method', es: 'El método de resolución', pt: 'O método de resolução' } },
+      { id: 'y1-t1-m1-logic-w7', number: 7, status: 'published', title: { en: 'Introduction to first-order predicate logic', es: 'Introducción al cálculo de predicados de primer orden', pt: 'Introdução ao cálculo de predicados de primeira ordem' } },
+      { id: 'y1-t1-m1-logic-w8', number: 8, status: 'published', title: { en: 'Final review', es: 'Repaso final', pt: 'Revisão final' } },
+    ],
+  },
+  {
+    slug: 'programming-1',
+    title: { en: 'Programming 1', es: 'Programación 1', pt: 'Programação 1' },
+    theme: 'programming',
+    plannedWeeks: 8,
+    tools: [],
+    weeks: [
+      { id: 'y1-t1-m1-prog-w1', number: 1, status: 'planned', title: { en: 'Introduction to programming', es: 'Introducción a la programación', pt: 'Introdução à programação' } },
+      { id: 'y1-t1-m1-prog-w2', number: 2, status: 'planned', title: { en: 'Programming elements I', es: 'Elementos de programación I', pt: 'Elementos de programação I' } },
+      { id: 'y1-t1-m1-prog-w3', number: 3, status: 'planned', title: { en: 'Programming elements II', es: 'Elementos de programación II', pt: 'Elementos de programação II' } },
+      { id: 'y1-t1-m1-prog-w4', number: 4, status: 'planned', title: { en: 'Programming elements III', es: 'Elementos de programación III', pt: 'Elementos de programação III' } },
+      { id: 'y1-t1-m1-prog-w5', number: 5, status: 'planned', title: { en: 'Programming elements IV', es: 'Elementos de programación IV', pt: 'Elementos de programação IV' } },
+      { id: 'y1-t1-m1-prog-w6', number: 6, status: 'planned', title: { en: 'Introduction to object-oriented programming', es: 'Introducción a la programación orientada a objetos', pt: 'Introdução à programação orientada a objetos' } },
+      { id: 'y1-t1-m1-prog-w7', number: 7, status: 'planned', title: { en: 'Course recap', es: 'Recapitulación del curso', pt: 'Recapitulação do curso' } },
+      { id: 'y1-t1-m1-prog-w8', number: 8, status: 'planned', title: { en: 'Final project', es: 'Proyecto final', pt: 'Projeto final' } },
+    ],
+  },
+  {
+    slug: 'history-of-software-engineering',
+    title: { en: 'History of Software Engineering', es: 'Historia de la Ingeniería de Software', pt: 'História da Engenharia de Software' },
+    theme: 'history',
+    plannedWeeks: 8,
+    tools: [],
+    weeks: [
+      { id: 'y1-t1-m1-hist-w1', number: 1, status: 'published', title: { en: 'The evolution of computing', es: 'Evolución de la computación', pt: 'Evolução da computação' } },
+      { id: 'y1-t1-m1-hist-w2', number: 2, status: 'published', title: { en: 'Introduction to software engineering', es: 'Introducción a la ingeniería de software', pt: 'Introdução à engenharia de software' } },
+      { id: 'y1-t1-m1-hist-w3', number: 3, status: 'published', title: { en: 'Software pioneers and innovators', es: 'Pioneros e innovadores del software', pt: 'Pioneiros e inovadores do software' } },
+      { id: 'y1-t1-m1-hist-w4', number: 4, status: 'published', title: { en: 'The evolution of programming languages', es: 'Evolución de los lenguajes de programación', pt: 'Evolução das linguagens de programação' } },
+      { id: 'y1-t1-m1-hist-w5', number: 5, status: 'published', title: { en: 'The evolution of the software industry', es: 'Evolución de la industria del software', pt: 'Evolução da indústria de software' } },
+      { id: 'y1-t1-m1-hist-w6', number: 6, status: 'published', title: { en: 'The evolution of development methodologies', es: 'Evolución de las metodologías de desarrollo', pt: 'Evolução das metodologias de desenvolvimento' } },
+      { id: 'y1-t1-m1-hist-w7', number: 7, status: 'published', title: { en: 'Modern trends', es: 'Tendencias modernas', pt: 'Tendências modernas' } },
+      { id: 'y1-t1-m1-hist-w8', number: 8, status: 'published', title: { en: 'Final project', es: 'Proyecto final', pt: 'Projeto final' } },
+    ],
+  },
+];
+
 terms[0].modules[1].subjects = [
   {
     slug: 'operating-systems-1',
     title: { en: 'Operating Systems 1', es: 'Sistemas Operativos 1', pt: 'Sistemas Operacionais 1' },
-    theme: 'default',
+    theme: 'systems',
     plannedWeeks: 7,
     tools: [],
     weeks: [
@@ -41,6 +95,23 @@ terms[0].modules[1].subjects = [
       { id: 'y1-t1-m2-os-w5', number: 5, status: 'planned', title: { en: 'Mass-storage structure', es: 'Estructura de almacenamiento masivo', pt: 'Estrutura de armazenamento em massa' } },
       { id: 'y1-t1-m2-os-w6', number: 6, status: 'planned', title: { en: 'File systems', es: 'Sistemas de archivos', pt: 'Sistemas de arquivos' } },
       { id: 'y1-t1-m2-os-w7', number: 7, status: 'planned', title: { en: 'Protection and security', es: 'Protección y seguridad', pt: 'Proteção e segurança' } },
+    ],
+  },
+  {
+    slug: 'discrete-mathematics',
+    title: { en: 'Discrete Mathematics', es: 'Matemática Discreta', pt: 'Matemática Discreta' },
+    theme: 'discrete',
+    plannedWeeks: 8,
+    tools: [],
+    weeks: [
+      { id: 'y1-t1-m2-disc-w1', number: 1, status: 'planned', title: { en: 'The principle of induction', es: 'El principio de inducción', pt: 'O princípio da indução' } },
+      { id: 'y1-t1-m2-disc-w2', number: 2, status: 'planned', title: { en: 'Sets', es: 'Conjuntos', pt: 'Conjuntos' } },
+      { id: 'y1-t1-m2-disc-w3', number: 3, status: 'planned', title: { en: 'Relations', es: 'Relaciones', pt: 'Relações' } },
+      { id: 'y1-t1-m2-disc-w4', number: 4, status: 'planned', title: { en: 'Functions', es: 'Funciones', pt: 'Funções' } },
+      { id: 'y1-t1-m2-disc-w5', number: 5, status: 'planned', title: { en: 'Counting, combinatorics, and probability', es: 'Conteo, combinatoria y probabilidad', pt: 'Contagem, combinatória e probabilidade' } },
+      { id: 'y1-t1-m2-disc-w6', number: 6, status: 'planned', title: { en: 'Number theory', es: 'Teoría de números', pt: 'Teoria dos números' } },
+      { id: 'y1-t1-m2-disc-w7', number: 7, status: 'planned', title: { en: 'Graphs and trees', es: 'Grafos y árboles', pt: 'Grafos e árvores' } },
+      { id: 'y1-t1-m2-disc-w8', number: 8, status: 'planned', title: { en: 'General review and wrap-up', es: 'Repaso general y finalización', pt: 'Revisão geral e encerramento' } },
     ],
   },
 ];

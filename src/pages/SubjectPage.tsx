@@ -6,9 +6,11 @@ import { Breadcrumbs } from '../components/Breadcrumbs';
 import { HeroDemo } from '../components/HeroDemo';
 import { DataHeroDemo } from '../components/DataHeroDemo';
 import { MathHeroDemo } from '../components/MathHeroDemo';
+import { CodeHeroDemo, DiscreteHeroDemo, HistoryHeroDemo, LogicHeroDemo, SystemsHeroDemo } from '../components/AreaHeroDemos';
 import { useProgress } from '../lib/store';
 import { progressOf } from '../lib/stats';
 import { SUBJECT_ACCENT } from '../lib/subjectStyle';
+import { Rich } from '../components/Rich';
 
 /**
  * A subject: its weeks. Every study section (cards, quiz, labs, tools, plan)
@@ -37,13 +39,18 @@ export function SubjectPage() {
 
       <header className="hero module-hero">
         <div className="hero-copy">
-          <h1>{pick(subject.title).text}</h1>
+          <h1><Rich text={pick(subject.title).text} /></h1>
           <p>{t('module.subtitle', { n: subject.plannedWeeks })}</p>
           <p className="faint">{t('week.lessonProgress', { done: p.done, total: p.total })}</p>
         </div>
         {subject.theme === 'version-control' && <HeroDemo />}
         {subject.theme === 'databases' && <DataHeroDemo />}
         {subject.theme === 'math' && <MathHeroDemo />}
+        {subject.theme === 'logic' && <LogicHeroDemo />}
+        {subject.theme === 'programming' && <CodeHeroDemo />}
+        {subject.theme === 'systems' && <SystemsHeroDemo />}
+        {subject.theme === 'history' && <HistoryHeroDemo />}
+        {subject.theme === 'discrete' && <DiscreteHeroDemo />}
       </header>
 
       <section aria-labelledby="weeks-title" className="subject-weeks">
@@ -66,7 +73,7 @@ export function SubjectPage() {
               <li key={n}>
                 <Link to={`/week/${content.id}`} className="week-card is-ready">
                   <span className="week-num">{n}</span>
-                  <h3>{pick(meta.title).text}</h3>
+                  <h3><Rich text={pick(meta.title).text} /></h3>
                   <p className="faint">{t('module.weekMeta', { lessons: content.lessons.length, min: content.estimatedMinutes })}</p>
                   <ol className="lesson-strip small" aria-hidden="true">
                     {content.lessons.map((l) => <li key={l.id} className={progress.lessonsDone[l.id] ? 'is-done' : ''} />)}

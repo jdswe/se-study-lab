@@ -22,7 +22,7 @@ export interface WeekMeta {
 }
 
 /** Visual theme of a subject; decides the decoration of its pages and weeks. */
-export type SubjectTheme = 'version-control' | 'databases' | 'math' | 'default';
+export type SubjectTheme = 'version-control' | 'databases' | 'math' | 'logic' | 'programming' | 'systems' | 'history' | 'discrete' | 'default';
 
 /** Interactive tools a subject can offer in its own navigation. */
 export type SubjectTool = 'git-playground' | 'design-studio' | 'sql-lab' | 'inequality-lab' | 'graph-lab' | 'ruffini-lab';

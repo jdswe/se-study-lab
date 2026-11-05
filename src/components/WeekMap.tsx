@@ -1,6 +1,7 @@
 import { useI18n } from '../i18n';
 import type { Lesson } from '../content/types';
 import { hueFor } from './Lesson';
+import { Rich } from './Rich';
 
 /** Visual path through the week: one coloured node per lesson, filled when done. */
 export function WeekMap({ lessons, done, onJump }: {
@@ -17,7 +18,7 @@ export function WeekMap({ lessons, done, onJump }: {
           <li key={lesson.id} style={{ ['--hue' as string]: hueFor(i) }}>
             <button type="button" className={`map-node ${isDone ? 'is-done' : ''}`} onClick={() => onJump(lesson.id)}>
               <span className="map-dot" aria-hidden="true">{isDone ? '✓' : i + 1}</span>
-              <span className="map-label">{pick(lesson.title).text}</span>
+              <span className="map-label"><Rich text={pick(lesson.title).text} /></span>
               <span className="faint">{t('common.minutes', { n: lesson.minutes })}</span>
             </button>
           </li>

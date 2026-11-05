@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { Story } from '../content/types';
 import { useI18n } from '../i18n';
 import { LANE_COLORS } from './GitGraph';
+import { Rich } from './Rich';
 
 const SCENE_MS = 4200;
 
@@ -48,7 +49,7 @@ export function StoryPlayer({ story }: { story: Story }) {
     <figure className="story" aria-roledescription="animated story">
       <header className="story-head">
         <span className="story-badge">▶ {t('story.label')}</span>
-        <h3>{pick(story.title).text}</h3>
+        <h3><Rich text={pick(story.title).text} /></h3>
       </header>
 
       <svg className="story-stage" viewBox={`0 0 ${width} 150`} role="img" aria-label={pick(current.caption).text}>
@@ -60,7 +61,7 @@ export function StoryPlayer({ story }: { story: Story }) {
             <g key={i} className={`story-station ${active ? 'is-active' : ''} ${visited.has(i) ? 'is-visited' : ''}`}>
               <circle cx={xOf(i)} cy={y} r={active ? 28 : 24} fill="var(--panel)" stroke={color} strokeWidth={active ? 4 : 2.5} />
               <text x={xOf(i)} y={y + 6} textAnchor="middle" className="story-glyph" fill={color}>{st.glyph}</text>
-              <text x={xOf(i)} y={y + 52} textAnchor="middle" className="story-label">{pick(st.label).text}</text>
+              <text x={xOf(i)} y={y + 52} textAnchor="middle" className="story-label"><Rich text={pick(st.label).text} /></text>
             </g>
           );
         })}
@@ -71,7 +72,7 @@ export function StoryPlayer({ story }: { story: Story }) {
       </svg>
 
       <figcaption className={`story-caption mood-${current.mood ?? 'neutral'}`} aria-live="polite">
-        <span className="story-step">{scene + 1}/{total}</span> {pick(current.caption).text}
+        <span className="story-step">{scene + 1}/{total}</span> <Rich text={pick(current.caption).text} />
       </figcaption>
 
       <div className="story-progress" aria-hidden="true">

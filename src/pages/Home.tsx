@@ -7,6 +7,7 @@ import { TermArt } from '../components/TermArt';
 import { SearchBox } from '../components/SearchBox';
 import { useProgress } from '../lib/store';
 import { bestQuiz, dueCount, progressOf, streakOf } from '../lib/stats';
+import { Rich } from '../components/Rich';
 
 /** Program home: the whole degree as eight terms, plus where to continue. */
 export function Home() {
@@ -29,8 +30,8 @@ export function Home() {
       <section className="hero program-hero" aria-labelledby="hero-title">
         <div className="hero-copy">
           <p className="eyebrow">{t('home.kicker')}</p>
-          <h1 id="hero-title">{pick(program.title).text}</h1>
-          <p>{pick(program.tagline).text}</p>
+          <h1 id="hero-title"><Rich text={pick(program.title).text} /></h1>
+          <p><Rich text={pick(program.tagline).text} /></p>
           <SearchBox />
           <div className="hero-actions">
             <Link className="btn btn-primary" to={`/week/${nextWeek.id}`}>{t('home.continue')}</Link>

@@ -6,6 +6,7 @@ import {
   compareAnswer, evaluate, formatNumber, formatPieces, holds, InequalityError, parseAnswer, parseExpression, prettySource,
   printIneq, relSign, signChart, solve, solveSystem, type Ineq, type InequalityProblem, type Piece, type Solution,
 } from '../lib/inequality';
+import { Rich } from '../components/Rich';
 
 /**
  * Inequality Lab: solve an inequality, write the answer in interval notation,
@@ -44,7 +45,7 @@ export default function InequalityLab({ problems }: { problems: InequalityProble
                       onClick={() => setId(p.id)}
                     >
                       <span className="ineq-pick-num" aria-hidden="true">{solved(p.id) ? '✓' : problems.indexOf(p) + 1}</span>
-                      <span className="ineq-pick-title">{pick(p.title).text}</span>
+                      <span className="ineq-pick-title"><Rich text={pick(p.title).text} /></span>
                     </button>
                   </li>
                 ))}
@@ -111,10 +112,10 @@ function ProblemView({ problem, solved }: { problem: InequalityProblem; solved: 
     <section className="ineq-main">
       <div className="ineq-problem">
         <p className="ineq-problem-title">
-          {pick(problem.title).text}
+          <Rich text={pick(problem.title).text} />
           {solved && <span className="badge badge-good">✓ {t('activity.solved')}</span>}
         </p>
-        {problem.context && <p className="ineq-context">{pick(problem.context).text}</p>}
+        {problem.context && <p className="ineq-context"><Rich text={pick(problem.context).text} /></p>}
         <div className={`ineq-expr${lines.length > 1 ? ' is-system' : ''}`} aria-label={lines.join('; ')}>
           {lines.map((l) => <span key={l}>{l}</span>)}
         </div>
@@ -123,7 +124,7 @@ function ProblemView({ problem, solved }: { problem: InequalityProblem; solved: 
           {single && <button type="button" className="btn btn-small" aria-expanded={showChart} onClick={() => setShowChart((v) => !v)}>{t('ineq.chart')}</button>}
           {!showTruth && <button type="button" className="btn btn-small" onClick={() => setRevealed(true)}>{t('ineq.reveal')}</button>}
         </div>
-        {showHint && <p className="explain">{pick(problem.hint).text}</p>}
+        {showHint && <p className="explain"><Rich text={pick(problem.hint).text} /></p>}
         {showChart && single && <SignChartTable q={solution.system[0]} points={solution.points} factors={problem.factors} />}
       </div>
 

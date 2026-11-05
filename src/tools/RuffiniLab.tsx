@@ -6,6 +6,7 @@ import {
   evaluatePoly, factorize, fmt, formatFactor, formatFactored, formatPoly, parseNumber, parsePoly, parseRootList,
   rationalCandidates, RuffiniError, sameRoots, synthetic, type RuffiniProblem, type SyntheticResult,
 } from '../lib/ruffini';
+import { Rich } from '../components/Rich';
 
 const near = (a: number, b: number) => Math.abs(a - b) < 1e-7;
 
@@ -75,7 +76,7 @@ export default function RuffiniLab({ problems }: { problems: RuffiniProblem[] })
                       onClick={() => { setId(p.id); setOwnPoly(null); }}
                     >
                       <span className="ineq-pick-num" aria-hidden="true">{solved(p.id) ? '✓' : problems.indexOf(p) + 1}</span>
-                      <span className="ineq-pick-title">{pick(p.title).text}</span>
+                      <span className="ineq-pick-title"><Rich text={pick(p.title).text} /></span>
                     </button>
                   </li>
                 ))}
@@ -176,14 +177,14 @@ function Workbench({ source, problem, solved }: { source: string; problem?: Ruff
           {problem ? pick(problem.title).text : t('ruffini.ownTitle')}
           {verdict === 'good' && <span className="badge badge-good">✓ {t('activity.solved')}</span>}
         </p>
-        {problem?.context && <p className="ineq-context">{pick(problem.context).text}</p>}
+        {problem?.context && <p className="ineq-context"><Rich text={pick(problem.context).text} /></p>}
         <p className="ineq-expr"><span>{formatPoly(original)} = 0</span></p>
         {problem && (
           <div className="ineq-tools">
             <button type="button" className="btn btn-small" aria-expanded={showHint} onClick={() => setShowHint((v) => !v)}>{t('week.hint')}</button>
           </div>
         )}
-        {showHint && problem && <p className="explain">{pick(problem.hint).text}</p>}
+        {showHint && problem && <p className="explain"><Rich text={pick(problem.hint).text} /></p>}
       </div>
 
       {done.length > 0 && (

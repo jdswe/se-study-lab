@@ -4,6 +4,7 @@ import { useI18n } from '../i18n';
 import { updateState } from '../lib/store';
 import { InequalityError, evaluate, type Node } from '../lib/inequality';
 import { inRegion, niceStep, parabolaFacts, parseGraphItem, short, type GraphItem, type GraphPreset } from '../lib/graph';
+import { Rich } from '../components/Rich';
 
 interface View { xmin: number; xmax: number; ymin: number; ymax: number }
 interface Row { id: number; text: string; on: boolean }
@@ -282,10 +283,10 @@ export default function GraphLab({ presets }: { presets: GraphPreset[] }) {
 
       <div className="graphlab-presets" role="group" aria-label={t('graph.presets')}>
         {presets.map((p) => (
-          <button key={p.id} type="button" className={`token${p.id === presetId ? ' is-current' : ''}`} aria-pressed={p.id === presetId} onClick={() => loadPreset(p)}>{pick(p.title).text}</button>
+          <button key={p.id} type="button" className={`token${p.id === presetId ? ' is-current' : ''}`} aria-pressed={p.id === presetId} onClick={() => loadPreset(p)}><Rich text={pick(p.title).text} /></button>
         ))}
       </div>
-      {preset && <p className="graphlab-note">{pick(preset.note).text}</p>}
+      {preset && <p className="graphlab-note"><Rich text={pick(preset.note).text} /></p>}
 
       <div className="graphlab-grid">
         <section className="graphlab-panel" aria-label={t('graph.expressions')}>

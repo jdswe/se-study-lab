@@ -4,6 +4,7 @@ import type { Lab } from '../content/types';
 import { updateState, useProgress } from '../lib/store';
 import { CodeBlock } from './CodeBlock';
 import { parseSystem, prettySource } from '../lib/inequality';
+import { Rich } from './Rich';
 
 /** Pretty math for a worksheet line, or the line as written when it is not an inequality. */
 function mathLine(line: string): { text: string; inequality: boolean } {
@@ -37,17 +38,17 @@ export function LabList({ labs, sqlLabPath, ineqLabPath, graphLabPath, ruffiniLa
         return (
           <section className="card" key={lab.id} aria-labelledby={`${lab.id}-title`}>
             <div className="toolbar" style={{ justifyContent: 'space-between' }}>
-              <h2 id={`${lab.id}-title`} style={{ margin: 0 }}>{pick(lab.title).text}</h2>
+              <h2 id={`${lab.id}-title`} style={{ margin: 0 }}><Rich text={pick(lab.title).text} /></h2>
               <span className="badge">{t('labs.level', { n: lab.level })} · {t('common.minutes', { n: lab.minutes })}</span>
             </div>
-            <p className="muted"><strong>{t('labs.goal')}:</strong> {pick(lab.goal).text}</p>
+            <p className="muted"><strong>{t('labs.goal')}:</strong> <Rich text={pick(lab.goal).text} /></p>
             <p className="faint">{doneSteps}/{lab.steps.length} {t('labs.steps').toLowerCase()}</p>
             {lab.steps.map((step, i) => {
               const done = Boolean(progress.stepsDone[step.id]);
               return (
                 <article key={step.id} className={`step ${done ? 'is-done' : ''}`}>
                   <div className="step-head">
-                    <h3 style={{ margin: 0 }}>{i + 1}. {pick(step.title).text}</h3>
+                    <h3 style={{ margin: 0 }}>{i + 1}. <Rich text={pick(step.title).text} /></h3>
                     <label>
                       <input type="checkbox" checked={done} onChange={() => toggleStep(step.id)} /> {t('labs.stepDone')}
                     </label>
@@ -58,7 +59,7 @@ export function LabList({ labs, sqlLabPath, ineqLabPath, graphLabPath, ruffiniLa
                         const m = mathLine(c);
                         return (
                           <p key={c}>
-                            <span>{m.text}</span>
+                            <span><Rich text={m.text} /></span>
                             {m.inequality && ineqLabPath && (
                               <Link className="btn btn-small" to={`${ineqLabPath}?q=${encodeURIComponent(c)}`}>{t('labs.checkInLab')}</Link>
                             )}
@@ -76,7 +77,7 @@ export function LabList({ labs, sqlLabPath, ineqLabPath, graphLabPath, ruffiniLa
                   {lab.kind === 'sql' && sqlLabPath && step.commands.length > 0 && (
                     <Link className="btn btn-small" to={`${sqlLabPath}?q=${encodeURIComponent(step.commands.join('\n'))}`}>▶ {t('sqllab.openInLab')}</Link>
                   )}
-                  <p className="explain"><strong>{t('labs.expected')}:</strong> {pick(step.expected).text}</p>
+                  <p className="explain"><strong>{t('labs.expected')}:</strong> <Rich text={pick(step.expected).text} /></p>
                 </article>
               );
             })}
