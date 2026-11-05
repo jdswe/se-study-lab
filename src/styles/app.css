@@ -1245,3 +1245,10 @@ main { flex: 1 0 auto; width: 100%; }
 .area-graph-node text { font-family: var(--font-mono); font-size: 11px; font-weight: 700; fill: #FFFDF8; }
 .reduce-motion .area-demo *, .reduce-motion .area-demo { animation: none !important; }
 @media (prefers-reduced-motion: reduce) { .area-demo, .area-demo * { animation: none !important; } }
+
+/* ===== Rich text: math, code, display formulas ===== */
+.rich-math .katex { font-size: 1.06em; }
+.rich-display { display: block; margin: 10px 0; overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+.rich-display .katex-display { margin: 0; }
+.rich-code { font-family: var(--font-mono); font-size: 0.9em; padding: 1px 5px; border-radius: 6px; background: var(--panel-2); border: 1px solid var(--line); font-variant-ligatures: none; }
+.katex { color: inherit; }

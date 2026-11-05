@@ -17,6 +17,7 @@ import { ProgressSection } from '../sections/ProgressSection';
 import { useProgress, type ProgressState } from '../lib/store';
 import { dueCount } from '../lib/stats';
 import { SUBJECT_ACCENT } from '../lib/subjectStyle';
+import { Rich } from '../components/Rich';
 
 // Tools load only when opened.
 const GitPlayground = lazy(() => import('../tools/GitPlayground'));
@@ -130,12 +131,12 @@ export function WeekPage() {
         <span className="week-numeral" aria-hidden="true">{week.week}</span>
         <div className="week-head-text">
           <p className="week-kicker">{place ? pick(place.subject.title).text : ''} — {t('module.weekN', { n: week.week })}</p>
-          <h1>{pick(week.title).text}</h1>
+          <h1><Rich text={pick(week.title).text} /></h1>
           <ol className="lesson-strip" aria-label={t('week.lessonProgress', { done: week.lessons.filter((l) => progress.lessonsDone[l.id]).length, total: week.lessons.length })}>
             {week.lessons.map((l, i) => (
               <li key={l.id} className={progress.lessonsDone[l.id] ? 'is-done' : ''}>
                 <Link to={`/week/${week.id}/lessons?lesson=${l.id}`} title={`${i + 1}. ${pick(l.title).text}`}>
-                  <span className="sr-only">{i + 1}. {pick(l.title).text}</span>
+                  <span className="sr-only">{i + 1}. <Rich text={pick(l.title).text} /></span>
                 </Link>
               </li>
             ))}
@@ -176,12 +177,12 @@ function Overview({ week }: { week: WeekContent }) {
   const progress = useProgress();
   return (
     <div className="overview">
-      <p className="overview-intro">{pick(week.intro).text}</p>
+      <p className="overview-intro"><Rich text={pick(week.intro).text} /></p>
 
       <section>
         <h2>{t('week.objectives')}</h2>
         <ul className="objective-list">
-          {week.objectives.map((o, i) => <li key={i}>{pick(o).text}</li>)}
+          {week.objectives.map((o, i) => <li key={i}><Rich text={pick(o).text} /></li>)}
         </ul>
       </section>
 
@@ -192,7 +193,7 @@ function Overview({ week }: { week: WeekContent }) {
             <li key={l.id} className={progress.lessonsDone[l.id] ? 'is-done' : ''}>
               <Link to={`/week/${week.id}/lessons?lesson=${l.id}`}>
                 <span className="lp-num">{i + 1}</span>
-                <span className="lp-title">{pick(l.title).text}</span>
+                <span className="lp-title"><Rich text={pick(l.title).text} /></span>
                 <span className="lp-min">{t('common.minutes', { n: l.minutes })}</span>
               </Link>
             </li>

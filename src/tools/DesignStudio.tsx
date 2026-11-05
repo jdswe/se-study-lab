@@ -3,6 +3,7 @@ import { useI18n } from '../i18n';
 import type { Cardinality, StudioScenario } from '../content/db1-week1/studio';
 import { checkDesign, emptyDesign, foreignKeys, solutionDesign, toDrawio, type Design, type Issue } from '../lib/erDesign';
 import { updateState, useProgress } from '../lib/store';
+import { Rich } from '../components/Rich';
 
 const CARDS: Cardinality[] = ['1:N', '1:1', 'N:M'];
 const BOX_W = 200;
@@ -96,14 +97,14 @@ export default function DesignStudio({ scenarios: SCENARIOS }: { scenarios: Stud
       <div className="chips studio-scenarios" role="group" aria-label={t('studio.scenario')}>
         {SCENARIOS.map((s) => (
           <button key={s.id} type="button" className="chip" aria-pressed={s.id === scenario.id} onClick={() => { setScenarioId(s.id); setIssues(null); setRel({ from: '', to: '', card: '1:N' }); }}>
-            {progress.stepsDone[`studio:${s.id}`] ? '✓ ' : ''}{pick(s.title).text}
+            {progress.stepsDone[`studio:${s.id}`] ? '✓ ' : ''}<Rich text={pick(s.title).text} />
           </button>
         ))}
       </div>
 
       <section className="card studio-brief">
         <p className="eyebrow">{t('studio.brief')}</p>
-        <p>{pick(scenario.brief).text}</p>
+        <p><Rich text={pick(scenario.brief).text} /></p>
       </section>
 
       <div className="studio-grid">
@@ -115,7 +116,7 @@ export default function DesignStudio({ scenarios: SCENARIOS }: { scenarios: Stud
             return (
               <div key={e.id} className={`studio-entity ${on ? 'is-on' : ''}`}>
                 <div className="studio-entity-head">
-                  <strong>{pick(e.name).text}</strong>
+                  <strong><Rich text={pick(e.name).text} /></strong>
                   <button type="button" className={`btn btn-small ${on ? '' : 'btn-primary'}`} onClick={() => toggleEntity(e.id)}>
                     {on ? t('studio.remove') : t('studio.add')}
                   </button>
@@ -172,7 +173,7 @@ export default function DesignStudio({ scenarios: SCENARIOS }: { scenarios: Stud
                         <rect x={p.x} y={p.y} width={BOX_W} height={p.h} rx={12} className="st-body" />
                         <rect x={p.x} y={p.y} width={BOX_W} height={30} rx={12} className="st-head" />
                         <rect x={p.x} y={p.y + 18} width={BOX_W} height={12} className="st-head" />
-                        <text x={p.x + BOX_W / 2} y={p.y + 20} textAnchor="middle" className="st-title">{pick(e.name).text}</text>
+                        <text x={p.x + BOX_W / 2} y={p.y + 20} textAnchor="middle" className="st-title"><Rich text={pick(e.name).text} /></text>
                         {e.attributes.map((a, j) => (
                           <text key={a} x={p.x + 12} y={p.y + 50 + j * ROW_H} className={`st-attr ${pkCols.includes(a) ? 'is-pk' : ''}`}>
                             {pkCols.includes(a) ? '🔑 ' : fks.has(a) ? '↗ ' : ''}{a}

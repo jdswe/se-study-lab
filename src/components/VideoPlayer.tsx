@@ -1,6 +1,7 @@
 import type { Video } from '../content/types';
 import manifest from '../content/generated/videoManifest.json';
 import { useI18n } from '../i18n';
+import { Rich } from './Rich';
 
 type Manifest = Record<string, Partial<Record<'en' | 'es' | 'pt', { duration: number; bytes: number }>>>;
 const LANG_NAMES = { en: 'English', es: 'Español', pt: 'Português' } as const;
@@ -37,8 +38,8 @@ export function VideoPlayer({ video }: { video: Video }) {
           <span className="story-badge">▶ {t('video.label')}</span>
           <span className="badge">{clock(meta.duration)}</span>
         </div>
-        <h3>{pick(video.title).text}</h3>
-        <p className="faint">{pick(video.summary).text}</p>
+        <h3><Rich text={pick(video.title).text} /></h3>
+        <p className="faint"><Rich text={pick(video.summary).text} /></p>
         {lang !== locale && <span className="translation-note">{t('video.otherLanguage')}</span>}
       </figcaption>
     </figure>

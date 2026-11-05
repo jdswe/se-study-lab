@@ -4,6 +4,7 @@ import { GitGraph } from '../components/GitGraph';
 import { fileStatus, headTree, initRepo, run, type RepoState } from '../lib/gitSim';
 import type { GitMission } from '../lib/gitMissions';
 import { updateState, useProgress } from '../lib/store';
+import { Rich } from '../components/Rich';
 
 interface Line {
   kind: 'cmd' | 'out' | 'err';
@@ -77,7 +78,7 @@ export default function GitPlayground({ missions }: { missions: GitMission[] }) 
         </div>
         {next ? (
           <div className="gitpg-current">
-            <p className="gitpg-current-title">{pick(next.title).text}</p>
+            <p className="gitpg-current-title"><Rich text={pick(next.title).text} /></p>
             <div className="gitpg-hints">
               {next.hint.split(' · ').map((h) => (
                 <button key={h} type="button" className="token" onClick={() => { setInput(h); inputRef.current?.focus(); }}>{h}</button>
@@ -89,7 +90,7 @@ export default function GitPlayground({ missions }: { missions: GitMission[] }) 
         )}
         <ol className="gitpg-steps">
           {missions.map((m) => (
-            <li key={m.id} className={done(m) ? 'is-done' : next?.id === m.id ? 'is-next' : ''}>{pick(m.title).text}</li>
+            <li key={m.id} className={done(m) ? 'is-done' : next?.id === m.id ? 'is-next' : ''}><Rich text={pick(m.title).text} /></li>
           ))}
         </ol>
       </section>

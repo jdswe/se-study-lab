@@ -3,6 +3,7 @@ import type { Flashcard } from '../content/types';
 import { useI18n } from '../i18n';
 import { updateState, useProgress, touchStudyDay } from '../lib/store';
 import { isDue, reviewCard, type Rating } from '../lib/srs';
+import { Rich } from './Rich';
 
 export type DeckFilter = 'all' | 'due' | 'weak';
 
@@ -109,7 +110,7 @@ export function Deck({ cards, initialFilter = 'all' }: { cards: Flashcard[]; ini
             <div className="flashcard-inner">
               <div className="face" aria-hidden={revealed}>
                 <span className="badge">{current.kind}</span>
-                <p>{pick(current.front).text}</p>
+                <p><Rich text={pick(current.front).text} /></p>
                 {!revealed && (
                   <button type="button" className="btn btn-primary" onClick={() => setRevealed(true)}>
                     {t('flashcards.reveal')}
@@ -117,7 +118,7 @@ export function Deck({ cards, initialFilter = 'all' }: { cards: Flashcard[]; ini
                 )}
               </div>
               <div className="face face-back" aria-hidden={!revealed}>
-                <p>{pick(current.back).text}</p>
+                <p><Rich text={pick(current.back).text} /></p>
               </div>
             </div>
           </div>
