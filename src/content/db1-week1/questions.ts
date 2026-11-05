@@ -22,9 +22,9 @@ export const dbWeek1Questions: Question[] = [
   {
     id: 'db1-q-mc-information', type: 'multiple-choice', lessonId: 'db1-l2-data-information-database',
     prompt: L('Which statement is information, not just data?', '¿Qué enunciado es información y no solo un dato?'),
-    options: [L('"Customer 2 lives in Lima"', '"El cliente 2 vive en Lima"'), L('"Lima"', '"Lima"'), L('"2"', '"2"')],
+    options: [L('"Customer 301 ordered a sourdough loaf"', '"El cliente 301 pidió una hogaza de masa madre"'), L('"Sourdough loaf"', '"Hogaza de masa madre"'), L('"301"', '"301"')],
     answer: 0,
-    explanation: L('It places the values in context. Alone, "Lima" or "2" have no clear meaning.', 'Pone los valores en contexto. Solos, "Lima" o "2" no tienen un significado claro.'),
+    explanation: L('It places the values in context. Alone, "sourdough loaf" or "301" do not tell us what happened.', 'Pone los valores en contexto. Por sí solos, "hogaza de masa madre" o "301" no indican qué ocurrió.'),
   },
   {
     id: 'db1-q-fill-metadata', type: 'fill-blank', lessonId: 'db1-l2-data-information-database',
@@ -96,8 +96,8 @@ export const dbWeek1Questions: Question[] = [
   },
   {
     id: 'db1-q-trouble-fk', type: 'troubleshooting', lessonId: 'db1-l6-keys-relationships',
-    prompt: L('An INSERT into Orders with customer_id = 99 fails with a foreign key error. Why?', 'Un INSERT en Pedido con id_cliente = 99 falla con un error de clave foránea. ¿Por qué?'),
-    options: [L('No customer with id 99 exists', 'No existe un cliente con id 99'), L('Order ids must be even', 'Los id de pedido deben ser pares'), L('Foreign keys must be text', 'Las claves foráneas deben ser texto')],
+    prompt: L('An INSERT into Orders with customer_id = 999 fails with a foreign key error. Why?', 'Un INSERT en Orders con customer_id = 999 falla con un error de clave foránea. ¿Por qué?'),
+    options: [L('No customer with id 999 exists', 'No existe un cliente con id 999'), L('Order ids must be even', 'Los id de pedido deben ser pares'), L('Foreign keys must be text', 'Las claves foráneas deben ser texto')],
     answer: 0,
     explanation: L('Referential integrity: the foreign key must match an existing primary key. Create the customer first.', 'Integridad referencial: la clave foránea debe coincidir con una clave primaria existente. Primero crea el cliente.'),
   },
@@ -123,7 +123,7 @@ export const dbWeek1Questions: Question[] = [
   },
   {
     id: 'db1-q-short-concurrency', type: 'short-answer', lessonId: 'db1-l7-integrity-transactions',
-    prompt: L('Two cashiers try to sell the last USB drive at the same time. In one or two sentences, what must the DBMS guarantee?', 'Dos cajeros intentan vender la última memoria USB al mismo tiempo. En una o dos frases, ¿qué debe garantizar el SGBD?'),
+    prompt: L('Two bakery workers try to sell the last sourdough loaf at the same time. In one or two sentences, what must the DBMS guarantee?', 'Dos trabajadores de la panadería intentan vender la última hogaza de masa madre al mismo tiempo. En una o dos frases, ¿qué debe garantizar el SGBD?'),
     accepted: ['one|only|una|solo|sólo|apenas|uma|single'],
     explanation: L('Concurrency control lets only one sale succeed; the other sees that stock is zero.', 'El control de concurrencia permite que solo una venta se concrete; la otra ve que el inventario es cero.'),
   },
@@ -142,11 +142,11 @@ export const dbWeek1Questions: Question[] = [
   },
   {
     id: 'db1-q-code-select', type: 'code', lessonId: 'db1-l9-first-sql',
-    prompt: L('Products: Notebook 8000, USB drive 35000, Bottle 18000. What does this query return?', 'Productos: Cuaderno 8000, Memoria USB 35000, Botella 18000. ¿Qué devuelve esta consulta?'),
-    code: 'SELECT name FROM product\nWHERE price > 10000\nORDER BY price DESC;',
-    options: [L('USB drive, then Bottle', 'Memoria USB y luego Botella'), L('Bottle, then USB drive', 'Botella y luego Memoria USB'), L('Notebook only', 'Solo Cuaderno')],
+    prompt: L('Products: Sourdough loaf 12000, Cinnamon roll 4500, Rye baguette 8500, Lemon tart 16000, Cold brew 7000. What does this query return?', 'Productos: Hogaza de masa madre 12000, Rollito de canela 4500, Baguette de centeno 8500, Tarta de limón 16000, Café frío 7000. ¿Qué devuelve esta consulta?'),
+    code: 'SELECT name FROM product\nWHERE price > 8000\nORDER BY price DESC;',
+    options: [L('Lemon tart, Sourdough loaf, then Rye baguette', 'Tarta de limón, hogaza de masa madre y luego baguette de centeno'), L('Rye baguette, then Sourdough loaf', 'Baguette de centeno y luego hogaza de masa madre'), L('Cinnamon roll only', 'Solo rollito de canela')],
     answer: 0,
-    explanation: L('Two products cost more than 10,000; DESC sorts from highest to lowest price.', 'Dos productos cuestan más de 10.000; DESC ordena del precio más alto al más bajo.'),
+    explanation: L('Three products cost more than 8,000; DESC sorts them by price from highest to lowest.', 'Tres productos cuestan más de 8.000; DESC los ordena por precio de mayor a menor.'),
   },
   {
     id: 'db1-q-trouble-update', type: 'troubleshooting', lessonId: 'db1-l9-first-sql',
@@ -160,5 +160,19 @@ export const dbWeek1Questions: Question[] = [
     prompt: L('To combine Customer and Orders rows whose customer_id match, you use JOIN … ____ c.customer_id = o.customer_id.', 'Para combinar filas de Cliente y Pedido cuyos customer_id coinciden, usas JOIN … ____ c.customer_id = o.customer_id.'),
     accepted: ['on'],
     explanation: L('ON gives the matching condition of the join.', 'ON indica la condición de coincidencia del JOIN.'),
+  },
+  {
+    id: 'db1-q-choose-sqlite', type: 'scenario', lessonId: 'db1-l4-choosing-installing-dbms',
+    prompt: L('A small offline desktop app needs one local database file and no separate server. Which DBMS best fits?', 'Una aplicación de escritorio pequeña y sin conexión necesita un solo archivo de base de datos local y ningún servidor aparte. ¿Qué SGBD encaja mejor?'),
+    options: [L('SQLite', 'SQLite'), L('PostgreSQL', 'PostgreSQL'), L('MySQL', 'MySQL')],
+    answer: 0,
+    explanation: L('SQLite is embedded and stores its database in a local file, so it does not require a separate server process.', 'SQLite está integrado y guarda la base de datos en un archivo local, así que no requiere un proceso de servidor aparte.'),
+  },
+  {
+    id: 'db1-q-connect-postgres', type: 'multiple-choice', lessonId: 'db1-l4-choosing-installing-dbms',
+    prompt: L('On Ubuntu or Debian, after installing PostgreSQL, which command opens its local command-line client as the postgres system account?', 'En Ubuntu o Debian, después de instalar PostgreSQL, ¿qué comando abre el cliente local de línea de comandos como la cuenta del sistema postgres?'),
+    options: [L('sudo -u postgres psql', 'sudo -u postgres psql'), L('mysql -u root -p', 'mysql -u root -p'), L('sqlite3 willow_bakery.db', 'sqlite3 willow_bakery.db')],
+    answer: 0,
+    explanation: L('psql is PostgreSQL\'s command-line client. sudo -u postgres runs it as the local postgres operating-system account.', 'psql es el cliente de línea de comandos de PostgreSQL. sudo -u postgres lo ejecuta como la cuenta local del sistema postgres.'),
   },
 ];

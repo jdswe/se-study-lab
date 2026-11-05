@@ -11,7 +11,7 @@ async function fresh() {
   return db;
 }
 
-describe('campus store database', () => {
+describe('Willow Lane Bakery database', () => {
   it('loads with four tables and sample rows', async () => {
     const db = await fresh();
     const tables = db.exec("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")[0].values.flat();
@@ -21,8 +21,8 @@ describe('campus store database', () => {
 
   it('enforces foreign keys and CHECK constraints', async () => {
     const db = await fresh();
-    expect(() => db.exec("INSERT INTO orders VALUES (200, 99, '2026-03-01')")).toThrow(/FOREIGN KEY/);
-    expect(() => db.exec('UPDATE product SET price = -5 WHERE product_id = 10')).toThrow(/CHECK/);
+    expect(() => db.exec("INSERT INTO orders VALUES (299, 999, '2026-03-01')")).toThrow(/FOREIGN KEY/);
+    expect(() => db.exec('UPDATE product SET price = -5 WHERE product_id = 611')).toThrow(/CHECK/);
   });
 
   it('can solve every SQL Lab task with its reference solution', async () => {

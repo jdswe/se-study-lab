@@ -1,5 +1,5 @@
 /**
- * The campus-store sample database used by the SQL Lab, with real constraints
+ * The Willow Lane Bakery sample database used by the SQL Lab, with real constraints
  * so learners can see integrity rules fire. SQLite dialect.
  */
 export const STORE_SEED_SQL = `
@@ -31,10 +31,10 @@ CREATE TABLE order_item (
   PRIMARY KEY (order_id, product_id)
 );
 
-INSERT INTO customer VALUES (1, 'Ana', 'Bogotá'), (2, 'Luis', 'Lima'), (3, 'Sofía', 'Santiago'), (4, 'Mateo', 'Ciudad de México');
-INSERT INTO product VALUES (10, 'Notebook', 8000, 40), (20, 'USB drive', 35000, 6), (30, 'Water bottle', 18000, 15), (40, 'Backpack', 95000, 3), (50, 'Headphones', 60000, 0);
-INSERT INTO orders VALUES (101, 1, '2026-03-02'), (102, 2, '2026-03-03'), (103, 1, '2026-03-05'), (104, 3, '2026-03-06');
-INSERT INTO order_item VALUES (101, 10, 2), (101, 20, 1), (102, 30, 1), (103, 40, 1), (104, 10, 5), (104, 30, 2);
+INSERT INTO customer VALUES (301, 'Elena', 'Bogotá'), (302, 'Rafael', 'Lima'), (303, 'Inés', 'Santiago'), (304, 'Tomás', 'Quito');
+INSERT INTO product VALUES (611, 'Sourdough loaf', 12000, 18), (612, 'Cinnamon roll', 4500, 30), (613, 'Rye baguette', 8500, 9), (614, 'Lemon tart', 16000, 4), (615, 'Cold brew', 7000, 0);
+INSERT INTO orders VALUES (201, 301, '2026-03-02'), (202, 302, '2026-03-03'), (203, 301, '2026-03-05'), (204, 303, '2026-03-06');
+INSERT INTO order_item VALUES (201, 611, 1), (201, 612, 2), (202, 613, 2), (203, 614, 1), (204, 611, 5), (204, 615, 2);
 `;
 
 export type Cell = string | number | null | Uint8Array;
