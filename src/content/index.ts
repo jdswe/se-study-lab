@@ -15,6 +15,11 @@ import { logicWeek7 } from './logic-week7';
 import { logicWeek8 } from './logic-week8';
 import { sd1Week2 } from './sd1-week2';
 import { discWeek1 } from './disc-week1';
+import { discWeek2 } from './disc-week2';
+import { discWeek3 } from './disc-week3';
+import { discWeek4 } from './disc-week4';
+import { discWeek5 } from './disc-week5';
+import { discWeek6 } from './disc-week6';
 import { histWeek1 } from './hist-week1';
 import { histWeek2 } from './hist-week2';
 import { histWeek3 } from './hist-week3';
@@ -29,7 +34,7 @@ import { addPortuguese } from './localize';
  * Registry of all published weeks. To add a week, create its folder with the
  * same shape as week1 and register it here.
  */
-export const weeks: WeekContent[] = [week1, sd1Week2, dbWeek1, dbWeek2, calcWeek1, calcWeek2, logicWeek1, logicWeek2, logicWeek3, logicWeek4, logicWeek5, logicWeek6, logicWeek7, logicWeek8, histWeek1, histWeek2, histWeek3, histWeek4, histWeek5, histWeek6, histWeek7, histWeek8, discWeek1].map(addPortuguese);
+export const weeks: WeekContent[] = [week1, sd1Week2, dbWeek1, dbWeek2, calcWeek1, calcWeek2, logicWeek1, logicWeek2, logicWeek3, logicWeek4, logicWeek5, logicWeek6, logicWeek7, logicWeek8, histWeek1, histWeek2, histWeek3, histWeek4, histWeek5, histWeek6, histWeek7, histWeek8, discWeek1, discWeek2, discWeek3, discWeek4, discWeek5, discWeek6].map(addPortuguese);
 
 export function findWeek(id: string): WeekContent | undefined {
   return weeks.find((w) => w.id === id);

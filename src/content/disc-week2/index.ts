@@ -7,7 +7,7 @@ const L = (en: string, es: string, pt: string): Localized => ({ en, es, pt });
 
 const plan: StudyPlanDay[] = [
   { day: 'Day 1', focus: L('Lesson 1: set notation, cardinality, and special sets. Do its exercises.', 'Lección 1: notación de conjuntos, cardinalidad y conjuntos especiales. Haz sus ejercicios.', 'Lição 1: notação de conjuntos, cardinalidade e conjuntos especiais. Faça os exercícios.'), minutes: 45, kind: 'read' },
-  { day: 'Day 2', focus: L('Lesson 2: subsets, power sets, and families. Check the 2ⁿ count on paper.', 'Lección 2: subconjuntos, conjunto potencia y familias. Comprueba el conteo 2ⁿ en papel.', 'Lição 2: subconjuntos, conjunto das partes e famílias. Confira a contagem 2ⁿ no papel.'), minutes: 45, kind: 'practice' },
+  { day: 'Day 2', focus: L('Lesson 2: subsets, power sets, and families. Check the $2^n$ count on paper.', 'Lección 2: subconjuntos, conjunto potencia y familias. Comprueba el conteo $2^n$ en papel.', 'Lição 2: subconjuntos, conjunto das partes e famílias. Confira a contagem $2^n$ no papel.'), minutes: 45, kind: 'practice' },
   { day: 'Day 3', focus: L('Lesson 3: operations and Venn regions. Then Lab 1.', 'Lección 3: operaciones y regiones de Venn. Luego el Laboratorio 1.', 'Lição 3: operações e regiões de Venn. Depois o Laboratório 1.'), minutes: 55, kind: 'practice' },
   { day: 'Day 4', focus: L('Lesson 4: identities, De Morgan, and the three proof methods.', 'Lección 4: identidades, De Morgan y los tres métodos de demostración.', 'Lição 4: identidades, De Morgan e os três métodos de demonstração.'), minutes: 50, kind: 'practice' },
   { day: 'Day 5', focus: L('Lesson 5 and Lab 2: partitions, inclusion–exclusion, and survey diagrams.', 'Lección 5 y Laboratorio 2: particiones, inclusión–exclusión y diagramas de encuesta.', 'Lição 5 e Laboratório 2: partições, inclusão–exclusão e diagramas de pesquisa.'), minutes: 60, kind: 'practice' },
@@ -39,13 +39,13 @@ export const discWeek2: WeekContent = {
   ),
   objectives: [
     L('Write sets by extension and by comprehension, and compute cardinalities.', 'Escribir conjuntos por extensión y por comprensión, y calcular cardinalidades.', 'Escrever conjuntos por extensão e por compreensão, e calcular cardinalidades.'),
-    L('Distinguish ∈ from ⊆, and list power sets and indexed families.', 'Distinguir ∈ de ⊆, y listar conjuntos potencia y familias indexadas.', 'Distinguir ∈ de ⊆, e listar conjuntos das partes e famílias indexadas.'),
+    L('Distinguish $\\in$ from $\\subseteq$, and list power sets and indexed families.', 'Distinguir $\\in$ de $\\subseteq$, y listar conjuntos potencia y familias indexadas.', 'Distinguir $\\in$ de $\\subseteq$, e listar conjuntos das partes e famílias indexadas.'),
     L('Compute unions, intersections, differences, complements, and symmetric differences.', 'Calcular uniones, intersecciones, diferencias, complementos y diferencias simétricas.', 'Calcular uniões, interseções, diferenças, complementos e diferenças simétricas.'),
     L('Prove set identities by element chasing, algebra, or a membership table.', 'Demostrar identidades de conjuntos siguiendo elementos, con álgebra o con una tabla de pertenencia.', 'Provar identidades de conjuntos seguindo elementos, com álgebra ou com uma tabela de pertinência.'),
     L('Use partitions and inclusion–exclusion, including three-set survey diagrams.', 'Usar particiones e inclusión–exclusión, incluidos los diagramas de encuesta de tres conjuntos.', 'Usar partições e inclusão–exclusão, incluindo diagramas de pesquisa de três conjuntos.'),
   ],
   prerequisites: [
-    L('Basic algebra and the idea of a number set such as ℕ, ℤ, or ℝ.', 'Álgebra básica y la idea de conjunto numérico como ℕ, ℤ o ℝ.', 'Álgebra básica e a ideia de conjunto numérico como ℕ, ℤ ou ℝ.'),
+    L('Basic algebra and the idea of a number set such as $\\mathbb{N}$, $\\mathbb{Z}$, or $\\mathbb{R}$.', 'Álgebra básica y la idea de conjunto numérico como $\\mathbb{N}$, $\\mathbb{Z}$ o $\\mathbb{R}$.', 'Álgebra básica e a ideia de conjunto numérico como $\\mathbb{N}$, $\\mathbb{Z}$ ou $\\mathbb{R}$.'),
     L('Propositional connectives: and, or, not, and if–then.', 'Conectivos proposicionales: y, o, no, y si–entonces.', 'Conectivos proposicionais: e, ou, não, e se–então.'),
   ],
   keyConcepts: [
@@ -80,8 +80,8 @@ export const discWeek2: WeekContent = {
     L('Score at least 80% on the quiz', 'Obtener al menos 80% en el cuestionario', 'Tirar pelo menos 80% no questionário'),
   ],
   commonMistakes: [
-    { mistake: L('Confusing ∈ (element) with ⊆ (subset).', 'Confundir ∈ (elemento) con ⊆ (subconjunto).', 'Confundir ∈ (elemento) com ⊆ (subconjunto).'), fix: L('Write the braces explicitly: 3 ∈ A but {3} ⊆ A.', 'Escribe las llaves explícitamente: 3 ∈ A pero {3} ⊆ A.', 'Escreva as chaves explicitamente: 3 ∈ A mas {3} ⊆ A.') },
-    { mistake: L('Computing Aᶜ without fixing a universe.', 'Calcular Aᶜ sin fijar un universo.', 'Calcular Aᶜ sem fixar um universo.'), fix: L('State U first; the complement changes when U changes.', 'Indica U primero; el complemento cambia cuando cambia U.', 'Indique U primeiro; o complemento muda quando U muda.') },
+    { mistake: L('Confusing $\\in$ (element) with $\\subseteq$ (subset).', 'Confundir $\\in$ (elemento) con $\\subseteq$ (subconjunto).', 'Confundir $\\in$ (elemento) com $\\subseteq$ (subconjunto).'), fix: L('Write the braces explicitly: $3 \\in A$ but $\\{3\\} \\subseteq A$.', 'Escribe las llaves explícitamente: $3 \\in A$ pero $\\{3\\} \\subseteq A$.', 'Escreva as chaves explicitamente: $3 \\in A$ mas $\\{3\\} \\subseteq A$.') },
+    { mistake: L('Computing $A^c$ without fixing a universe.', 'Calcular $A^c$ sin fijar un universo.', 'Calcular $A^c$ sem fixar um universo.'), fix: L('State U first; the complement changes when U changes.', 'Indica U primero; el complemento cambia cuando cambia U.', 'Indique U primeiro; o complemento muda quando U muda.') },
     { mistake: L('Using the pair counts directly in a Venn diagram without subtracting the triple.', 'Usar directamente las cuentas de pareja en un Venn sin restar el trío.', 'Usar diretamente as contagens de par num Venn sem subtrair o trio.'), fix: L('Fill the centre first, then subtract it from each pair.', 'Llena primero el centro y luego réstalo de cada pareja.', 'Preencha o centro primeiro e depois subtraia-o de cada par.') },
   ],
   lessons: discWeek2Lessons,

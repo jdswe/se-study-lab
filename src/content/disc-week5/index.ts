@@ -8,9 +8,9 @@ const L = (en: string, es: string, pt: string): Localized => ({ en, es, pt });
 const plan: StudyPlanDay[] = [
   { day: 'Day 1', focus: L('Lesson 1: sum and product rules, decision trees, and overlaps. Do the exercises.', 'Lección 1: reglas de la suma y del producto, árboles de decisión y solapamientos. Haz los ejercicios.', 'Lição 1: regras da soma e do produto, árvores de decisão e sobreposições. Faça os exercícios.'), minutes: 45, kind: 'read' },
   { day: 'Day 2', focus: L('Lesson 2: permutations, circular arrangements, and repeated symbols.', 'Lección 2: permutaciones, ordenaciones circulares y símbolos repetidos.', 'Lição 2: permutações, arranjos circulares e símbolos repetidos.'), minutes: 50, kind: 'practice' },
-  { day: 'Day 3', focus: L('Lesson 3 and Lab 1: combinations, Pascal, binomial theorem, and multinomials.', 'Lección 3 y Laboratorio 1: combinaciones, Pascal, teorema del binomio y multinomiales.', 'Lição 3 e Laboratório 1: combinações, Pascal, teorema binomial e multinomiais.'), minutes: 55, kind: 'practice' },
-  { day: 'Day 4', focus: L('Lesson 4: inclusion–exclusion in two and three sets, complements, and pigeonhole.', 'Lección 4: inclusión–exclusión en dos y tres conjuntos, complementos y palomar.', 'Lição 4: inclusão–exclusão em dois e três conjuntos, complementos e casa dos pombos.'), minutes: 50, kind: 'practice' },
-  { day: 'Day 5', focus: L('Lesson 5 and Lab 2: finite probability, complements, conditional probability, and expected value.', 'Lección 5 y Laboratorio 2: probabilidad finita, complementos, probabilidad condicional y valor esperado.', 'Lição 5 e Laboratório 2: probabilidade finita, complementos, probabilidade condicional e valor esperado.'), minutes: 55, kind: 'practice' },
+  { day: 'Day 3', focus: L('Lesson 3 and Lab 1: combinations, with and without repetition.', 'Lección 3 y Laboratorio 1: combinaciones, con y sin repetición.', 'Lição 3 e Laboratório 1: combinações, com e sem repetição.'), minutes: 55, kind: 'practice' },
+  { day: 'Day 4', focus: L('Lessons 4–5: the binomial theorem, Pascal, pigeonhole, and inclusion–exclusion.', 'Lecciones 4–5: teorema del binomio, Pascal, palomar e inclusión–exclusión.', 'Lições 4–5: teorema binomial, Pascal, casa dos pombos e inclusão–exclusão.'), minutes: 50, kind: 'read' },
+  { day: 'Day 5', focus: L('Lesson 6 and Lab 2: finite probability, complements, and Bernoulli trials.', 'Lección 6 y Laboratorio 2: probabilidad finita, complementos y ensayos de Bernoulli.', 'Lição 6 e Laboratório 2: probabilidade finita, complementos e ensaios de Bernoulli.'), minutes: 55, kind: 'practice' },
   { day: 'Day 6', focus: L('Activities, due flashcards, and the full quiz. Re-solve one counting and one probability problem from scratch.', 'Actividades, tarjetas pendientes y el cuestionario completo. Resuelve de nuevo un problema de conteo y uno de probabilidad.', 'Atividades, cartões pendentes e o questionário completo. Resolva de novo um problema de contagem e um de probabilidade.'), minutes: 40, kind: 'quiz' },
 ];
 
@@ -39,8 +39,8 @@ export const discWeek5: WeekContent = {
   ),
   objectives: [
     L('Apply the sum and product rules and draw decision trees.', 'Aplicar las reglas de la suma y del producto y dibujar árboles de decisión.', 'Aplicar as regras da soma e do produto e desenhar árvores de decisão.'),
-    L('Count arrangements with P(n, k), repetition, circular order, and repeated symbols.', 'Contar ordenaciones con P(n, k), repetición, orden circular y símbolos repetidos.', 'Contar arranjos com P(n, k), repetição, ordem circular e símbolos repetidos.'),
-    L('Count unordered selections with C(n, k) and use the binomial theorem.', 'Contar selecciones no ordenadas con C(n, k) y usar el teorema del binomio.', 'Contar seleções não ordenadas com C(n, k) e usar o teorema binomial.'),
+    L('Count arrangements with $P(n, k)$, repetition, circular order, and repeated symbols.', 'Contar ordenaciones con $P(n, k)$, repetición, orden circular y símbolos repetidos.', 'Contar arranjos com $P(n, k)$, repetição, ordem circular e símbolos repetidos.'),
+    L('Count unordered selections with $\\binom{n}{k}$ and use the binomial theorem.', 'Contar selecciones no ordenadas con $\\binom{n}{k}$ y usar el teorema del binomio.', 'Contar seleções não ordenadas com $\\binom{n}{k}$ e usar o teorema binomial.'),
     L('Use inclusion–exclusion, complements, and the pigeonhole principle.', 'Usar inclusión–exclusión, complementos y el principio del palomar.', 'Usar inclusão–exclusão, complementos e o princípio da casa dos pombos.'),
     L('Compute finite probabilities, conditional probabilities, and expected values.', 'Calcular probabilidades finitas, condicionales y valores esperados.', 'Calcular probabilidades finitas, condicionais e valores esperados.'),
   ],
@@ -59,13 +59,13 @@ export const discWeek5: WeekContent = {
     L('Sample space and event', 'Espacio muestral y evento', 'Espaço amostral e evento'),
     L('Conditional probability', 'Probabilidad condicional', 'Probabilidade condicional'),
   ],
-  estimatedMinutes: 450,
+  estimatedMinutes: 330,
   sequence: [
     L('Lesson 1: sum and product rules, decision trees, and overlaps.', 'Lección 1: reglas de la suma y del producto, árboles de decisión y solapamientos.', 'Lição 1: regras da soma e do produto, árvores de decisão e sobreposições.'),
     L('Lesson 2: permutations, circular arrangements, and repeated symbols.', 'Lección 2: permutaciones, ordenaciones circulares y símbolos repetidos.', 'Lição 2: permutações, arranjos circulares e símbolos repetidos.'),
-    L('Lesson 3 and Lab 1: combinations, Pascal, binomial theorem, and multinomials.', 'Lección 3 y Laboratorio 1: combinaciones, Pascal, teorema del binomio y multinomiales.', 'Lição 3 e Laboratório 1: combinações, Pascal, teorema binomial e multinomiais.'),
-    L('Lesson 4: inclusion–exclusion, complements, and pigeonhole.', 'Lección 4: inclusión–exclusión, complementos y palomar.', 'Lição 4: inclusão–exclusão, complementos e casa dos pombos.'),
-    L('Lesson 5 and Lab 2: finite probability and expected value. Then the quiz.', 'Lección 5 y Laboratorio 2: probabilidad finita y valor esperado. Luego el cuestionario.', 'Lição 5 e Laboratório 2: probabilidade finita e valor esperado. Depois o questionário.'),
+    L('Lesson 3 and Lab 1: combinations.', 'Lección 3 y Laboratorio 1: combinaciones.', 'Lição 3 e Laboratório 1: combinações.'),
+    L('Lessons 4–5: binomial theorem, pigeonhole, and inclusion–exclusion.', 'Lecciones 4–5: teorema del binomio, palomar e inclusión–exclusión.', 'Lições 4–5: teorema binomial, casa dos pombos e inclusão–exclusão.'),
+    L('Lesson 6 and Lab 2: finite probability. Then the quiz.', 'Lección 6 y Laboratorio 2: probabilidad finita. Luego el cuestionario.', 'Lição 6 e Laboratório 2: probabilidade finita. Depois o questionário.'),
   ],
   outcomes: [
     L('You can read a counting problem and choose between a sum, a product, a permutation, a combination, or a complement.', 'Puedes leer un problema de conteo y elegir entre suma, producto, permutación, combinación o complemento.', 'Você consegue ler um problema de contagem e escolher entre soma, produto, permutação, combinação ou complemento.'),
@@ -81,8 +81,8 @@ export const discWeek5: WeekContent = {
   ],
   commonMistakes: [
     { mistake: L('Multiplying counts for alternatives that cannot happen together.', 'Multiplicar cuentas de alternativas que no pueden ocurrir juntas.', 'Multiplicar contagens de alternativas que não podem ocorrer juntas.'), fix: L('Use the sum rule for "one of these" and the product rule for "one from each stage".', 'Usa la regla de la suma para "uno de estos" y la del producto para "uno de cada etapa".', 'Use a regra da soma para "um destes" e a do produto para "um de cada etapa".') },
-    { mistake: L('Using P(n, k) when the selection is unordered.', 'Usar P(n, k) cuando la selección no está ordenada.', 'Usar P(n, k) quando a seleção não é ordenada.'), fix: L('Divide by k! to get C(n, k) when order is irrelevant.', 'Divide por k! para obtener C(n, k) cuando el orden es irrelevante.', 'Divida por k! para obter C(n, k) quando a ordem é irrelevante.') },
-    { mistake: L('Adding P(A) + P(B) for events that can overlap.', 'Sumar P(A) + P(B) para eventos que pueden solaparse.', 'Somar P(A) + P(B) para eventos que podem se sobrepor.'), fix: L('Subtract P(A ∩ B), or count the complement.', 'Resta P(A ∩ B) o cuenta el complemento.', 'Subtraia P(A ∩ B) ou conte o complemento.') },
+    { mistake: L('Using $P(n, k)$ when the selection is unordered.', 'Usar $P(n, k)$ cuando la selección no está ordenada.', 'Usar $P(n, k)$ quando a seleção não é ordenada.'), fix: L('Divide by $k!$ to get $\\binom{n}{k}$ when order is irrelevant.', 'Divide por $k!$ para obtener $\\binom{n}{k}$ cuando el orden es irrelevante.', 'Divida por $k!$ para obter $\\binom{n}{k}$ quando a ordem é irrelevante.') },
+    { mistake: L('Adding $P(A) + P(B)$ for events that can overlap.', 'Sumar $P(A) + P(B)$ para eventos que pueden solaparse.', 'Somar $P(A) + P(B)$ para eventos que podem se sobrepor.'), fix: L('Subtract $P(A \\cap B)$, or count the complement.', 'Resta $P(A \\cap B)$ o cuenta el complemento.', 'Subtraia $P(A \\cap B)$ ou conte o complemento.') },
   ],
   lessons: discWeek5Lessons,
   flashcards: discWeek5Flashcards,
