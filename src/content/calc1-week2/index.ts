@@ -79,6 +79,11 @@ export const calcWeek2: WeekContent = {
   tools: ['graph-lab'],
   toolData: { graphPresets },
   videos: [],
-  // Downloadable documents are generated later by `npm run docs`.
-  documents: [],
+  documents: [
+    { title: { en: 'Week summary', es: 'Resumen de la semana', pt: 'Resumo da semana' }, file: 'summary.pdf', kind: 'pdf' },
+    { title: { en: 'Formula sheet', es: 'Hoja de fórmulas', pt: 'Folha de fórmulas' }, file: 'cheat-sheet.pdf', kind: 'pdf' },
+    { title: { en: 'Worksheet with answers', es: 'Hoja de ejercicios con respuestas', pt: 'Folha de exercícios com respostas' }, file: 'worksheet.pdf', kind: 'pdf' },
+    { title: { en: 'Worksheet (editable)', es: 'Hoja de ejercicios (editable)', pt: 'Folha de exercícios (editável)' }, file: 'worksheet.docx', kind: 'docx', preview: 'worksheet.pdf' },
+    { title: { en: 'Slides', es: 'Diapositivas', pt: 'Slides' }, file: 'slides.pptx', kind: 'pptx', preview: 'slides.pdf' },
+  ],
 };
