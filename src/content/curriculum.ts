@@ -44,6 +44,23 @@ terms[0].modules[0].subjects = [
       { id: 'y1-t1-m1-logic-w8', number: 8, status: 'planned', title: { en: 'Final review', es: 'Repaso final', pt: 'Revisão final' } },
     ],
   },
+  {
+    slug: 'programming-1',
+    title: { en: 'Programming 1', es: 'Programación 1', pt: 'Programação 1' },
+    theme: 'default',
+    plannedWeeks: 8,
+    tools: [],
+    weeks: [
+      { id: 'y1-t1-m1-prog-w1', number: 1, status: 'planned', title: { en: 'Introduction to programming', es: 'Introducción a la programación', pt: 'Introdução à programação' } },
+      { id: 'y1-t1-m1-prog-w2', number: 2, status: 'planned', title: { en: 'Programming elements I', es: 'Elementos de programación I', pt: 'Elementos de programação I' } },
+      { id: 'y1-t1-m1-prog-w3', number: 3, status: 'planned', title: { en: 'Programming elements II', es: 'Elementos de programación II', pt: 'Elementos de programação II' } },
+      { id: 'y1-t1-m1-prog-w4', number: 4, status: 'planned', title: { en: 'Programming elements III', es: 'Elementos de programación III', pt: 'Elementos de programação III' } },
+      { id: 'y1-t1-m1-prog-w5', number: 5, status: 'planned', title: { en: 'Programming elements IV', es: 'Elementos de programación IV', pt: 'Elementos de programação IV' } },
+      { id: 'y1-t1-m1-prog-w6', number: 6, status: 'planned', title: { en: 'Introduction to object-oriented programming', es: 'Introducción a la programación orientada a objetos', pt: 'Introdução à programação orientada a objetos' } },
+      { id: 'y1-t1-m1-prog-w7', number: 7, status: 'planned', title: { en: 'Course recap', es: 'Recapitulación del curso', pt: 'Recapitulação do curso' } },
+      { id: 'y1-t1-m1-prog-w8', number: 8, status: 'planned', title: { en: 'Final project', es: 'Proyecto final', pt: 'Projeto final' } },
+    ],
+  },
 ];
 
 terms[0].modules[1].subjects = [
