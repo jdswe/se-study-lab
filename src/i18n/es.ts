@@ -481,7 +481,7 @@ export const es: Dict = {
     err: {
       empty: 'Primero escribe una desigualdad.',
       relation: 'Una desigualdad necesita <, ≤, > o ≥ entre dos expresiones.',
-      syntax: 'Solo se entienden x, números, + − · / ^, paréntesis, abs() y sqrt().',
+      syntax: 'Solo se entienden x, números, + − · / ^, paréntesis, abs(), sqrt(), sin, cos, tan, exp, ln, log, pi y e.',
       paren: 'Hay un paréntesis o una | sin cerrar.',
     },
   },

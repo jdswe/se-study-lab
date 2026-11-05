@@ -482,7 +482,7 @@ export const pt: Dict = {
     err: {
       empty: 'Primeiro digite uma desigualdade.',
       relation: 'Uma desigualdade precisa de <, ≤, > ou ≥ entre duas expressões.',
-      syntax: 'Só são entendidos x, números, + − · / ^, parênteses, abs() e sqrt().',
+      syntax: 'Só são entendidos x, números, + − · / ^, parênteses, abs(), sqrt(), sin, cos, tan, exp, ln, log, pi e e.',
       paren: 'Há um parêntese ou uma | sem fechar.',
     },
   },

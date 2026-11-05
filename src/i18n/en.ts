@@ -479,7 +479,7 @@ export const en = {
     err: {
       empty: 'Type an inequality first.',
       relation: 'An inequality needs <, ≤, >, or ≥ between two expressions.',
-      syntax: 'Only x, numbers, + − · / ^, parentheses, abs() and sqrt() are understood.',
+      syntax: 'Only x, numbers, + − · / ^, parentheses, abs(), sqrt(), sin, cos, tan, exp, ln, log, pi and e are understood.',
       paren: 'A parenthesis or | is not closed.',
     },
   },
