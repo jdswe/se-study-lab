@@ -26,6 +26,25 @@ export const terms: TermMeta[] = TERM_HUES.map((hue, i) => ({
   modules: [emptyModule(1), emptyModule(2), emptyModule(3)],
 }));
 
+terms[0].modules[1].subjects = [
+  {
+    slug: 'operating-systems-1',
+    title: { en: 'Operating Systems 1', es: 'Sistemas Operativos 1', pt: 'Sistemas Operacionais 1' },
+    theme: 'default',
+    plannedWeeks: 7,
+    tools: [],
+    weeks: [
+      { id: 'y1-t1-m2-os-w1', number: 1, status: 'planned', title: { en: 'Operating system overview', es: 'Descripción general del sistema operativo', pt: 'Visão geral do sistema operacional' } },
+      { id: 'y1-t1-m2-os-w2', number: 2, status: 'planned', title: { en: 'Process management', es: 'Gestión de procesos', pt: 'Gerenciamento de processos' } },
+      { id: 'y1-t1-m2-os-w3', number: 3, status: 'planned', title: { en: 'Threads and CPU scheduling', es: 'Hilos y planificación de CPU', pt: 'Threads e escalonamento de CPU' } },
+      { id: 'y1-t1-m2-os-w4', number: 4, status: 'planned', title: { en: 'Memory management', es: 'Gestión de memoria', pt: 'Gerenciamento de memória' } },
+      { id: 'y1-t1-m2-os-w5', number: 5, status: 'planned', title: { en: 'Mass-storage structure', es: 'Estructura de almacenamiento masivo', pt: 'Estrutura de armazenamento em massa' } },
+      { id: 'y1-t1-m2-os-w6', number: 6, status: 'planned', title: { en: 'File systems', es: 'Sistemas de archivos', pt: 'Sistemas de arquivos' } },
+      { id: 'y1-t1-m2-os-w7', number: 7, status: 'planned', title: { en: 'Protection and security', es: 'Protección y seguridad', pt: 'Proteção e segurança' } },
+    ],
+  },
+];
+
 terms[0].modules[2].subjects = [
   {
     slug: 'software-development-1',
