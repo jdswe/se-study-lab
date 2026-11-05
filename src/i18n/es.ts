@@ -376,7 +376,7 @@ export const es: Dict = {
     show: 'Mostrar',
     remove: 'Quitar',
     add: 'Agregar una línea',
-    help: 'Prueba y = x^2 - 4, y >= 2x + 1, abs(x - 1) o 12x + 7y <= 84. Usa ^ para potencias y abs() para |…|.',
+    help: 'Prueba y = x^2 - 4, y >= 2x + 1, abs(x - 1) o 12x + 7y <= 84. Usa ^ para potencias y abs() para |…|. También sqrt(), sin() o sen(), cos(), tan() (en radianes), e^x o exp(), ln(), log() (base 10) y las constantes pi y e.',
     explorer: 'Explorador de parábolas: y = ax² + bx + c',
     sign: 'Colorear el eje x según el signo (verde y > 0, rojo y < 0)',
     opens: 'Abre hacia',

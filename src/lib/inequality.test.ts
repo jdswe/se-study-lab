@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { compareAnswer, formatNumber, formatPieces, parseAnswer, prettySource, signChart, solve, parseSystem } from './inequality';
+import { compareAnswer, evaluate, formatNumber, formatPieces, parseAnswer, parseExpression, prettySource, printNode, signChart, solve, parseSystem } from './inequality';
 import { inequalityProblems } from '../content/calc1-week1/inequalityProblems';
 
 const sol = (src: string) => formatPieces(solve(src).pieces);
@@ -115,5 +115,58 @@ describe('Calculus 1 Week 1 problems', () => {
     if (s.system.length === 1) expect(() => signChart(s.system[0], s.points, p.factors)).not.toThrow();
     // The printed solution must read back as the same set.
     expect(compareAnswer(parseAnswer(formatPieces(s.pieces))!, s.pieces)).toEqual({ ok: true });
+  });
+});
+
+describe('named functions and constants', () => {
+  const at = (src: string, x: number) => evaluate(parseExpression(src), x);
+
+  it('evaluates sin, cos, tan in radians, with "sen" as sin', () => {
+    expect(at('sin(x)', Math.PI / 2)).toBeCloseTo(1);
+    expect(at('sen(x)', Math.PI / 6)).toBeCloseTo(0.5);
+    expect(at('cos(2x)', Math.PI / 2)).toBeCloseTo(-1);
+    expect(at('tan(x)', Math.PI / 4)).toBeCloseTo(1);
+    expect(at('2sin(x) + 1', 0)).toBeCloseTo(1);
+  });
+
+  it('evaluates exp, ln, log, and the constants pi and e', () => {
+    expect(at('exp(x)', 1)).toBeCloseTo(Math.E);
+    expect(at('e^x', 2)).toBeCloseTo(Math.E ** 2);
+    expect(at('ln(e^3)', 0)).toBeCloseTo(3);
+    expect(at('log(1000)', 0)).toBeCloseTo(3);
+    expect(at('2pi', 0)).toBeCloseTo(2 * Math.PI);
+    expect(at('π/2', 0)).toBeCloseTo(Math.PI / 2);
+    expect(at('-e^(-x)', 0)).toBeCloseTo(-1);
+    expect(at('5e^(-0.5x)', 2)).toBeCloseTo(5 / Math.E);
+  });
+
+  it('leaves logarithms undefined at zero and below', () => {
+    expect(at('ln(x)', 0)).toBeNaN();
+    expect(at('log(x - 2)', 1)).toBeNaN();
+  });
+
+  it('reads powers of functions and arguments without parentheses', () => {
+    expect(at('sin(x)^2 + cos(x)^2', 0.7)).toBeCloseTo(1);
+    expect(at('sin x', Math.PI / 2)).toBeCloseTo(1);
+    expect(at('x sqrt(x)', 4)).toBe(8);
+  });
+
+  it('prints functions and constants', () => {
+    expect(printNode(parseExpression('2sin(3x)'))).toBe('2sin(3x)');
+    expect(printNode(parseExpression('ln(x - 1)'))).toBe('ln(x − 1)');
+    expect(printNode(parseExpression('2pi'))).toBe('2π');
+    expect(printNode(parseExpression('e^x'))).toBe('e^(x)');
+  });
+
+  it('solves inequalities with the new functions', () => {
+    expect(sol('ln(x) > 0')).toBe('(1, ∞)');
+    expect(sol('e^x <= 1')).toBe('(−∞, 0]');
+    expect(sol('log(x) < 2')).toBe('(0, 100)');
+  });
+
+  it('still rejects unknown words', () => {
+    expect(() => parseExpression('sinh(x)')).toThrow();
+    expect(() => parseExpression('z + 1')).toThrow();
+    expect(parseAnswer('between 2 and 3')).toBeNull();
   });
 });
