@@ -1,0 +1,19 @@
+WEBVTT
+
+00:00:00.450 --> 00:00:05.233
+Para usar Git con confianza, imagina tres lugares donde puede estar tu trabajo.
+
+00:00:06.283 --> 00:00:16.221
+El directorio de trabajo contiene los archivos que editas. Cuando cambias un archivo, Git lo marca como modificado, pero todavía no se guarda nada en el historial.
+
+00:00:17.271 --> 00:00:25.120
+Con git add eliges qué cambios van en la siguiente instantánea. Pasan al área de preparación, también llamada índice.
+
+00:00:26.170 --> 00:00:35.365
+Con git commit, los cambios preparados se convierten en una instantánea permanente en el repositorio, con tu nombre, la fecha y un mensaje.
+
+00:00:36.415 --> 00:00:47.839
+Antes de cada commit, ejecuta git status y git diff con la opción staged. Muestran exactamente qué se guardará, para que los archivos que no corresponden queden fuera.
+
+00:00:48.889 --> 00:00:55.948
+Editar, preparar, confirmar. Repetirás este ciclo muchas veces al día, en pasos pequeños.
