@@ -49,10 +49,38 @@ export function Lesson({ lesson, index, activities = [], stories = [], videos = 
       </div>
       {(title.fallback || usesEnglishBody) && <span className="translation-note">{t('common.translationMissing')}</span>}
 
+      <section className="takeaways lesson-brief" aria-label={t('week.takeaways')}>
+        <h3>{t('week.inShort')}</h3>
+        <ul>
+          {lesson.takeaways.map((item, i) => (
+            <li key={i}><Rich text={pick(item).text} /></li>
+          ))}
+        </ul>
+      </section>
+
+      {lesson.diagram && <Diagram kind={lesson.diagram} />}
+
+      {lesson.code && (
+        <figure className="lesson-code">
+          <CodeBlock code={lesson.code.source} label={lesson.code.language} />
+          <figcaption className="faint"><Rich text={pick(lesson.code.caption).text} /></figcaption>
+        </figure>
+      )}
+
+      {videos.map((v) => <VideoPlayer key={v.id} video={v} />)}
+
       <div className="lesson-body">
-        {lesson.body.map((p, i) => (
+        {lesson.body.slice(0, 2).map((p, i) => (
           <p key={i}><Rich text={pick(p).text} /></p>
         ))}
+        {lesson.body.length > 2 && (
+          <details className="fold">
+            <summary>{t('week.readMore', { n: lesson.body.length - 2 })}</summary>
+            {lesson.body.slice(2).map((p, i) => (
+              <p key={i}><Rich text={pick(p).text} /></p>
+            ))}
+          </details>
+        )}
       </div>
 
       {lesson.analogy && (
@@ -62,48 +90,28 @@ export function Lesson({ lesson, index, activities = [], stories = [], videos = 
         </aside>
       )}
 
-      {videos.map((v) => <VideoPlayer key={v.id} video={v} />)}
-
       {stories.map((story) => <StoryPlayer key={story.id} story={story} />)}
 
-      {lesson.diagram && (
-        <>
-          <p className="faint">{t('week.diagram')}</p>
-          <Diagram kind={lesson.diagram} />
-        </>
-      )}
-
-      {lesson.code && (
-        <figure>
-          <figcaption className="faint"><Rich text={pick(lesson.code.caption).text} /></figcaption>
-          <CodeBlock code={lesson.code.source} label={lesson.code.language} />
-        </figure>
-      )}
-
-      <section className="takeaways" aria-label={t('week.takeaways')}>
-        <h3>{t('week.takeaways')}</h3>
-        <ul>
-          {lesson.takeaways.map((item, i) => (
-            <li key={i}><Rich text={pick(item).text} /></li>
-          ))}
-        </ul>
-      </section>
+      {lesson.check && <KnowledgeCheck check={lesson.check} />}
 
       {lesson.pitfalls && lesson.pitfalls.length > 0 && (
-        <section style={{ marginTop: 16 }} aria-label={t('week.commonMistakes')}>
-          <h3>{t('week.commonMistakes')}</h3>
+        <details className="fold fold-card" aria-label={t('week.commonMistakes')}>
+          <summary>{t('week.commonMistakes')} <span className="faint">({lesson.pitfalls.length})</span></summary>
           {lesson.pitfalls.map((p, i) => (
             <div className="pitfall" key={i}>
               <p><strong>✗</strong> <Rich text={pick(p.mistake).text} /></p>
               <p><strong>✓ {t('week.fix')}:</strong> <Rich text={pick(p.fix).text} /></p>
             </div>
           ))}
-        </section>
+        </details>
       )}
 
-      {lesson.check && <KnowledgeCheck check={lesson.check} />}
-
-      {lesson.exercises && lesson.exercises.length > 0 && <ExerciseList exercises={lesson.exercises} />}
+      {lesson.exercises && lesson.exercises.length > 0 && (
+        <details className="fold fold-card">
+          <summary>{t('week.exercises')} <span className="faint">({lesson.exercises.length})</span></summary>
+          <ExerciseList exercises={lesson.exercises} bare />
+        </details>
+      )}
 
       <ActivityList activities={activities} />
 

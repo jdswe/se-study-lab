@@ -48,6 +48,8 @@ Every content string supports light markup, rendered on the site and in the PDFs
 - Logic notation: `\\neg`, `\\land`, `\\lor`, `\\to`, `\\leftrightarrow`, `\\top`, `\\bot`,
   `\\models`, `\\vdash`, `\\forall`, `\\exists`. Truth values: T/F in English, V/F in es/pt.
 - Code blocks (`code.source`) stay plain text: no markup there.
+- Anything that is code goes in backticks: commands (`git commit -m "msg"`), SQL, identifiers, file names, paths, flags. The site also formats the obvious cases automatically (git commands, `SELECT …;` statements, `name()` calls, `--flags`, `/paths`, `File.java`), but write backticks yourself.
+- Lessons show a summary first (the takeaways), then a visual, then the first two body paragraphs; the rest folds under "Keep reading". Put the most important paragraphs first and keep takeaways to one line each.
 
 ## Reference
 

@@ -1252,3 +1252,35 @@ main { flex: 1 0 auto; width: 100%; }
 .rich-display .katex-display { margin: 0; }
 .rich-code { font-family: var(--font-mono); font-size: 0.9em; padding: 1px 5px; border-radius: 6px; background: var(--panel-2); border: 1px solid var(--line); font-variant-ligatures: none; }
 .katex { color: inherit; }
+
+/* ===== Lesson layout: summary first, details on demand ===== */
+.lesson { padding: 28px 0 36px; }
+.lesson-band h2 { font-size: clamp(1.35rem, 1.1rem + 1vw, 1.75rem); letter-spacing: -0.01em; }
+.lesson-brief { margin: 4px 0 18px; padding: 16px 20px; border-radius: 16px; border: 1px solid hsl(var(--hue) 34% 52% / 0.25); border-left-width: 4px; }
+.lesson-brief h3 { margin: 0 0 6px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.12em; color: hsl(var(--hue) 36% 36%); }
+.lesson-brief ul { padding-left: 1.1em; display: grid; gap: 5px; }
+.lesson-brief li { line-height: 1.5; }
+.lesson-code { margin: 0 0 18px; }
+.lesson-code figcaption { margin-top: 6px; font-size: 0.85rem; }
+.lesson-body { margin-bottom: 14px; }
+.lesson-body p { max-width: 66ch; line-height: 1.7; margin: 0 0 12px; }
+.fold > summary { cursor: pointer; list-style: none; font-weight: 600; color: hsl(var(--hue, 190) 36% 34%); padding: 6px 0; display: flex; align-items: center; gap: 8px; }
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary::before { content: '▸'; font-size: 0.85em; transition: transform 160ms ease; }
+.fold[open] > summary::before { transform: rotate(90deg); }
+.fold[open] > summary { margin-bottom: 6px; }
+.fold-card { border: 1px solid var(--line); border-radius: 14px; padding: 6px 16px; margin: 12px 0; background: var(--panel); }
+.fold-card[open] { padding-bottom: 14px; }
+.fold-card .exercises { margin-top: 4px; }
+.analogy { margin: 0 0 16px; }
+.rich-code { white-space: nowrap; }
+.lesson .rich-code { font-size: 0.88em; }
+
+/* ===== Cleaner, calmer surface ===== */
+.backdrop { opacity: 0.3; }
+.lesson-brief { background: var(--panel); box-shadow: 0 1px 0 color-mix(in srgb, var(--ink) 4%, transparent), 0 8px 24px -16px color-mix(in srgb, var(--ink) 25%, transparent); border-left-color: hsl(var(--hue) 40% 46%); }
+.analogy { background: var(--panel); }
+.diagram { overflow: visible; margin: 4px auto 20px; }
+.lesson svg.diagram { max-width: min(100%, 640px); }
+.lesson figure { margin-left: 0; margin-right: 0; }
+.lesson .fold-card { box-shadow: 0 1px 0 color-mix(in srgb, var(--ink) 4%, transparent); }

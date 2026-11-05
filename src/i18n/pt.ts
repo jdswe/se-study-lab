@@ -74,6 +74,8 @@ export const pt: Dict = {
     weekStatusPlanned: 'Planejada',
   },
   week: {
+    inShort: 'Em resumo',
+    readMore: 'Continuar lendo · mais {n}',
     groupLearn: 'Aprender',
     groupPractise: 'Praticar',
     groupOrganise: 'Organizar',

@@ -71,6 +71,8 @@ export const en = {
     weekStatusPlanned: 'Planned',
   },
   week: {
+    inShort: 'In brief',
+    readMore: 'Keep reading · {n} more',
     groupLearn: 'Learn',
     groupPractise: 'Practise',
     groupOrganise: 'Organise',

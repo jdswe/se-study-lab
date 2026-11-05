@@ -73,6 +73,8 @@ export const es: Dict = {
     weekStatusPlanned: 'Planificada',
   },
   week: {
+    inShort: 'En breve',
+    readMore: 'Seguir leyendo · {n} más',
     groupLearn: 'Aprender',
     groupPractise: 'Practicar',
     groupOrganise: 'Organizar',

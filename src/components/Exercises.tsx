@@ -9,12 +9,12 @@ const LEVEL_NAMES = {
 } as const;
 
 /** Exercises with a hidden hint and solution, so learners can try first. */
-export function ExerciseList({ exercises }: { exercises: Exercise[] }) {
+export function ExerciseList({ exercises, bare = false }: { exercises: Exercise[]; bare?: boolean }) {
   const { t, pick, locale } = useI18n();
   const names = LEVEL_NAMES[locale];
   return (
     <section className="exercises" aria-label={t('week.exercises')}>
-      <h3>{t('week.exercises')}</h3>
+      {!bare && <h3>{t('week.exercises')}</h3>}
       <ol className="exercise-list">
         {exercises.map((ex, i) => (
           <li key={ex.id} className={`exercise level-${ex.level}`}>

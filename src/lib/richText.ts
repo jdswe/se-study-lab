@@ -80,6 +80,39 @@ export function tokenizeRich(src: string): RichToken[] {
     i++;
   }
   flush();
+  return autoCode(out);
+}
+
+/**
+ * Shows code-looking snippets in plain text as code, so content written without backticks
+ * still reads properly. Deliberately conservative: only git commands, complete SQL
+ * statements, empty-parenthesis calls (abs(), main()), option flags, absolute paths,
+ * file names with a known extension, and a few Java names.
+ */
+const GIT_ARG = '(?: (?:-{1,2}[A-Za-z][\\w-]*|"[^"]*"|\'[^\']*\'|origin|main|master|HEAD|\\.|\\S*[/:@]\\S*[A-Za-z0-9]))*';
+const AUTO_CODE = new RegExp([
+  `\\bgit (?:init|add|commit|push|pull|clone|status|log|branch|checkout|switch|merge|fetch|remote|diff|stash|tag|rebase|reset|restore|config)\\b${GIT_ARG}`,
+  '\\b(?:SELECT|INSERT INTO|UPDATE|DELETE FROM|CREATE TABLE|ALTER TABLE|DROP TABLE)\\b[^;\\n`$]{3,200};',
+  '\\b[A-Za-z_][\\w.]*\\(\\)',
+  '(?<=^|[\\s(])--?[A-Za-z][\\w-]*(?=$|[\\s,.;:)])',
+  '(?<=^|[\\s(])/(?:[\\w.-]+/)*[\\w.-]*[\\w-](?=$|[\\s,.;:)])',
+  '\\b[\\w-]+\\.(?:java|py|js|ts|json|md|txt|sh|sql|html|css|xml|yml|yaml)\\b',
+  '\\bSystem\\.out\\.\\w+|\\bargs\\[\\d\\]|\\bString\\[\\] args\\b|\\bInteger\\.parseInt\\b',
+].join('|'), 'g');
+
+function autoCode(tokens: RichToken[]): RichToken[] {
+  const out: RichToken[] = [];
+  for (const t of tokens) {
+    if (t.kind !== 'text') { out.push(t); continue; }
+    let last = 0;
+    for (const m of t.value.matchAll(AUTO_CODE)) {
+      const i = m.index ?? 0;
+      if (i > last) out.push({ kind: 'text', value: t.value.slice(last, i) });
+      out.push({ kind: 'code', value: m[0] });
+      last = i + m[0].length;
+    }
+    if (last < t.value.length) out.push({ kind: 'text', value: t.value.slice(last) });
+  }
   return out;
 }
 
