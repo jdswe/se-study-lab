@@ -17,6 +17,7 @@ import {
   BorderStyle, Document, Packer, PageBreak, Paragraph, TabStopType, TextRun,
 } from 'docx';
 import PptxGenJS from 'pptxgenjs';
+import katex from 'katex';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const CACHE = join(ROOT, 'node_modules/.cache/docs');
@@ -31,11 +32,25 @@ const C = {
   good: '3E7D5A', bad: 'A9473D',
 };
 // Subject accent, as on the website (src/lib/subjectStyle.ts).
-const ACCENT = { 'software-development-1': C.teal, 'database-1': C.navy, 'calculus-1': C.mauve };
+const ACCENT = {
+  'software-development-1': C.teal,
+  'database-1': C.navy,
+  'calculus-1': C.mauve,
+  logic: '8A5A6E',
+  'programming-1': 'B0652F',
+  'operating-systems-1': '4F6B4A',
+  'history-of-software-engineering': '8C6D3F',
+  'discrete-mathematics': '5B5F97',
+};
 const SUBJECT_NAME = {
   'software-development-1': { en: 'Software Development 1', es: 'Desarrollo de Software 1', pt: 'Desenvolvimento de Software 1' },
   'database-1': { en: 'Databases 1', es: 'Bases de Datos 1', pt: 'Bancos de Dados 1' },
   'calculus-1': { en: 'Calculus 1', es: 'Cálculo 1', pt: 'Cálculo 1' },
+  logic: { en: 'Logic', es: 'Lógica', pt: 'Lógica' },
+  'programming-1': { en: 'Programming 1', es: 'Programación 1', pt: 'Programação 1' },
+  'operating-systems-1': { en: 'Operating Systems 1', es: 'Sistemas Operativos 1', pt: 'Sistemas Operacionais 1' },
+  'history-of-software-engineering': { en: 'History of Software Engineering', es: 'Historia de la Ingeniería de Software', pt: 'História da Engenharia de Software' },
+  'discrete-mathematics': { en: 'Discrete Mathematics', es: 'Matemática Discreta', pt: 'Matemática Discreta' },
 };
 
 const T = {
@@ -221,10 +236,267 @@ const CHEATS = {
       [H('x² < 9 solved as x < 3', 'x² < 9 resuelto como x < 3', 'x² < 9 resolvido como x < 3'), H('Took a square root like an equation', 'Se sacó raíz como en una ecuación', 'Tirou a raiz como numa equação'), H('Factor (x − 3)(x + 3) and use a sign chart: (−3, 3)', 'Factoriza (x − 3)(x + 3) y usa una tabla de signos: (−3, 3)', 'Fatore (x − 3)(x + 3) e use um quadro de sinais: (−3, 3)')],
     ],
   },
+  logic: {
+    sections: [
+      { math: true, title: H('Connectives', 'Conectivas', 'Conectivos'), rows: [
+        R('¬p', '"not p": true when p is false', '"no p": verdadero cuando p es falso', '"não p": verdadeiro quando p é falso'),
+        R('p ∧ q', '"p and q": true only when both are true', '"p y q": verdadero solo si ambos son verdaderos', '"p e q": verdadeiro só se ambos forem verdadeiros'),
+        R('p ∨ q', '"p or q": true when at least one is true', '"p o q": verdadero si al menos uno es verdadero', '"p ou q": verdadeiro se ao menos um for verdadeiro'),
+        R('p → q', '"if p then q": false only when p is true and q is false', '"si p entonces q": falso solo si p es verdadero y q falso', '"se p então q": falso só se p for verdadeiro e q falso'),
+        R('p ↔ q', '"p if and only if q": both have the same truth value', '"p si y solo si q": ambos tienen el mismo valor de verdad', '"p se e somente se q": ambos têm o mesmo valor de verdade'),
+      ] },
+      { math: true, title: H('Truth tables', 'Tablas de verdad', 'Tabelas-verdade'), rows: [
+        R('2ⁿ rows', 'n propositional variables', 'n variables proposicionales', 'n variáveis proposicionais'),
+        R('¬ > ∧ > ∨ > → > ↔', 'Precedence, from tightest to loosest; use parentheses when unsure', 'Precedencia, de mayor a menor; usa paréntesis si dudas', 'Precedência, da maior para a menor; use parênteses se houver dúvida'),
+        R('tautology', 'True in every row', 'Verdadera en todas las filas', 'Verdadeira em todas as linhas'),
+        R('contradiction', 'False in every row', 'Falsa en todas las filas', 'Falsa em todas as linhas'),
+        R('contingency', 'True in some rows and false in others', 'Verdadera en unas filas y falsa en otras', 'Verdadeira em algumas linhas e falsa em outras'),
+      ] },
+      { math: true, title: H('Useful equivalences', 'Equivalencias útiles', 'Equivalências úteis'), rows: [
+        R('¬(p ∧ q) ≡ ¬p ∨ ¬q', 'De Morgan', 'De Morgan', 'De Morgan'),
+        R('¬(p ∨ q) ≡ ¬p ∧ ¬q', 'De Morgan', 'De Morgan', 'De Morgan'),
+        R('p → q ≡ ¬p ∨ q', 'Rewrite an implication', 'Reescribir una implicación', 'Reescrever uma implicação'),
+        R('p → q ≡ ¬q → ¬p', 'Contrapositive', 'Contrarrecíproca', 'Contrapositiva'),
+        R('p ↔ q ≡ (p → q) ∧ (q → p)', 'A biconditional is two implications', 'Un bicondicional son dos implicaciones', 'Um bicondicional são duas implicações'),
+        R('p ∧ (q ∨ r) ≡ (p ∧ q) ∨ (p ∧ r)', 'Distributivity', 'Distributividad', 'Distributividade'),
+      ] },
+      { math: true, title: H('Normal forms and resolution', 'Formas normales y resolución', 'Formas normais e resolução'), rows: [
+        R('literal', 'A variable or its negation', 'Una variable o su negación', 'Uma variável ou sua negação'),
+        R('CNF: (p ∨ ¬q) ∧ (r ∨ s)', 'AND of OR-clauses', 'AND de cláusulas OR', 'AND de cláusulas OR'),
+        R('DNF: (p ∧ q) ∨ (¬r ∧ s)', 'OR of AND-terms', 'OR de términos AND', 'OR de termos AND'),
+        R('(p ∨ q), (¬q ∨ r) ⊢ (p ∨ r)', 'Resolvent on q', 'Resolvente sobre q', 'Resolvente sobre q'),
+        R('□', 'Empty clause: a contradiction was derived', 'Cláusula vacía: se derivó una contradicción', 'Cláusula vazia: derivou-se uma contradição'),
+      ] },
+      { math: true, title: H('Predicate logic', 'Lógica de predicados', 'Lógica de predicados'), rows: [
+        R('∀x P(x)', 'True for every x in the domain', 'Verdadero para todo x del dominio', 'Verdadeiro para todo x do domínio'),
+        R('∃x P(x)', 'True for at least one x', 'Verdadero para al menos un x', 'Verdadeiro para ao menos um x'),
+        R('¬∀x P(x) ≡ ∃x ¬P(x)', 'Negate a universal', 'Negar un universal', 'Negar um universal'),
+        R('¬∃x P(x) ≡ ∀x ¬P(x)', 'Negate an existential', 'Negar un existencial', 'Negar um existencial'),
+        R('∀x (P(x) → Q(x))', 'Every P is a Q', 'Todo P es un Q', 'Todo P é um Q'),
+      ] },
+    ],
+    trouble: [
+      [H('An implication feels backwards', 'Una implicación parece al revés', 'Uma implicação parece invertida'), H('Reading p → q as causation', 'Leer p → q como causalidad', 'Ler p → q como causalidade'), H('p → q is false only when p is true and q is false', 'p → q es falsa solo si p es verdadera y q falsa', 'p → q é falsa só se p for verdadeira e q falsa')],
+      [H('The negation of "all" came out as "none"', 'La negación de "todos" salió como "ninguno"', 'A negação de "todos" saiu como "nenhum"'), H('Wrote ¬∀ as ∀¬ and stopped there', 'Se escribió ¬∀ como ∀¬ y se paró ahí', 'Escreveu ¬∀ como ∀¬ e parou aí'), H('Swap the quantifier too: ¬∀x P(x) ≡ ∃x ¬P(x)', 'Cambia también el cuantificador: ¬∀x P(x) ≡ ∃x ¬P(x)', 'Troque também o quantificador: ¬∀x P(x) ≡ ∃x ¬P(x)')],
+      [H('The truth table has too few rows', 'La tabla de verdad tiene pocas filas', 'A tabela-verdade tem poucas linhas'), H('Forgot that each variable doubles the rows', 'Se olvidó que cada variable duplica las filas', 'Esqueceu que cada variável dobra as linhas'), H('Rows = 2ⁿ; for three variables write all 8 combinations', 'Filas = 2ⁿ; con tres variables escribe las 8 combinaciones', 'Linhas = 2ⁿ; com três variáveis escreva as 8 combinações')],
+    ],
+  },
+  'programming-1': {
+    sections: [
+      { title: H('Program skeleton', 'Esqueleto del programa', 'Esqueleto do programa'), rows: [
+        R('public class Main { … }', 'One public class per file; the name matches the file', 'Una clase pública por archivo; el nombre coincide con el archivo', 'Uma classe pública por arquivo; o nome coincide com o arquivo'),
+        R('public static void main(String[] args)', 'Entry point of the program', 'Punto de entrada del programa', 'Ponto de entrada do programa'),
+        R('System.out.println("Hi");', 'Print a line', 'Imprimir una línea', 'Imprimir uma linha'),
+        R('// comment', 'Ignored by the compiler', 'El compilador lo ignora', 'O compilador ignora'),
+      ] },
+      { title: H('Variables and types', 'Variables y tipos', 'Variáveis e tipos'), rows: [
+        R('int age = 20;', 'Whole numbers', 'Números enteros', 'Números inteiros'),
+        R('double price = 9.99;', 'Decimal numbers', 'Números decimales', 'Números decimais'),
+        R('boolean ok = true;', 'true or false', 'true o false', 'true ou false'),
+        R("char grade = 'A';", 'One character, single quotes', 'Un carácter, comillas simples', 'Um caractere, aspas simples'),
+        R('String name = "Ana";', 'Text, double quotes, an object', 'Texto, comillas dobles, un objeto', 'Texto, aspas duplas, um objeto'),
+        R('(int) 3.9', 'Cast: truncates to 3', 'Conversión: trunca a 3', 'Conversão: trunca para 3'),
+      ] },
+      { title: H('Operators', 'Operadores', 'Operadores'), rows: [
+        R('+  -  *  /  %', 'Arithmetic; % is the remainder', 'Aritmética; % es el resto', 'Aritmética; % é o resto'),
+        R('7 / 2 → 3', 'Integer division drops the decimals', 'La división entera descarta los decimales', 'A divisão inteira descarta os decimais'),
+        R('7 % 2 → 1', 'Remainder', 'Resto', 'Resto'),
+        R('==  !=  <  >  <=  >=', 'Comparison, produces a boolean', 'Comparación, produce un booleano', 'Comparação, produz um booleano'),
+        R('&&  ||  !', 'and / or / not', 'y / o / no', 'e / ou / não'),
+        R('count++   count += 2', 'Increment / compound assignment', 'Incremento / asignación compuesta', 'Incremento / atribuição composta'),
+      ] },
+      { title: H('Input and output', 'Entrada y salida', 'Entrada e saída'), rows: [
+        R('Scanner in = new Scanner(System.in);', 'Read from the keyboard', 'Leer del teclado', 'Ler do teclado'),
+        R('in.nextInt()   in.nextDouble()', 'Read a number', 'Leer un número', 'Ler um número'),
+        R('in.nextLine()', 'Read a whole line', 'Leer una línea completa', 'Ler uma linha inteira'),
+        R('in.nextLine()', 'Call it after nextInt() to consume the leftover newline', 'Llámala tras nextInt() para consumir el salto pendiente', 'Chame-a depois de nextInt() para consumir a quebra pendente'),
+        R('System.out.printf("%.2f%n", x);', 'Format with two decimals', 'Formatear con dos decimales', 'Formatar com duas casas decimais'),
+      ] },
+      { title: H('Decisions and loops', 'Decisiones y ciclos', 'Decisões e laços'), rows: [
+        R('if (x > 0) { … } else { … }', 'Two branches', 'Dos ramas', 'Dois ramos'),
+        R('switch (day) { case 1: … break; default: … }', 'Many exact cases', 'Muchos casos exactos', 'Muitos casos exatos'),
+        R('while (condition) { … }', 'Check first; may run zero times', 'Comprueba primero; puede ejecutarse cero veces', 'Verifica primeiro; pode executar zero vezes'),
+        R('do { … } while (condition);', 'Run once, then check', 'Ejecuta una vez y luego comprueba', 'Executa uma vez e depois verifica'),
+        R('for (int i = 0; i < n; i++) { … }', 'Counted loop', 'Ciclo contado', 'Laço contado'),
+        R('break;   continue;', 'Leave the loop / skip to the next iteration', 'Salir del ciclo / pasar a la siguiente iteración', 'Sair do laço / pular para a próxima iteração'),
+      ] },
+      { title: H('Classes and objects', 'Clases y objetos', 'Classes e objetos'), rows: [
+        R('class Student { … }', 'A blueprint for objects', 'Un molde para objetos', 'Um molde para objetos'),
+        R('new Student("Ana", 20)', 'Create an object with the constructor', 'Crear un objeto con el constructor', 'Criar um objeto com o construtor'),
+        R('this.name = name;', 'Distinguish the field from the parameter', 'Distinguir el campo del parámetro', 'Distinguir o campo do parâmetro'),
+        R('private int age;', 'Encapsulation: hide the field', 'Encapsulación: ocultar el campo', 'Encapsulamento: ocultar o campo'),
+        R('public int getAge() { return age; }', 'Controlled read access', 'Acceso de lectura controlado', 'Acesso de leitura controlado'),
+        R('static int count;', 'One copy shared by the whole class', 'Una copia compartida por toda la clase', 'Uma cópia compartilhada por toda a classe'),
+      ] },
+    ],
+    trouble: [
+      [H('String comparison fails', 'La comparación de String falla', 'A comparação de String falha'), H('Used == instead of equals', 'Se usó == en vez de equals', 'Usou == em vez de equals'), H('Write name.equals("Ana"); == compares references', 'Escribe name.equals("Ana"); == compara referencias', 'Escreva name.equals("Ana"); == compara referências')],
+      [H('A division returns 0 or 1 unexpectedly', 'Una división devuelve 0 o 1 sin esperarlo', 'Uma divisão retorna 0 ou 1 inesperadamente'), H('Both operands are integers', 'Ambos operandos son enteros', 'Os dois operandos são inteiros'), H('Make one a double: 7.0 / 2 or (double) total / n', 'Haz uno double: 7.0 / 2 o (double) total / n', 'Faça um deles double: 7.0 / 2 ou (double) total / n')],
+      [H('Input skips a line', 'La entrada se salta una línea', 'A entrada pula uma linha'), H('nextInt() left the newline in the buffer', 'nextInt() dejó el salto de línea en el búfer', 'nextInt() deixou a quebra de linha no buffer'), H('Add an extra in.nextLine() before reading text', 'Agrega un in.nextLine() extra antes de leer texto', 'Adicione um in.nextLine() extra antes de ler texto')],
+      [H('The loop never ends', 'El ciclo nunca termina', 'O laço nunca termina'), H('The condition never becomes false', 'La condición nunca se vuelve falsa', 'A condição nunca se torna falsa'), H('Update the control variable inside the loop and trace a few iterations', 'Actualiza la variable de control dentro del ciclo y traza algunas iteraciones', 'Atualize a variável de controle dentro do laço e trace algumas iterações')],
+    ],
+  },
+  'operating-systems-1': {
+    diagram: 'files-vs-dbms',
+    sections: [
+      { title: H('Processes and threads', 'Procesos e hilos', 'Processos e threads'), rows: [
+        R('new → ready → running → waiting → terminated', 'Process states', 'Estados del proceso', 'Estados do processo'),
+        R('PCB', 'Per-process data: id, state, registers, memory, open files', 'Datos por proceso: id, estado, registros, memoria, archivos abiertos', 'Dados por processo: id, estado, registradores, memória, arquivos abertos'),
+        R('fork()', 'Create a child process; returns 0 in the child', 'Crear un proceso hijo; devuelve 0 en el hijo', 'Criar um processo filho; retorna 0 no filho'),
+        R('thread', 'Shares code, data, and files with its process', 'Comparte código, datos y archivos con su proceso', 'Compartilha código, dados e arquivos com seu processo'),
+        R('context switch', 'Save one context and restore another; pure overhead', 'Guardar un contexto y restaurar otro; puro sobrecosto', 'Salvar um contexto e restaurar outro; puro overhead'),
+      ] },
+      { title: H('CPU scheduling', 'Planificación de CPU', 'Escalonamento de CPU'), rows: [
+        R('FCFS', 'First come, first served; suffers the convoy effect', 'Primero en llegar, primero en servirse; sufre el efecto convoy', 'Primeiro a chegar, primeiro a ser atendido; sofre o efeito comboio'),
+        R('SJF', 'Shortest job first; optimal average wait when all arrive together', 'Trabajo más corto primero; espera media óptima si todos llegan juntos', 'Trabalho mais curto primeiro; espera média ótima se todos chegam juntos'),
+        R('Priority', 'Highest priority runs first; starvation is possible', 'Mayor prioridad primero; puede haber inanición', 'Maior prioridade primeiro; pode haver inanição'),
+        R('Round Robin', 'Fixed quantum, rotate; good response time', 'Quantum fijo, rotación; buen tiempo de respuesta', 'Quantum fixo, rotação; bom tempo de resposta'),
+        R('Wait = start − arrival; turnaround = finish − arrival', 'Formulas', 'Fórmulas', 'Fórmulas'),
+        R('Average = total waiting ÷ number of processes', 'Never forget the division', 'Nunca olvides la división', 'Nunca esqueça a divisão'),
+      ] },
+      { title: H('Memory and paging', 'Memoria y paginación', 'Memória e paginação'), rows: [
+        R('logical address', 'The address the program sees', 'La dirección que ve el programa', 'O endereço que o programa vê'),
+        R('physical address', 'The address in RAM', 'La dirección en la RAM', 'O endereço na RAM'),
+        R('page = address ÷ page size', 'High bits of the address', 'Bits altos de la dirección', 'Bits altos do endereço'),
+        R('offset = address mod page size', 'Low bits of the address', 'Bits bajos de la dirección', 'Bits baixos do endereço'),
+        R('page table', 'Maps page number to frame number', 'Asigna número de página a marco', 'Mapeia número de página para quadro'),
+        R('page fault', 'The page is not in memory', 'La página no está en memoria', 'A página não está na memória'),
+      ] },
+      { title: H('Page replacement', 'Reemplazo de páginas', 'Substituição de páginas'), rows: [
+        R('FIFO', 'Evict the oldest loaded page', 'Expulsar la página cargada hace más tiempo', 'Expulsar a página carregada há mais tempo'),
+        R('LRU', 'Evict the least recently used page', 'Expulsar la página usada menos recientemente', 'Expulsar a página usada menos recentemente'),
+        R('Optimal', 'Evict the page used farthest in the future; a benchmark only', 'Expulsar la página usada más lejos en el futuro; solo referencia', 'Expulsar a página usada mais longe no futuro; apenas referência'),
+        R('Belady’s anomaly', 'More frames can mean more faults under FIFO', 'Más marcos pueden significar más fallos con FIFO', 'Mais quadros podem significar mais faltas com FIFO'),
+      ] },
+      { title: H('Disks and RAID', 'Discos y RAID', 'Discos e RAID'), rows: [
+        R('seek + rotation + transfer', 'Disk access time', 'Tiempo de acceso al disco', 'Tempo de acesso ao disco'),
+        R('FCFS', 'Serve requests in arrival order', 'Atender solicitudes en orden de llegada', 'Atender requisições na ordem de chegada'),
+        R('SSTF', 'Closest request next; starvation possible', 'La solicitud más cercana primero; puede haber inanición', 'A requisição mais próxima primeiro; pode haver inanição'),
+        R('SCAN / C-SCAN', 'Sweep like an elevator / wrap around', 'Barrido como un ascensor / vuelta circular', 'Varredura como um elevador / volta circular'),
+        R('RAID 0 / 1 / 5', 'Striping / mirroring / striping with parity', 'Fragmentación / espejo / fragmentación con paridad', 'Fragmentação / espelhamento / fragmentação com paridade'),
+      ] },
+      { title: H('File systems and protection', 'Sistemas de archivos y protección', 'Sistemas de arquivos e proteção'), rows: [
+        R('inode', 'Metadata: owner, size, permissions, block pointers', 'Metadatos: dueño, tamaño, permisos, punteros a bloques', 'Metadados: dono, tamanho, permissões, ponteiros para blocos'),
+        R('contiguous / linked / indexed', 'File allocation methods', 'Métodos de asignación de archivos', 'Métodos de alocação de arquivos'),
+        R('bitmap / free list', 'Free-space tracking', 'Seguimiento del espacio libre', 'Rastreamento do espaço livre'),
+        R('journaling', 'Write the intent first so a crash can be repaired', 'Escribir la intención primero para reparar tras un fallo', 'Escrever a intenção primeiro para reparar após uma falha'),
+        R('chmod 754 file', 'rwx r-x r--', 'rwx r-x r--', 'rwx r-x r--'),
+        R('4 2 1', 'Read / write / execute in octal', 'Lectura / escritura / ejecución en octal', 'Leitura / escrita / execução em octal'),
+      ] },
+    ],
+    trouble: [
+      [H('The average waiting time looks wrong', 'El tiempo medio de espera parece incorrecto', 'O tempo médio de espera parece errado'), H('Averaged over the wrong count or ignored arrival time', 'Se promedió con el conteo equivocado o se ignoró la llegada', 'Foi calculada com a contagem errada ou ignorou a chegada'), H('List arrival, start, and finish for every process, then divide by n', 'Anota llegada, inicio y fin de cada proceso y divide entre n', 'Anote chegada, início e fim de cada processo e divida por n')],
+      [H('The page-fault count is too high', 'El conteo de fallos de página es demasiado alto', 'A contagem de faltas de página é alta demais'), H('A hit was counted as a fault', 'Se contó un acierto como fallo', 'Um acerto foi contado como falta'), H('Count only when the page is not already in a frame', 'Cuenta solo cuando la página no está ya en un marco', 'Conte apenas quando a página não está já em um quadro')],
+      [H('The octal permission is wrong', 'El permiso octal está mal', 'A permissão octal está errada'), H('Digits were added instead of converting each triad', 'Se sumaron los dígitos en vez de convertir cada tríada', 'Os dígitos foram somados em vez de converter cada tríade'), H('rwx = 4+2+1 = 7, r-x = 4+0+1 = 5, r-- = 4', 'rwx = 4+2+1 = 7, r-x = 4+0+1 = 5, r-- = 4', 'rwx = 4+2+1 = 7, r-x = 4+0+1 = 5, r-- = 4')],
+    ],
+  },
+  'history-of-software-engineering': {
+    diagram: 'lifecycle',
+    sections: [
+      { title: H('Timeline', 'Línea de tiempo', 'Linha do tempo'), rows: [
+        R('1940s', 'Stored-program computers: programs live in memory like data', 'Computadoras de programa almacenado: los programas viven en memoria como datos', 'Computadores de programa armazenado: os programas vivem na memória como dados'),
+        R('1950s', 'Assembly and the first high-level languages; compilers appear', 'Ensamblador y los primeros lenguajes de alto nivel; aparecen los compiladores', 'Assembly e as primeiras linguagens de alto nível; surgem os compiladores'),
+        R('1960s', 'Software crisis: late projects, overruns, unreliable systems', 'Crisis del software: proyectos tardíos, sobrecostos, sistemas poco fiables', 'Crise do software: projetos atrasados, estouros de custo, sistemas não confiáveis'),
+        R('1968', 'The term "software engineering" is proposed as a call for discipline', 'Se propone el término "ingeniería de software" como llamado a la disciplina', 'O termo "engenharia de software" é proposto como chamado à disciplina'),
+        R('1970s', 'Structured programming, the waterfall model, relational databases', 'Programación estructurada, modelo en cascada, bases de datos relacionales', 'Programação estruturada, modelo cascata, bancos de dados relacionais'),
+        R('1980s', 'Personal computers, graphical interfaces, object orientation', 'Computadoras personales, interfaces gráficas, orientación a objetos', 'Computadores pessoais, interfaces gráficas, orientação a objetos'),
+        R('1990s', 'The web, client–server systems, open source, rapid development', 'La web, sistemas cliente–servidor, código abierto, desarrollo rápido', 'A web, sistemas cliente–servidor, código aberto, desenvolvimento rápido'),
+        R('2001', 'Agile values: people, working software, collaboration, response to change', 'Valores ágiles: personas, software funcionando, colaboración, respuesta al cambio', 'Valores ágeis: pessoas, software funcionando, colaboração, resposta à mudança'),
+        R('2010s–', 'Cloud, containers, continuous delivery, DevOps', 'Nube, contenedores, entrega continua, DevOps', 'Nuvem, contêineres, entrega contínua, DevOps'),
+      ] },
+      { title: H('Ideas that keep returning', 'Ideas que vuelven', 'Ideias que retornam'), rows: [
+        R('software crisis', 'Demand grew faster than the ability to build reliable systems', 'La demanda creció más rápido que la capacidad de construir sistemas fiables', 'A demanda cresceu mais rápido que a capacidade de construir sistemas confiáveis'),
+        R('process', 'A repeatable way to organise work, not a guarantee of quality', 'Una forma repetible de organizar el trabajo, no una garantía de calidad', 'Uma forma repetível de organizar o trabalho, não uma garantia de qualidade'),
+        R('lifecycle model', 'Waterfall, iterative, spiral, agile: different risk strategies', 'Cascada, iterativo, espiral, ágil: distintas estrategias de riesgo', 'Cascata, iterativo, espiral, ágil: diferentes estratégias de risco'),
+        R('technical debt', 'A shortcut today costs more later', 'Un atajo hoy cuesta más después', 'Um atalho hoje custa mais depois'),
+        R('open source', 'Shared code and distributed collaboration', 'Código compartido y colaboración distribuida', 'Código compartilhado e colaboração distribuída'),
+        R('DevOps', 'Development and operations share responsibility for delivery', 'Desarrollo y operaciones comparten la responsabilidad de entregar', 'Desenvolvimento e operações compartilham a responsabilidade pela entrega'),
+      ] },
+      { title: H('Reading history critically', 'Leer la historia con criterio', 'Ler a história com critério'), rows: [
+        R('date', 'Ask what problem the technique solved at that moment', 'Pregunta qué problema resolvía la técnica en ese momento', 'Pergunte que problema a técnica resolvia naquele momento'),
+        R('context', 'Hardware, market, and team size shaped each method', 'El hardware, el mercado y el tamaño del equipo moldearon cada método', 'O hardware, o mercado e o tamanho da equipe moldaram cada método'),
+        R('no single inventor', 'Most changes are gradual and shared', 'Casi todos los cambios son graduales y compartidos', 'Quase todas as mudanças são graduais e compartilhadas'),
+        R('hype cycle', 'A new label often renames an older idea', 'Una etiqueta nueva a menudo renombra una idea vieja', 'Um rótulo novo muitas vezes renomeia uma ideia antiga'),
+      ] },
+    ],
+    trouble: [
+      [H('One date explains everything', 'Una fecha lo explica todo', 'Uma data explica tudo'), H('Treating history as a list of isolated inventions', 'Tratar la historia como una lista de inventos aislados', 'Tratar a história como uma lista de invenções isoladas'), H('Connect each change to a problem: cost, reliability, scale, or speed', 'Conecta cada cambio con un problema: costo, fiabilidad, escala o velocidad', 'Conecte cada mudança a um problema: custo, confiabilidade, escala ou velocidade')],
+      [H('Agile means no planning', 'Ágil significa no planificar', 'Ágil significa não planejar'), H('Confusing agility with improvisation', 'Confundir agilidad con improvisación', 'Confundir agilidade com improvisação'), H('Agile plans in short cycles and adapts; it still plans', 'Lo ágil planifica en ciclos cortos y adapta; igual planifica', 'O ágil planeja em ciclos curtos e adapta; ainda planeja')],
+      [H('Waterfall is always wrong', 'La cascada siempre está mal', 'A cascata está sempre errada'), H('Judging a model outside its context', 'Juzgar un modelo fuera de su contexto', 'Julgar um modelo fora de seu contexto'), H('Stable requirements and heavy regulation can favour a sequential model', 'Requisitos estables y mucha regulación pueden favorecer un modelo secuencial', 'Requisitos estáveis e forte regulação podem favorecer um modelo sequencial')],
+    ],
+  },
+  'discrete-mathematics': {
+    diagram: 'real-sets',
+    sections: [
+      { math: true, title: H('Sets', 'Conjuntos', 'Conjuntos'), rows: [
+        R('A ∪ B', 'Elements in A or B', 'Elementos en A o B', 'Elementos em A ou B'),
+        R('A ∩ B', 'Elements in both', 'Elementos en ambos', 'Elementos em ambos'),
+        R('A − B', 'In A but not in B', 'En A pero no en B', 'Em A mas não em B'),
+        R('A × B', 'Ordered pairs (a, b)', 'Pares ordenados (a, b)', 'Pares ordenados (a, b)'),
+        R('|A|', 'Number of elements', 'Número de elementos', 'Número de elementos'),
+        R('P(A)', 'All subsets; |P(A)| = 2^|A|', 'Todos los subconjuntos; |P(A)| = 2^|A|', 'Todos os subconjuntos; |P(A)| = 2^|A|'),
+        R('∅', 'The empty set; ∅ ⊆ every set', 'El conjunto vacío; ∅ ⊆ todo conjunto', 'O conjunto vazio; ∅ ⊆ todo conjunto'),
+      ] },
+      { math: true, title: H('Relations and functions', 'Relaciones y funciones', 'Relações e funções'), rows: [
+        R('R ⊆ A × B', 'A relation from A to B', 'Una relación de A en B', 'Uma relação de A em B'),
+        R('reflexive / symmetric / transitive', 'The three properties of an equivalence relation', 'Las tres propiedades de una relación de equivalencia', 'As três propriedades de uma relação de equivalência'),
+        R('equivalence class [a]', 'Everything related to a', 'Todo lo relacionado con a', 'Tudo o que se relaciona com a'),
+        R('partial order', 'Reflexive, antisymmetric, transitive', 'Reflexiva, antisimétrica, transitiva', 'Reflexiva, antissimétrica, transitiva'),
+        R('injective', 'Different inputs give different outputs', 'Entradas distintas dan salidas distintas', 'Entradas distintas dão saídas distintas'),
+        R('surjective', 'Every element of the codomain is hit', 'Todo elemento del codominio es alcanzado', 'Todo elemento do contradomínio é atingido'),
+        R('bijective', 'Both; an inverse exists', 'Ambas; existe inversa', 'Ambas; existe inversa'),
+      ] },
+      { math: true, title: H('Counting', 'Conteo', 'Contagem'), rows: [
+        R('n!', 'Orderings of n distinct items', 'Ordenaciones de n elementos distintos', 'Ordenações de n elementos distintos'),
+        R('P(n, k) = n! / (n − k)!', 'Ordered selection without repetition', 'Selección ordenada sin repetición', 'Seleção ordenada sem repetição'),
+        R('C(n, k) = n! / (k!(n − k)!)', 'Unordered selection', 'Selección sin orden', 'Seleção sem ordem'),
+        R('n^k', 'Ordered selection with repetition', 'Selección ordenada con repetición', 'Seleção ordenada com repetição'),
+        R('|A ∪ B| = |A| + |B| − |A ∩ B|', 'Inclusion–exclusion', 'Inclusión–exclusión', 'Inclusão–exclusão'),
+        R('pigeonhole', 'More items than boxes → some box has at least two', 'Más objetos que cajas → alguna caja tiene al menos dos', 'Mais itens que caixas → alguma caixa tem ao menos dois'),
+      ] },
+      { math: true, title: H('Probability', 'Probabilidad', 'Probabilidade'), rows: [
+        R('P(E) = |E| / |S|', 'Equally likely outcomes', 'Resultados igualmente probables', 'Resultados igualmente prováveis'),
+        R('P(Eᶜ) = 1 − P(E)', 'Complement', 'Complemento', 'Complemento'),
+        R('P(A ∪ B) = P(A) + P(B) − P(A ∩ B)', 'Union', 'Unión', 'União'),
+        R('P(A | B) = P(A ∩ B) / P(B)', 'Conditional probability', 'Probabilidad condicional', 'Probabilidade condicional'),
+        R('independent: P(A ∩ B) = P(A)P(B)', 'Independence test', 'Prueba de independencia', 'Teste de independência'),
+      ] },
+      { math: true, title: H('Number theory', 'Teoría de números', 'Teoria dos números'), rows: [
+        R('a | b', 'a divides b', 'a divide a b', 'a divide b'),
+        R('gcd(a, b) = gcd(b, a mod b)', 'Euclid’s algorithm', 'Algoritmo de Euclides', 'Algoritmo de Euclides'),
+        R('a ≡ b (mod m)', 'm divides a − b', 'm divide a − b', 'm divide a − b'),
+        R('(a + b) mod m', '= ((a mod m) + (b mod m)) mod m; reduce early', '= ((a mod m) + (b mod m)) mod m; reduce temprano', '= ((a mod m) + (b mod m)) mod m; reduza cedo'),
+        R('a·x ≡ 1 (mod m)', 'An inverse exists when gcd(a, m) = 1', 'Hay inversa cuando gcd(a, m) = 1', 'Há inversa quando gcd(a, m) = 1'),
+      ] },
+      { math: true, title: H('Graphs and trees', 'Grafos y árboles', 'Grafos e árvores'), rows: [
+        R('Σ deg(v) = 2|E|', 'Handshake lemma', 'Lema del apretón de manos', 'Lema do aperto de mãos'),
+        R('tree: n − 1 edges, connected, acyclic', 'Three equivalent views', 'Tres vistas equivalentes', 'Três visões equivalentes'),
+        R('Euler path', 'Uses every edge once; 0 or 2 odd-degree vertices', 'Usa cada arista una vez; 0 o 2 vértices de grado impar', 'Usa cada aresta uma vez; 0 ou 2 vértices de grau ímpar'),
+        R('BFS / DFS', 'Queue / stack traversal', 'Recorrido con cola / pila', 'Percurso com fila / pilha'),
+        R('Kruskal / Prim', 'Minimum spanning tree', 'Árbol de expansión mínimo', 'Árvore geradora mínima'),
+      ] },
+    ],
+    trouble: [
+      [H('Combinations and permutations get mixed up', 'Se confunden combinaciones y permutaciones', 'Confundem-se combinações e permutações'), H('Order matters but C(n, k) was used', 'El orden importa pero se usó C(n, k)', 'A ordem importa mas usou-se C(n, k)'), H('Ask: would (a, b) and (b, a) count as different? If yes, use P', 'Pregunta: ¿(a, b) y (b, a) cuentan como distintos? Si sí, usa P', 'Pergunte: (a, b) e (b, a) contam como diferentes? Se sim, use P')],
+      [H('The empty set is missing', 'Falta el conjunto vacío', 'Falta o conjunto vazio'), H('Only non-empty subsets were counted', 'Solo se contaron subconjuntos no vacíos', 'Apenas subconjuntos não vazios foram contados'), H('P(A) always includes ∅ and A; its size is 2^n', 'P(A) siempre incluye ∅ y A; su tamaño es 2^n', 'P(A) sempre inclui ∅ e A; seu tamanho é 2^n')],
+      [H('Relation properties tested on the wrong pairs', 'Se probaron las propiedades en los pares equivocados', 'As propriedades foram testadas nos pares errados'), H('Only a few convenient pairs were checked', 'Solo se revisaron unos pocos pares cómodos', 'Apenas alguns pares convenientes foram verificados'), H('Write the matrix or the full set of pairs and check every case', 'Escribe la matriz o el conjunto completo de pares y revisa cada caso', 'Escreva a matriz ou o conjunto completo de pares e verifique cada caso')],
+    ],
+  },
 };
 
 // ---------- helpers ----------
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+// Content markup ($math$, $$display$$, `code`, **bold**), typeset with KaTeX for HTML and PDF.
+// tokenizeRich / plainRich come from src/lib/richText.ts, bundled in main below.
+let tokenizeRich, plainRich;
+const rich = (s) => tokenizeRich(String(s)).map((t) => {
+  if (t.kind === 'math' || t.kind === 'display') return katex.renderToString(t.value, { displayMode: t.kind === 'display', throwOnError: false, output: 'html', strict: 'ignore' });
+  if (t.kind === 'code') return `<code>${esc(t.value)}</code>`;
+  if (t.kind === 'bold') return `<b>${esc(t.value)}</b>`;
+  return esc(t.value);
+}).join('');
+const KATEX_DIR = join(ROOT, 'node_modules/katex/dist');
+const KATEX_CSS = readFileSync(join(KATEX_DIR, 'katex.min.css'), 'utf8').replace(/url\(fonts\//g, `url(${pathToFileURL(join(KATEX_DIR, 'fonts')).href}/`);
 const L = (loc) => (text) => (text && (text[loc] ?? text.en)) ?? '';
 const letter = (i) => String.fromCharCode(65 + i);
 
@@ -295,9 +567,9 @@ figure svg { width: 100%; height: auto; display: block; }
 function page(week, loc, kind, body) {
   const t = T[loc], pick = L(loc);
   const accent = ACCENT[week.subject] ?? C.teal;
-  return `<!doctype html><html lang="${loc}"><head><meta charset="utf-8"><title>${esc(kind)} · ${esc(pick(week.title))}</title>${FONTS}<style>${printCss(accent)}</style></head><body>
-<div class="head"><span><b>${esc(t.brand)}</b> · ${esc(pick(SUBJECT_NAME[week.subject]))}</span><span>${esc(kind)}</span></div>
-<div class="title"><span class="num">${week.week}</span><h1>${esc(pick(week.title))}</h1><span class="kind">${esc(t.week)} ${week.week} · ${esc(kind)}</span></div>
+  return `<!doctype html><html lang="${loc}"><head><meta charset="utf-8"><title>${esc(kind)} · ${esc(plainRich(pick(week.title)))}</title>${FONTS}<style>${KATEX_CSS}${printCss(accent)}</style></head><body>
+<div class="head"><span><b>${esc(t.brand)}</b> · ${rich(pick(SUBJECT_NAME[week.subject]))}</span><span>${esc(kind)}</span></div>
+<div class="title"><span class="num">${week.week}</span><h1>${rich(pick(week.title))}</h1><span class="kind">${esc(t.week)} ${week.week} · ${esc(kind)}</span></div>
 ${body}
 <p class="foot">${esc(t.brand)} · ${esc(t.alsoOnline)}</p></body></html>`;
 }
@@ -306,12 +578,12 @@ ${body}
 function summaryHtml(week, loc, svgs) {
   const t = T[loc], pick = L(loc);
   let body = `<h2>${esc(t.coreIdeas)}</h2><div class="grid2">`;
-  body += week.lessons.map((l, i) => `<div class="card"><h3><span>${i + 1}</span>${esc(pick(l.title))}</h3><ul>${l.takeaways.map((k) => `<li>${esc(pick(k))}</li>`).join('')}</ul></div>`).join('');
+  body += week.lessons.map((l, i) => `<div class="card"><h3><span>${i + 1}</span>${rich(pick(l.title))}</h3><ul>${l.takeaways.map((k) => `<li>${rich(pick(k))}</li>`).join('')}</ul></div>`).join('');
   body += '</div>';
   const cheat = CHEATS[week.subject];
   if (cheat?.diagram && svgs[cheat.diagram]) body += `<figure>${svgs[cheat.diagram]}</figure>`;
   const pitfalls = [...week.commonMistakes, ...week.lessons.flatMap((l) => l.pitfalls ?? [])].slice(0, 8);
-  body += `<h2>${esc(t.watchOut)}</h2><table><tr><th style="width:50%">${esc(t.mistake)}</th><th>${esc(t.fix)}</th></tr>${pitfalls.map((p) => `<tr><td>${esc(pick(p.mistake))}</td><td>${esc(pick(p.fix))}</td></tr>`).join('')}</table>`;
+  body += `<h2>${esc(t.watchOut)}</h2><table><tr><th style="width:50%">${esc(t.mistake)}</th><th>${esc(t.fix)}</th></tr>${pitfalls.map((p) => `<tr><td>${rich(pick(p.mistake))}</td><td>${rich(pick(p.fix))}</td></tr>`).join('')}</table>`;
   return page(week, loc, t.summary, body);
 }
 
@@ -321,8 +593,8 @@ function cheatHtml(week, loc, svgs) {
   const cheat = CHEATS[week.subject];
   let body = '';
   if (cheat.diagram && svgs[cheat.diagram]) body += `<figure>${svgs[cheat.diagram]}</figure>`;
-  body += `<div class="grid2">${cheat.sections.map((sec) => `<div class="card"><h3>${esc(pick(sec.title))}</h3><table>${sec.rows.map(([cmd, d]) => `<tr><td style="width:56%" class="${sec.math ? 'math' : 'mono'}">${esc(cmd)}</td><td>${esc(pick(d))}</td></tr>`).join('')}</table></div>`).join('')}</div>`;
-  body += `<h2>${esc(t.troubleshooting)}</h2><table><tr><th>${esc(t.symptom)}</th><th>${esc(t.cause)}</th><th>${esc(t.fix)}</th></tr>${cheat.trouble.map((r) => `<tr>${r.map((c) => `<td>${esc(pick(c))}</td>`).join('')}</tr>`).join('')}</table>`;
+  body += `<div class="grid2">${cheat.sections.map((sec) => `<div class="card"><h3>${rich(pick(sec.title))}</h3><table>${sec.rows.map(([cmd, d]) => `<tr><td style="width:56%" class="${sec.math ? 'math' : 'mono'}">${esc(cmd)}</td><td>${rich(pick(d))}</td></tr>`).join('')}</table></div>`).join('')}</div>`;
+  body += `<h2>${esc(t.troubleshooting)}</h2><table><tr><th>${esc(t.symptom)}</th><th>${esc(t.cause)}</th><th>${esc(t.fix)}</th></tr>${cheat.trouble.map((r) => `<tr>${r.map((c) => `<td>${rich(pick(c))}</td>`).join('')}</tr>`).join('')}</table>`;
   return page(week, loc, t.cheat, body);
 }
 
@@ -340,12 +612,12 @@ function worksheetHtml(week, loc) {
   const lines = (n) => `<div class="lines">${'<i></i>'.repeat(n)}</div>`;
   let body = `<div class="who"><span>${esc(t.name)}</span><span>${esc(t.date)}</span></div>`;
   body += `<h2>${esc(t.partA)}</h2><p class="note">${esc(t.partAHint)}</p>`;
-  body += exercises.map((e, i) => `<div class="ex"><p><b>${i + 1}. ${esc(pick(e.title))}</b> <span class="lvl">${esc(t.level[e.level - 1])} · ${esc(t.lesson)} ${e.lesson}</span></p><p>${esc(pick(e.prompt))}</p>${lines(e.level + 1)}<p class="hint">${esc(t.hint)}: ${esc(pick(e.hint))}</p></div>`).join('');
+  body += exercises.map((e, i) => `<div class="ex"><p><b>${i + 1}. ${rich(pick(e.title))}</b> <span class="lvl">${esc(t.level[e.level - 1])} · ${esc(t.lesson)} ${e.lesson}</span></p><p>${rich(pick(e.prompt))}</p>${lines(e.level + 1)}<p class="hint">${esc(t.hint)}: ${rich(pick(e.hint))}</p></div>`).join('');
   body += `<h2>${esc(t.partB)}</h2><p class="note">${esc(t.partBHint)}</p>`;
-  body += quick.map((q, i) => `<div class="ex"><p><b>${exercises.length + i + 1}. ${esc(pick(q.prompt))}</b></p><p class="opts">${q.options.map((o, j) => `<span>${letter(j)}) ${esc(pick(o))}</span>`).join('')}</p></div>`).join('');
+  body += quick.map((q, i) => `<div class="ex"><p><b>${exercises.length + i + 1}. ${rich(pick(q.prompt))}</b></p><p class="opts">${q.options.map((o, j) => `<span>${letter(j)}) ${rich(pick(o))}</span>`).join('')}</p></div>`).join('');
   body += `<div class="key"><h2>${esc(t.answerKey)}</h2><ol>`;
-  body += exercises.map((e) => `<li>${esc(pick(e.solution))}</li>`).join('');
-  body += quick.map((q) => `<li><b>${letter(q.answer)}</b> — ${esc(pick(q.explanation))}</li>`).join('');
+  body += exercises.map((e) => `<li>${rich(pick(e.solution))}</li>`).join('');
+  body += quick.map((q) => `<li><b>${letter(q.answer)}</b> — ${rich(pick(q.explanation))}</li>`).join('');
   body += '</ol></div>';
   const extra = `<style>
 .who { display: flex; gap: 24px; margin-bottom: 4px; } .who span { flex: 1; border-bottom: 1px solid #${C.faint}; padding-bottom: 2px; color: #${C.faint}; font-size: 8.5pt; }
@@ -361,7 +633,7 @@ function worksheetHtml(week, loc) {
 }
 
 function worksheetDocx(week, loc) {
-  const t = T[loc], pick = L(loc);
+  const t = T[loc], pick = (x) => plainRich(L(loc)(x));
   const accent = ACCENT[week.subject] ?? C.teal;
   const { exercises, quick } = worksheetItems(week);
   const run = (text, o = {}) => new TextRun({ text, font: 'Arial', size: 21, ...o });
@@ -411,20 +683,20 @@ function slidesHtml(week, loc, svgs) {
   const t = T[loc], pick = L(loc);
   const accent = ACCENT[week.subject] ?? C.teal;
   const { workflow, checks } = slidePlan(week);
-  const foot = `<footer><span>${esc(t.brand)} · ${esc(pick(SUBJECT_NAME[week.subject]))} · ${esc(t.week)} ${week.week}</span></footer>`;
+  const foot = `<footer><span>${esc(t.brand)} · ${rich(pick(SUBJECT_NAME[week.subject]))} · ${esc(t.week)} ${week.week}</span></footer>`;
   const slide = (inner, cls = '') => `<section class="slide ${cls}">${inner}${foot}</section>`;
-  let html = slide(`<div class="big-num">${week.week}</div><div><p class="kicker">${esc(pick(SUBJECT_NAME[week.subject]))} · ${esc(t.week)} ${week.week}</p><h1>${esc(pick(week.title))}</h1></div>`, 'cover');
+  let html = slide(`<div class="big-num">${week.week}</div><div><p class="kicker">${rich(pick(SUBJECT_NAME[week.subject]))} · ${esc(t.week)} ${week.week}</p><h1>${rich(pick(week.title))}</h1></div>`, 'cover');
   week.lessons.forEach((l, i) => {
     const svg = l.diagram ? svgs[l.diagram] : '';
-    html += slide(`<p class="kicker">${esc(t.lesson)} ${i + 1} · ${esc(pick(l.title))}</p>
-      <div class="idea ${svg ? 'with-fig' : ''}"><h2>${esc(pick(l.takeaways[0]))}</h2>${svg ? `<div class="fig">${svg}</div>` : `<ul>${l.takeaways.slice(1).map((k) => `<li>${esc(pick(k))}</li>`).join('')}</ul>`}</div>
-      ${l.analogy ? `<p class="quote"><b>${esc(t.thinkOfIt)}.</b> ${esc(pick(l.analogy))}</p>` : ''}`);
+    html += slide(`<p class="kicker">${esc(t.lesson)} ${i + 1} · ${rich(pick(l.title))}</p>
+      <div class="idea ${svg ? 'with-fig' : ''}"><h2>${rich(pick(l.takeaways[0]))}</h2>${svg ? `<div class="fig">${svg}</div>` : `<ul>${l.takeaways.slice(1).map((k) => `<li>${rich(pick(k))}</li>`).join('')}</ul>`}</div>
+      ${l.analogy ? `<p class="quote"><b>${esc(t.thinkOfIt)}.</b> ${rich(pick(l.analogy))}</p>` : ''}`);
   });
   if (workflow) {
-    html += slide(`<p class="kicker">${esc(t.stepByStep)}</p><h2>${esc(pick(workflow.title))}</h2><ol class="flow">${workflow.items.map((it) => `<li>${esc(pick(it))}</li>`).join('')}</ol>`);
+    html += slide(`<p class="kicker">${esc(t.stepByStep)}</p><h2>${rich(pick(workflow.title))}</h2><ol class="flow">${workflow.items.map((it) => `<li>${rich(pick(it))}</li>`).join('')}</ol>`);
   }
-  html += slide(`<p class="kicker">${esc(t.checkYourself)}</p>${checks.map((q, i) => `<div class="q"><b>${i + 1}. ${esc(pick(q.prompt))}</b><p>${q.options.map((o, j) => `${letter(j)}) ${esc(pick(o))}`).join('&emsp;')}</p></div>`).join('')}<p class="small">${esc(t.answersInNotes)}</p>`);
-  html += slide(`<p class="kicker">${esc(t.nextSteps)}</p><div class="next"><div><h3>${esc(t.labs)}</h3><ul>${week.labs.map((l) => `<li>${esc(pick(l.title))}</li>`).join('')}</ul></div><div><h3>${esc(t.tools)}</h3><ul>${week.tools.map((k) => `<li>${esc(t.toolNames[k])}</li>`).join('')}</ul></div></div>`);
+  html += slide(`<p class="kicker">${esc(t.checkYourself)}</p>${checks.map((q, i) => `<div class="q"><b>${i + 1}. ${rich(pick(q.prompt))}</b><p>${q.options.map((o, j) => `${letter(j)}) ${rich(pick(o))}`).join('&emsp;')}</p></div>`).join('')}<p class="small">${esc(t.answersInNotes)}</p>`);
+  html += slide(`<p class="kicker">${esc(t.nextSteps)}</p><div class="next"><div><h3>${esc(t.labs)}</h3><ul>${week.labs.map((l) => `<li>${rich(pick(l.title))}</li>`).join('')}</ul></div><div><h3>${esc(t.tools)}</h3><ul>${week.tools.map((k) => `<li>${esc(t.toolNames[k])}</li>`).join('')}</ul></div></div>`);
   const css = `${TOKENS}:root{--subject:#${accent}}${DIAGRAM_CSS}
   @page { size: 13.333in 7.5in; margin: 0; }
   body { margin: 0; font-family: Poppins, Arial, sans-serif; color: #${C.ink}; }
@@ -449,11 +721,11 @@ function slidesHtml(week, loc, svgs) {
   .small { font-size: 11pt; color: #${C.faint}; margin-top: auto; }
   .next { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6in; }
   footer { position: absolute; left: 1.05in; bottom: 0.3in; font-size: 9pt; color: #${C.faint}; }`;
-  return `<!doctype html><html lang="${loc}"><head><meta charset="utf-8">${FONTS}<style>${css}</style></head><body>${html}</body></html>`;
+  return `<!doctype html><html lang="${loc}"><head><meta charset="utf-8">${FONTS}<style>${KATEX_CSS}${css}</style></head><body>${html}</body></html>`;
 }
 
 async function slidesPptx(week, loc, images, outFile) {
-  const t = T[loc], pick = L(loc);
+  const t = T[loc], pick = (x) => plainRich(L(loc)(x));
   const accent = ACCENT[week.subject] ?? C.teal;
   const { workflow, checks } = slidePlan(week);
   const pptx = new PptxGenJS();
@@ -541,6 +813,8 @@ rmSync(CACHE, { recursive: true, force: true });
 mkdirSync(CACHE, { recursive: true });
 await build({ entryPoints: [join(ROOT, 'src/content/index.ts')], bundle: true, platform: 'node', format: 'esm', outfile: join(CACHE, 'content.mjs'), logLevel: 'error' });
 await build({ entryPoints: [join(ROOT, 'scripts/diagram-entry.tsx')], bundle: true, packages: 'external', platform: 'node', format: 'esm', jsx: 'automatic', outfile: join(CACHE, 'diagrams.mjs'), logLevel: 'error' });
+await build({ entryPoints: [join(ROOT, 'src/lib/richText.ts')], bundle: true, platform: 'node', format: 'esm', outfile: join(CACHE, 'rich.mjs'), logLevel: 'error' });
+({ tokenizeRich, plainRich } = await import(pathToFileURL(join(CACHE, 'rich.mjs')).href));
 const { weeks } = await import(pathToFileURL(join(CACHE, 'content.mjs')).href);
 const { renderDiagram } = await import(pathToFileURL(join(CACHE, 'diagrams.mjs')).href);
 

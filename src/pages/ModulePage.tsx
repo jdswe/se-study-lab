@@ -6,6 +6,7 @@ import { Breadcrumbs } from '../components/Breadcrumbs';
 import { TermArt } from '../components/TermArt';
 import { useProgress } from '../lib/store';
 import { progressOf } from '../lib/stats';
+import { Rich } from '../components/Rich';
 
 const THEME_GLYPH: Record<string, string> = { 'version-control': '⑂', databases: '▦', math: '∫', logic: '⊢', programming: '{}', systems: '⚙', history: '⌛', discrete: '◎', default: '◆' };
 
@@ -42,7 +43,7 @@ export function ModulePage() {
             <Link key={s.slug} to={subjectPath({ term, module: mod, subject: s })} className={`module-card is-ready subject-card theme-${s.theme}`}>
               <span className="module-num" aria-hidden="true">{THEME_GLYPH[s.theme]}</span>
               <span className="term-year">{t('subject.label')}</span>
-              <h3>{pick(s.title).text}</h3>
+              <h3><Rich text={pick(s.title).text} /></h3>
               <p className="faint">{t('module.weeksReady', { done: s.weeks.filter((w) => w.status === 'published').length, total: s.plannedWeeks })}</p>
               <div className="term-progress"><span style={{ width: `${p.pct}%` }} /></div>
               <span className="module-next">{t('subject.open')}</span>

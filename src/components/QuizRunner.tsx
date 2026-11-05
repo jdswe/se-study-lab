@@ -5,6 +5,7 @@ import { useI18n } from '../i18n';
 import { gradeQuestion, summarise, weakLessons, type Response } from '../lib/quizScore';
 import { updateState, useProgress } from '../lib/store';
 import { isChoice } from '../lib/grading';
+import { Rich } from './Rich';
 
 /** Runs one quiz: answer everything, submit, then review each answer with its explanation. */
 export function QuizRunner({ quizId, weekId, questions, lessonTitles }: {
@@ -87,17 +88,17 @@ export function QuizRunner({ quizId, weekId, questions, lessonTitles }: {
                   <span className={`badge ${graded ? 'badge-good' : 'badge-bad'}`}>{graded ? '✓' : '✗'}</span>
                 )}
               </div>
-              <p><strong>{pick(q.prompt).text}</strong></p>
+              <p><strong><Rich text={pick(q.prompt).text} /></strong></p>
               <QuestionInput q={q} value={responses[q.id]} onChange={(v) => set(q.id, v)} disabled={result !== null} />
               {result && (
                 <div className="explain">
-                  <p>{pick(q.explanation).text}</p>
+                  <p><Rich text={pick(q.explanation).text} /></p>
                   {isChoice(q) && q.whyWrong && (
                     <details>
                       <summary>{t('quiz.whyWrong')}</summary>
                       <ul>
                         {q.options.map((opt, i) => (
-                          <li key={i}><strong>{pick(opt).text}:</strong> {q.whyWrong?.[i] ? pick(q.whyWrong[i]).text : '—'}</li>
+                          <li key={i}><strong><Rich text={pick(opt).text} />:</strong> {q.whyWrong?.[i] ? pick(q.whyWrong[i]).text : '—'}</li>
                         ))}
                       </ul>
                     </details>
@@ -143,7 +144,7 @@ function QuestionInput({ q, value, onChange, disabled }: {
           {q.options.map((opt, i) => (
             <label key={i} className="option">
               <input type="radio" name={name} checked={value === i} disabled={disabled} onChange={() => onChange(i)} />
-              <span>{pick(opt).text}</span>
+              <span><Rich text={pick(opt).text} /></span>
             </label>
           ))}
         </div>
@@ -157,7 +158,7 @@ function QuestionInput({ q, value, onChange, disabled }: {
       <div>
         {q.left.map((left, i) => (
           <div className="match-row" key={i}>
-            <span>{pick(left).text}</span>
+            <span><Rich text={pick(left).text} /></span>
             <select
               aria-label={`${t('quiz.matchLeft')}: ${pick(left).text}`}
               value={current[i]}
@@ -170,7 +171,7 @@ function QuestionInput({ q, value, onChange, disabled }: {
             >
               <option value={-1}>—</option>
               {q.right.map((r, j) => (
-                <option key={j} value={j}>{pick(r).text}</option>
+                <option key={j} value={j}><Rich text={pick(r).text} /></option>
               ))}
             </select>
           </div>

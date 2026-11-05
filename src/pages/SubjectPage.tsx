@@ -10,6 +10,7 @@ import { CodeHeroDemo, DiscreteHeroDemo, HistoryHeroDemo, LogicHeroDemo, Systems
 import { useProgress } from '../lib/store';
 import { progressOf } from '../lib/stats';
 import { SUBJECT_ACCENT } from '../lib/subjectStyle';
+import { Rich } from '../components/Rich';
 
 /**
  * A subject: its weeks. Every study section (cards, quiz, labs, tools, plan)
@@ -38,7 +39,7 @@ export function SubjectPage() {
 
       <header className="hero module-hero">
         <div className="hero-copy">
-          <h1>{pick(subject.title).text}</h1>
+          <h1><Rich text={pick(subject.title).text} /></h1>
           <p>{t('module.subtitle', { n: subject.plannedWeeks })}</p>
           <p className="faint">{t('week.lessonProgress', { done: p.done, total: p.total })}</p>
         </div>
@@ -72,7 +73,7 @@ export function SubjectPage() {
               <li key={n}>
                 <Link to={`/week/${content.id}`} className="week-card is-ready">
                   <span className="week-num">{n}</span>
-                  <h3>{pick(meta.title).text}</h3>
+                  <h3><Rich text={pick(meta.title).text} /></h3>
                   <p className="faint">{t('module.weekMeta', { lessons: content.lessons.length, min: content.estimatedMinutes })}</p>
                   <ol className="lesson-strip small" aria-hidden="true">
                     {content.lessons.map((l) => <li key={l.id} className={progress.lessonsDone[l.id] ? 'is-done' : ''} />)}

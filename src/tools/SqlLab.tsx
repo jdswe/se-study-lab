@@ -6,6 +6,7 @@ import { useI18n } from '../i18n';
 import type { SqlTask } from '../content/db1-week1/sqlTasks';
 import { STORE_SEED_SQL, sameResult, type ResultSet } from '../lib/storeDb';
 import { updateState, useProgress } from '../lib/store';
+import { Rich } from '../components/Rich';
 
 let sqlPromise: Promise<SqlJsStatic> | null = null;
 /** Loads the SQLite engine once per page. */
@@ -144,7 +145,7 @@ export default function SqlLab({ tasks: TASKS }: { tasks: SqlTask[] }) {
               <li key={tk.id} className={`mission ${solved(tk.id) ? 'is-done' : ''} ${tk.id === taskId ? 'is-next' : ''}`}>
                 <span className="mission-check" aria-hidden="true">{solved(tk.id) ? '✓' : ''}</span>
                 <button type="button" className="task-button" onClick={() => { setTaskId(tk.id); setShowHint(false); }} aria-pressed={tk.id === taskId}>
-                  <strong>{pick(tk.title).text}</strong>
+                  <strong><Rich text={pick(tk.title).text} /></strong>
                 </button>
               </li>
             ))}
@@ -154,10 +155,10 @@ export default function SqlLab({ tasks: TASKS }: { tasks: SqlTask[] }) {
         <section className="sqllab-main">
           <div className="card sqllab-task">
             <p className="eyebrow">{t('sqllab.currentTask')}</p>
-            <h3>{pick(task.title).text} {solved(task.id) && <span className="badge badge-good">✓ {t('activity.solved')}</span>}</h3>
-            <p>{pick(task.prompt).text}</p>
+            <h3><Rich text={pick(task.title).text} /> {solved(task.id) && <span className="badge badge-good">✓ {t('activity.solved')}</span>}</h3>
+            <p><Rich text={pick(task.prompt).text} /></p>
             <button type="button" className="btn btn-small" onClick={() => setShowHint((v) => !v)}>{t('week.hint')}</button>
-            {showHint && <p className="explain">{pick(task.hint).text}</p>}
+            {showHint && <p className="explain"><Rich text={pick(task.hint).text} /></p>}
           </div>
 
           <div className="terminal sqllab-editor">

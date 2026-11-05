@@ -9,6 +9,7 @@ import { useI18n } from '../i18n';
 import { touchStudyDay, updateState, useProgress } from '../lib/store';
 import { CodeBlock } from './CodeBlock';
 import { Diagram } from './Diagrams';
+import { Rich } from './Rich';
 
 /** Renders one lesson: body, diagram, code, takeaways, check, pitfalls, and completion. */
 export function Lesson({ lesson, index, activities = [], stories = [], videos = [] }: {
@@ -39,7 +40,7 @@ export function Lesson({ lesson, index, activities = [], stories = [], videos = 
         <span className="lesson-num" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
         <div>
           <p className="eyebrow">{t('week.lessonN', { n: index + 1 })}</p>
-          <h2 id={`${lesson.id}-title`}>{title.text}</h2>
+          <h2 id={`${lesson.id}-title`}><Rich text={title.text} /></h2>
         </div>
       </header>
       <div className="lesson-meta">
@@ -50,14 +51,14 @@ export function Lesson({ lesson, index, activities = [], stories = [], videos = 
 
       <div className="lesson-body">
         {lesson.body.map((p, i) => (
-          <p key={i}>{pick(p).text}</p>
+          <p key={i}><Rich text={pick(p).text} /></p>
         ))}
       </div>
 
       {lesson.analogy && (
         <aside className="analogy" aria-label={t('week.analogy')}>
           <strong>{t('week.analogy')}</strong>
-          <p>{pick(lesson.analogy).text}</p>
+          <p><Rich text={pick(lesson.analogy).text} /></p>
         </aside>
       )}
 
@@ -74,7 +75,7 @@ export function Lesson({ lesson, index, activities = [], stories = [], videos = 
 
       {lesson.code && (
         <figure>
-          <figcaption className="faint">{pick(lesson.code.caption).text}</figcaption>
+          <figcaption className="faint"><Rich text={pick(lesson.code.caption).text} /></figcaption>
           <CodeBlock code={lesson.code.source} label={lesson.code.language} />
         </figure>
       )}
@@ -83,7 +84,7 @@ export function Lesson({ lesson, index, activities = [], stories = [], videos = 
         <h3>{t('week.takeaways')}</h3>
         <ul>
           {lesson.takeaways.map((item, i) => (
-            <li key={i}>{pick(item).text}</li>
+            <li key={i}><Rich text={pick(item).text} /></li>
           ))}
         </ul>
       </section>
@@ -93,8 +94,8 @@ export function Lesson({ lesson, index, activities = [], stories = [], videos = 
           <h3>{t('week.commonMistakes')}</h3>
           {lesson.pitfalls.map((p, i) => (
             <div className="pitfall" key={i}>
-              <p><strong>✗</strong> {pick(p.mistake).text}</p>
-              <p><strong>✓ {t('week.fix')}:</strong> {pick(p.fix).text}</p>
+              <p><strong>✗</strong> <Rich text={pick(p.mistake).text} /></p>
+              <p><strong>✓ {t('week.fix')}:</strong> <Rich text={pick(p.fix).text} /></p>
             </div>
           ))}
         </section>
@@ -137,7 +138,7 @@ function KnowledgeCheck({ check }: { check: CheckType }) {
         }}
       >
         <fieldset>
-          <legend>{t('week.knowledgeCheck')}: {pick(check.question).text}</legend>
+          <legend>{t('week.knowledgeCheck')}: <Rich text={pick(check.question).text} /></legend>
           {check.options.map((opt, i) => {
             const state = submitted ? (i === check.answer ? 'is-correct' : i === choice ? 'is-wrong' : '') : '';
             return (
@@ -152,7 +153,7 @@ function KnowledgeCheck({ check }: { check: CheckType }) {
                     setSubmitted(false);
                   }}
                 />
-                <span>{pick(opt).text}</span>
+                <span><Rich text={pick(opt).text} /></span>
               </label>
             );
           })}
@@ -164,7 +165,7 @@ function KnowledgeCheck({ check }: { check: CheckType }) {
           <p className={`feedback ${correct ? 'good' : 'bad'}`} role="status">
             {correct ? t('week.correct') : t('week.incorrect')}
           </p>
-          <p className="explain">{pick(check.explanation).text}</p>
+          <p className="explain"><Rich text={pick(check.explanation).text} /></p>
         </>
       )}
     </section>
