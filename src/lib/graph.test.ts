@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { inRegion, niceStep, parabolaFacts, parseGraphItem, valueAt } from './graph';
 import { graphPresets } from '../content/calc1-week1/graphPresets';
+import { graphPresets as week2Presets } from '../content/calc1-week2/graphPresets';
+import { calcWeek2Labs } from '../content/calc1-week2/labs';
 
 describe('Graph Lab items', () => {
   it('reads curves written with or without y =', () => {
@@ -61,5 +63,32 @@ describe('parabola explorer', () => {
     expect(niceStep(20)).toBe(2);
     expect(niceStep(60)).toBe(10);
     expect(niceStep(4)).toBe(0.5);
+  });
+});
+
+describe('Calculus 1 Week 2 graphs', () => {
+  it('parses every preset', () => {
+    for (const p of week2Presets) for (const item of p.items) expect(() => parseGraphItem(item), `${p.id}: ${item}`).not.toThrow();
+  });
+
+  it('parses every lab line that links to the Graph Lab', () => {
+    const lines = calcWeek2Labs.flatMap((l) => l.steps.flatMap((s) => s.commands)).filter((c) => /^\s*y\s*=/.test(c));
+    expect(lines.length).toBeGreaterThan(5);
+    for (const line of lines) for (const part of line.split(';')) expect(() => parseGraphItem(part), line).not.toThrow();
+  });
+
+  it('draws trig, exponential, log, and piecewise curves', () => {
+    const at = (src: string, x: number) => { const g = parseGraphItem(src); return g.kind === 'curve' ? valueAt(g.f, x) : NaN; };
+    expect(at('y = 3sin(2x)', Math.PI / 4)).toBeCloseTo(3);
+    expect(at('y = 22 + 68e^(-0.08x)', 0)).toBeCloseTo(90);
+    expect(at('y = ln(x)/ln(2)', 8)).toBeCloseTo(3);
+    // A piece restricted with 0·sqrt(…) is undefined outside its interval.
+    expect(at('y = 4 + 0sqrt(x - 2)', 3)).toBe(4);
+    expect(at('y = 4 + 0sqrt(x - 2)', 1)).toBeNaN();
+  });
+
+  it('uses preset ids that do not collide with week 1', () => {
+    const ids = [...graphPresets, ...week2Presets].map((p) => p.id);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 });

@@ -374,7 +374,7 @@ export const en = {
     show: 'Show',
     remove: 'Remove',
     add: 'Add a line',
-    help: 'Try y = x^2 - 4, y >= 2x + 1, abs(x - 1), or 12x + 7y <= 84. Use ^ for powers and abs() for |…|.',
+    help: 'Try y = x^2 - 4, y >= 2x + 1, abs(x - 1), or 12x + 7y <= 84. Use ^ for powers and abs() for |…|. Also sqrt(), sin(), cos(), tan() (radians), e^x or exp(), ln(), log() (base 10), and the constants pi and e.',
     explorer: 'Parabola explorer: y = ax² + bx + c',
     sign: 'Colour the x-axis by sign (green y > 0, red y < 0)',
     opens: 'Opens',

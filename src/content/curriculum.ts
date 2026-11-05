@@ -84,7 +84,7 @@ terms[0].modules[2].subjects = [
         title: { en: 'Introduction and inequalities', es: 'Introducción y desigualdades', pt: 'Introdução e desigualdades' },
         status: 'published',
       },
-      { id: 'y1-t1-m3-calc-w2', number: 2, status: 'planned', title: { en: 'Functions and graphs', es: 'Funciones y gráficas', pt: 'Funções e gráficos' } },
+      { id: 'y1-t1-m3-calc-w2', number: 2, status: 'published', title: { en: 'Functions and graphs', es: 'Funciones y gráficas', pt: 'Funções e gráficos' } },
       { id: 'y1-t1-m3-calc-w3', number: 3, status: 'planned', title: { en: 'Limits', es: 'Límites', pt: 'Limites' } },
       { id: 'y1-t1-m3-calc-w4', number: 4, status: 'planned', title: { en: 'Derivatives', es: 'Derivadas', pt: 'Derivadas' } },
       { id: 'y1-t1-m3-calc-w5', number: 5, status: 'planned', title: { en: 'Applications of the derivative', es: 'Aplicaciones de la derivada', pt: 'Aplicações da derivada' } },

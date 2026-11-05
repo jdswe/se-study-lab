@@ -25,7 +25,16 @@ export type Node =
   | { k: 'neg'; a: Node }
   | { k: 'bin'; op: '+' | '-' | '*' | '/' | '^'; a: Node; b: Node }
   | { k: 'abs'; a: Node }
-  | { k: 'sqrt'; a: Node };
+  | { k: 'sqrt'; a: Node }
+  | { k: 'fn'; f: FnName; a: Node }
+  | { k: 'const'; c: 'pi' | 'e' };
+
+/**
+ * Named functions beyond abs and sqrt: sin, cos, tan (radians), exp, ln
+ * (natural log), and log (base 10). "sen" is read as sin, as written in Spanish
+ * and Portuguese.
+ */
+export type FnName = 'sin' | 'cos' | 'tan' | 'exp' | 'ln' | 'log';
 
 export type Rel = '<' | '<=' | '>' | '>=';
 
@@ -42,7 +51,21 @@ export class InequalityError extends Error {
   }
 }
 
-type Tok = { t: 'num'; v: number } | { t: 'x' } | { t: 'y' } | { t: 'fn'; v: 'abs' | 'sqrt' } | { t: 'op'; v: string };
+type Tok =
+  | { t: 'num'; v: number }
+  | { t: 'x' }
+  | { t: 'y' }
+  | { t: 'const'; v: 'pi' | 'e' }
+  | { t: 'fn'; v: 'abs' | 'sqrt' | FnName }
+  | { t: 'op'; v: string };
+
+/** Words the tokenizer knows, longest first where one starts another ("exp" before "e"). */
+const WORDS: [string, Tok][] = [
+  ['sqrt', { t: 'fn', v: 'sqrt' }], ['abs', { t: 'fn', v: 'abs' }],
+  ['sin', { t: 'fn', v: 'sin' }], ['sen', { t: 'fn', v: 'sin' }], ['cos', { t: 'fn', v: 'cos' }], ['tan', { t: 'fn', v: 'tan' }],
+  ['exp', { t: 'fn', v: 'exp' }], ['ln', { t: 'fn', v: 'ln' }], ['log', { t: 'fn', v: 'log' }],
+  ['pi', { t: 'const', v: 'pi' }], ['e', { t: 'const', v: 'e' }],
+];
 
 function normalize(src: string): string {
   return src
@@ -53,6 +76,7 @@ function normalize(src: string): string {
     .replace(/≤|=</g, '<=')
     .replace(/≥|=>/g, '>=')
     .replace(/√/g, 'sqrt')
+    .replace(/π/g, 'pi')
     .replace(/,(?=\d)/g, '.');
 }
 
@@ -73,10 +97,10 @@ function tokenize(src: string, allowY = false): Tok[] {
       let j = 0;
       while (j < w.length) {
         const rest = w.slice(j);
-        if (rest.startsWith('abs') || rest.startsWith('sqrt')) {
-          const fn = rest.startsWith('abs') ? 'abs' : 'sqrt';
-          out.push({ t: 'fn', v: fn });
-          j += fn.length;
+        const known = WORDS.find(([name]) => rest.startsWith(name));
+        if (known) {
+          out.push(known[1]);
+          j += known[0].length;
         } else if (rest[0] === 'x') { out.push({ t: 'x' }); j++; }
         else if (rest[0] === 'y' && allowY) { out.push({ t: 'y' }); j++; }
         else throw new InequalityError('syntax');
@@ -114,7 +138,7 @@ class Parser {
   private startsAtom(): boolean {
     const p = this.peek();
     if (!p) return false;
-    if (p.t === 'x' || p.t === 'y' || p.t === 'fn') return true;
+    if (p.t === 'x' || p.t === 'y' || p.t === 'fn' || p.t === 'const') return true;
     if (p.t === 'op' && p.v === '(') return true;
     return p.t === 'op' && p.v === '|' && this.absDepth === 0;
   }
@@ -156,9 +180,10 @@ class Parser {
     if (p.t === 'num') return { k: 'num', v: p.v };
     if (p.t === 'x') return { k: 'x' };
     if (p.t === 'y') return { k: 'y' };
+    if (p.t === 'const') return { k: 'const', c: p.v };
     if (p.t === 'fn') {
       const a = this.isOp('(') ? this.atom() : this.power();
-      return { k: p.v, a };
+      return p.v === 'abs' || p.v === 'sqrt' ? { k: p.v, a } : { k: 'fn', f: p.v, a };
     }
     if (p.v === '(') {
       const n = this.expr();
@@ -213,6 +238,19 @@ export function evaluate(n: Node, x: number, y = 0): number {
     case 'neg': return -evaluate(n.a, x, y);
     case 'abs': return Math.abs(evaluate(n.a, x, y));
     case 'sqrt': { const v = evaluate(n.a, x, y); return v < 0 ? NaN : Math.sqrt(v); }
+    case 'const': return n.c === 'pi' ? Math.PI : Math.E;
+    case 'fn': {
+      const v = evaluate(n.a, x, y);
+      switch (n.f) {
+        case 'sin': return Math.sin(v);
+        case 'cos': return Math.cos(v);
+        case 'tan': return Math.tan(v);
+        case 'exp': return Math.exp(v);
+        case 'ln': return v > 0 ? Math.log(v) : NaN;
+        case 'log': return v > 0 ? Math.log10(v) : NaN;
+      }
+      return NaN;
+    }
     case 'bin': {
       const a = evaluate(n.a, x, y);
       const b = evaluate(n.b, x, y);
@@ -420,6 +458,8 @@ export function printNode(n: Node): string {
     case 'y': return 'y';
     case 'abs': return `|${printNode(n.a)}|`;
     case 'sqrt': return n.a.k === 'num' || n.a.k === 'x' ? `√${printNode(n.a)}` : `√(${printNode(n.a)})`;
+    case 'const': return n.c === 'pi' ? 'π' : 'e';
+    case 'fn': return `${n.f}(${printNode(n.a)})`;
     case 'neg': return `−${wrap(n.a, PREC.neg)}`;
     case 'bin': {
       const { op, a, b } = n;
