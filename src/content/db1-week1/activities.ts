@@ -25,10 +25,10 @@ export const dbWeek1Activities: Activity[] = [
     prompt: L('Decide whether each item is a bare value or a value with context.', 'Decide si cada elemento es un valor suelto o un valor con contexto.'),
     buckets: [L('Data', 'Dato'), L('Information', 'Información')],
     items: [
-      { text: L('"18000"', '"18000"'), bucket: 0 },
-      { text: L('"The bottle costs 18,000"', '"La botella cuesta 18.000"'), bucket: 1 },
+      { text: L('"8500"', '"8500"'), bucket: 0 },
+      { text: L('"The rye baguette costs 8,500 pesos"', '"La baguette de centeno cuesta 8.500 pesos"'), bucket: 1 },
       { text: L('"F"', '"F"'), bucket: 0 },
-      { text: L('"Order 101 belongs to Ana"', '"El pedido 101 es de Ana"'), bucket: 1 },
+      { text: L('"Order 201 belongs to Elena"', '"El pedido 201 es de Elena"'), bucket: 1 },
     ],
     explanation: L('Context turns data into information.', 'El contexto convierte los datos en información.'),
   },
@@ -40,7 +40,7 @@ export const dbWeek1Activities: Activity[] = [
     items: [
       { text: L('Grants a new employee read access', 'Da acceso de lectura a un empleado nuevo'), bucket: 0 },
       { text: L('Decides that Order needs a customer_id column', 'Decide que Pedido necesita una columna id_cliente'), bucket: 1 },
-      { text: L('Records a sale at the cash register', 'Registra una venta en la caja'), bucket: 2 },
+      { text: L('Records a sale at the bakery counter', 'Registra una venta en el mostrador de la panadería'), bucket: 2 },
       { text: L('Investigates why queries became slow', 'Investiga por qué las consultas se volvieron lentas'), bucket: 0 },
       { text: L('Defines the rule "price must be positive"', 'Define la regla "el precio debe ser positivo"'), bucket: 1 },
     ],
@@ -70,8 +70,8 @@ export const dbWeek1Activities: Activity[] = [
   {
     id: 'db1-act-scramble-select', kind: 'scramble', lessonId: 'db1-l9-first-sql',
     title: L('Rebuild the query', 'Reconstruye la consulta'),
-    prompt: L('Tap the pieces to list products that cost more than 20,000.', 'Toca las piezas para listar los productos que cuestan más de 20.000.'),
-    tokens: ['SELECT', 'name,', 'price', 'FROM', 'product', 'WHERE', 'price', '>', '20000;'],
+    prompt: L('Tap the pieces to list bakery products that cost more than 10,000 pesos.', 'Toca las piezas para listar los productos de panadería que cuestan más de 10.000 pesos.'),
+    tokens: ['SELECT', 'name,', 'price', 'FROM', 'product', 'WHERE', 'price', '>', '10000;'],
     explanation: L('SELECT what, FROM where, WHERE which rows.', 'SELECT qué, FROM de dónde y WHERE qué filas.'),
   },
   {

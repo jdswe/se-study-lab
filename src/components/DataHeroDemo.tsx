@@ -27,9 +27,9 @@ export function DataHeroDemo() {
   }, [phase, reduced]);
 
   const rows = [
-    ['101', 'Ana', 'ana@example.com', w('Notebook', 'Cuaderno', 'Caderno')],
-    ['102', 'Luis', 'luis@example.com', 'USB'],
-    ['103', 'Ana', 'ana@example.com', w('Bottle', 'Botella', 'Garrafa')],
+    ['201', 'Elena', 'elena@example.com', w('Sourdough loaf', 'Hogaza de masa madre', 'Pão de fermentação natural')],
+    ['202', 'Rafael', 'rafael@example.com', w('Rye baguette', 'Baguette de centeno', 'Baguete de centeio')],
+    ['203', 'Elena', 'elena@example.com', w('Lemon tart', 'Tarta de limón', 'Torta de limão')],
   ];
 
   return (
@@ -42,8 +42,8 @@ export function DataHeroDemo() {
             {rows.map((r) => (
               <tr key={r[0]}>
                 <td>{r[0]}</td>
-                <td className={r[1] === 'Ana' ? 'dup' : ''}>{r[1]}</td>
-                <td className={r[1] === 'Ana' ? 'dup' : ''}>{r[2]}</td>
+                <td className={r[1] === 'Elena' ? 'dup' : ''}>{r[1]}</td>
+                <td className={r[1] === 'Elena' ? 'dup' : ''}>{r[2]}</td>
                 <td>{r[3]}</td>
               </tr>
             ))}
@@ -56,17 +56,17 @@ export function DataHeroDemo() {
           <table className="data-table">
             <caption>{w('CUSTOMER', 'CLIENTE', 'CLIENTE')}</caption>
             <thead><tr><th className="pk">id 🔑</th><th>{w('name', 'nombre', 'nome')}</th></tr></thead>
-            <tbody><tr><td className="pk">1</td><td>Ana</td></tr><tr><td className="pk">2</td><td>Luis</td></tr></tbody>
+            <tbody><tr><td className="pk">301</td><td>Elena</td></tr><tr><td className="pk">302</td><td>Rafael</td></tr></tbody>
           </table>
           <span className="data-link" aria-hidden="true">1 ── N</span>
           <table className="data-table">
             <caption>{w('ORDER', 'PEDIDO', 'PEDIDO')}</caption>
             <thead><tr><th>id</th><th className="fk">{w('customer_id', 'id_cliente', 'id_cliente')} ↗</th></tr></thead>
-            <tbody><tr><td>101</td><td className="fk">1</td></tr><tr><td>102</td><td className="fk">2</td></tr><tr><td>103</td><td className="fk">1</td></tr></tbody>
+            <tbody><tr><td>201</td><td className="fk">301</td></tr><tr><td>202</td><td className="fk">302</td></tr><tr><td>203</td><td className="fk">301</td></tr></tbody>
           </table>
         </div>
       </div>
-      <figcaption className="faint">{w('Live demo: the DBMS stores Ana only once.', 'Demo en vivo: el SGBD guarda a Ana una sola vez.', 'Demo ao vivo: o SGBD guarda a Ana uma única vez.')}</figcaption>
+      <figcaption className="faint">{w('Live demo: the DBMS stores Elena only once.', 'Demo en vivo: el SGBD guarda a Elena una sola vez.', 'Demonstração ao vivo: o SGBD armazena Elena uma única vez.')}</figcaption>
     </figure>
   );
 }

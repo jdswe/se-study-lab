@@ -58,10 +58,10 @@ export const studioScenarios: StudioScenario[] = addPortuguese([
   },
   {
     id: 'store',
-    title: L('Campus store', 'Tienda del campus'),
+    title: L('Willow Lane Bakery', 'Panadería Willow Lane'),
     brief: L(
-      'The campus store sells products to customers. Customers have an id, name, and city. Products have an id, name, price, and stock. Each order belongs to one customer and has a date. An order can include several products, each with a quantity, and a product can appear in many orders.',
-      'La tienda del campus vende productos a clientes. Los clientes tienen id, nombre y ciudad. Los productos tienen id, nombre, precio e inventario. Cada pedido pertenece a un cliente y tiene una fecha. Un pedido puede incluir varios productos, cada uno con una cantidad, y un producto puede aparecer en muchos pedidos.',
+      'Willow Lane Bakery sells baked goods to customers. Customers have an id, name, and city. Products have an id, name, price, and stock. Each order belongs to one customer and has a date. An order can include several baked goods, each with a quantity, and a product can appear in many orders.',
+      'La panadería Willow Lane vende productos horneados a sus clientes. Los clientes tienen id, nombre y ciudad. Los productos tienen id, nombre, precio e inventario. Cada pedido pertenece a un cliente y tiene una fecha. Un pedido puede incluir varios productos horneados, cada uno con una cantidad, y un producto puede aparecer en muchos pedidos.',
     ),
     entities: [
       { id: 'customer', name: L('Customer', 'Cliente'), attributes: ['customer_id', 'name', 'city'], pk: 'customer_id' },
@@ -70,7 +70,7 @@ export const studioScenarios: StudioScenario[] = addPortuguese([
       { id: 'order_item', name: L('Order item', 'Detalle de pedido'), attributes: ['order_id', 'product_id', 'quantity'],
         keyOptions: ['order_id', 'product_id', 'quantity', 'order_id + product_id'], pk: 'order_id + product_id' },
       { id: 'register', name: L('Cash register', 'Caja registradora'), attributes: ['register_id', 'model'], pk: 'register_id',
-        distractor: L('The brief asks about customers, orders, and products, not the store\'s devices.', 'El enunciado pide clientes, pedidos y productos, no los equipos de la tienda.') },
+        distractor: L('The brief asks about customers, orders, and baked goods, not the bakery\'s equipment.', 'El enunciado pide clientes, pedidos y productos horneados, no los equipos de la panadería.') },
     ],
     solution: [
       { from: 'customer', to: 'order', card: '1:N' },

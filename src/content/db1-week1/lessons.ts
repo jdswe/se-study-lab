@@ -5,21 +5,20 @@ const L = (en: string, es: string): Localized => ({ en, es });
 
 /**
  * Databases 1, Week 1: database management systems. Written for this site in
- * English and Spanish, using the campus-store example throughout.
+ * English and Spanish, using Willow Lane Bakery as the recurring example.
  */
 export const dbWeek1Lessons: Lesson[] = [
   {
     id: 'db1-l1-files-to-databases',
     title: L('From files to databases', 'De los archivos a las bases de datos'),
     minutes: 20,
-    diagram: 'files-vs-dbms',
     body: [
       L('Before databases, each program kept its data in its own simple files: one record after another, in a format only that program understood. A sales program had a customer file; the billing program had another customer file. Nothing was shared, so the same customer appeared in several places, and sometimes several times inside the same file.',
         'Antes de las bases de datos, cada programa guardaba sus datos en sus propios archivos simples: un registro tras otro, en un formato que solo ese programa entendía. El programa de ventas tenía un archivo de clientes y el de facturación tenía otro. Nada se compartía, así que el mismo cliente aparecía en varios lugares, y a veces varias veces dentro del mismo archivo.'),
       L('As companies came to depend on their data, the problems became serious. Redundant copies drifted apart, so the same customer could have two different addresses. Sharing data between applications meant copying it. A damaged file often could not be rebuilt. Anyone who could open a file could read all of it. And because each program knew the exact layout of its files, any change in the layout forced programmers to rewrite code.',
         'Cuando las empresas empezaron a depender de sus datos, los problemas se volvieron serios. Las copias redundantes se desincronizaban, así que un mismo cliente podía tener dos direcciones distintas. Compartir datos entre aplicaciones obligaba a copiarlos. Un archivo dañado a menudo no se podía reconstruir. Cualquiera que pudiera abrir un archivo podía leerlo completo. Y como cada programa conocía la estructura exacta de sus archivos, cualquier cambio en esa estructura obligaba a reescribir código.'),
-      L('The answer was the database management system (DBMS): one piece of software that stores the data once, describes its structure, and lets many programs and people use it safely. In 1970, Edgar F. Codd proposed the relational model, which organises data in tables linked by keys. Over the following decade it went from a research idea to the foundation of most business systems.',
-        'La respuesta fue el sistema de gestión de bases de datos (SGBD): un software que guarda los datos una sola vez, describe su estructura y permite que muchos programas y personas los usen con seguridad. En 1970, Edgar F. Codd propuso el modelo relacional, que organiza los datos en tablas vinculadas por claves. En la década siguiente pasó de ser una idea de investigación a la base de la mayoría de los sistemas empresariales.'),
+      L('The answer was the database management system (DBMS): one piece of software that stores the data once, describes its structure, and lets many programs and people use it safely. At Willow Lane Bakery, the counter and delivery app can use the same customer record instead of keeping separate copies. In 1970, Edgar F. Codd proposed the relational model, which organises data in tables linked by keys. Over the following decade it went from a research idea to the foundation of most business systems.',
+        'La respuesta fue el sistema de gestión de bases de datos (SGBD): un software que guarda los datos una sola vez, describe su estructura y permite que muchos programas y personas los usen con seguridad. En la panadería Willow Lane, el mostrador y la aplicación de entregas pueden usar el mismo registro de cliente en vez de mantener copias separadas. En 1970, Edgar F. Codd propuso el modelo relacional, que organiza los datos en tablas vinculadas por claves. En la década siguiente pasó de ser una idea de investigación a la base de la mayoría de los sistemas empresariales.'),
     ],
     analogy: L('Picture every office in a company keeping its own paper address book. When a customer moves, someone has to update every book, and some will be missed. A database is one shared, well-organised address book that everyone consults.',
       'Imagina que cada oficina de una empresa tiene su propia agenda de papel. Cuando un cliente se muda, alguien debe actualizar todas las agendas y alguna quedará sin cambiar. Una base de datos es una sola agenda compartida y bien organizada que todos consultan.'),
@@ -29,7 +28,7 @@ export const dbWeek1Lessons: Lesson[] = [
       L('A DBMS stores data once, describes it, protects it, and shares it.', 'Un SGBD guarda los datos una vez, los describe, los protege y los comparte.'),
     ],
     check: {
-      question: L('Billing and sales each keep a customer file. Ana updates her email in sales only. What problem is this?', 'Facturación y ventas tienen cada uno un archivo de clientes. Ana cambia su correo solo en ventas. ¿Qué problema es este?'),
+      question: L('The bakery counter and delivery app each keep a customer file. Elena updates her phone in the counter file only. What problem is this?', 'El mostrador de la panadería y la aplicación de entregas guardan cada uno un archivo de clientes. Elena cambia su teléfono solo en el archivo del mostrador. ¿Qué problema es este?'),
       options: [L('Inconsistency caused by redundant data', 'Inconsistencia causada por datos redundantes'), L('A slow network', 'Una red lenta'), L('A missing primary key in sales', 'Falta una clave primaria en ventas')],
       answer: 0,
       explanation: L('Two copies of the same fact now disagree. Storing it once removes the problem.', 'Dos copias del mismo dato ahora no coinciden. Guardarlo una sola vez elimina el problema.'),
@@ -39,9 +38,9 @@ export const dbWeek1Lessons: Lesson[] = [
     ],
     exercises: [
       { id: 'db1-ex-1-1', level: 1, title: L('Spot the redundancy', 'Encuentra la redundancia'),
-        prompt: L('A flat file stores: order, customer name, customer phone, product. Ana ordered three times. Which values repeat, and what can go wrong?', 'Un archivo plano guarda: pedido, nombre del cliente, teléfono del cliente, producto. Ana compró tres veces. ¿Qué valores se repiten y qué puede salir mal?'),
+        prompt: L('A flat file stores: order, customer name, customer phone, baked good. Elena ordered three times. Which values repeat, and what can go wrong?', 'Un archivo plano guarda: pedido, nombre del cliente, teléfono del cliente y producto horneado. Elena hizo tres pedidos. ¿Qué valores se repiten y qué puede salir mal?'),
         hint: L('Look at the columns that describe the customer, not the order.', 'Mira las columnas que describen al cliente, no al pedido.'),
-        solution: L('Ana\'s name and phone repeat in all three rows. If her phone changes and only one row is updated, the file contradicts itself.', 'El nombre y el teléfono de Ana se repiten en las tres filas. Si cambia su teléfono y solo se actualiza una fila, el archivo se contradice.') },
+        solution: L('Elena\'s name and phone repeat in all three rows. If her phone changes and only one row is updated, the file contradicts itself.', 'El nombre y el teléfono de Elena se repiten en las tres filas. Si cambia su teléfono y solo se actualiza una fila, el archivo se contradice.') },
       { id: 'db1-ex-1-2', level: 2, title: L('Before and after', 'Antes y después'),
         prompt: L('List three problems of file-based systems and the DBMS feature that solves each one.', 'Enumera tres problemas de los sistemas de archivos y la característica del SGBD que resuelve cada uno.'),
         hint: L('Think of redundancy, recovery, and security.', 'Piensa en redundancia, recuperación y seguridad.'),
@@ -53,10 +52,10 @@ export const dbWeek1Lessons: Lesson[] = [
     title: L('Data, information, and what a database is', 'Dato, información y qué es una base de datos'),
     minutes: 15,
     body: [
-      L('Data are raw facts that can be recorded, such as "35000" or "F". On their own they are ambiguous: "F" could mean female in one context and false in another. Information is data given context and meaning: "the USB drive costs 35,000 pesos". Knowledge is the understanding people build on top of information, such as "the USB drive sells best at the start of term".',
-        'Los datos son hechos en bruto que se pueden registrar, como "35000" o "F". Por sí solos son ambiguos: "F" puede significar femenino en un contexto y falso en otro. La información es un dato con contexto y significado: "la memoria USB cuesta 35.000 pesos". El conocimiento es la comprensión que las personas construyen sobre la información, como "la memoria USB se vende más al inicio del semestre".'),
-      L('A database is an organised collection of related data with a purpose. It represents part of the real world, sometimes called the mini-world or universe of discourse, such as a campus store. Its data are logically coherent: random facts, even if true, are not a database. And it is designed, built, and filled for specific users and uses.',
-        'Una base de datos es una colección organizada de datos relacionados con un propósito. Representa una parte del mundo real, a veces llamada minimundo o universo del discurso, como una tienda del campus. Sus datos son lógicamente coherentes: hechos sueltos, aunque sean ciertos, no forman una base de datos. Y se diseña, construye y llena para usuarios y usos concretos.'),
+      L('Data are raw facts that can be recorded, such as "8500" or "S". On their own they are ambiguous: "S" could mean sourdough or sold. Information is data given context and meaning: "the rye baguette costs 8,500 pesos". Knowledge is the understanding people build on top of information, such as "the rye baguette sells out before noon on Saturdays".',
+        'Los datos son hechos en bruto que se pueden registrar, como "8500" o "S". Por sí solos son ambiguos: "S" puede significar masa madre o vendido. La información es un dato con contexto y significado: "la baguette de centeno cuesta 8.500 pesos". El conocimiento es la comprensión que las personas construyen sobre la información, como "la baguette de centeno se agota antes del mediodía los sábados".'),
+      L('A database is an organised collection of related data with a purpose. It represents part of the real world, sometimes called the mini-world or universe of discourse, such as Willow Lane Bakery. Its data are logically coherent: random facts, even if true, are not a database. And it is designed, built, and filled for specific users and uses.',
+        'Una base de datos es una colección organizada de datos relacionados con un propósito. Representa una parte del mundo real, a veces llamada minimundo o universo del discurso, como la panadería Willow Lane. Sus datos son lógicamente coherentes: hechos sueltos, aunque sean ciertos, no forman una base de datos. Y se diseña, construye y llena para usuarios y usos concretos.'),
       L('A database also describes itself. Besides the data, it stores a catalogue with the structure of every table, the type of every column, and the rules the data must follow. This data about data is called metadata. Programs, and the DBMS itself, read the catalogue to know how the data are organised.',
         'Una base de datos también se describe a sí misma. Además de los datos, guarda un catálogo con la estructura de cada tabla, el tipo de cada columna y las reglas que deben cumplir los datos. Estos datos sobre los datos se llaman metadatos. Los programas, y el propio SGBD, leen el catálogo para saber cómo están organizados los datos.'),
     ],
@@ -69,9 +68,9 @@ export const dbWeek1Lessons: Lesson[] = [
     ],
     check: {
       question: L('Which one is information rather than data?', '¿Cuál es información y no solo un dato?'),
-      options: [L('"Order 103 was paid on 12 March"', '"El pedido 103 se pagó el 12 de marzo"'), L('"103"', '"103"'), L('"F"', '"F"')],
+      options: [L('"Order 203 was paid on 12 March"', '"El pedido 203 se pagó el 12 de marzo"'), L('"203"', '"203"'), L('"S"', '"S"')],
       answer: 0,
-      explanation: L('It gives the value a context and a meaning. "103" and "F" alone are ambiguous.', 'Le da al valor un contexto y un significado. "103" y "F" solos son ambiguos.'),
+      explanation: L('It gives the value a context and a meaning. "203" and "S" alone are ambiguous.', 'Le da al valor un contexto y un significado. "203" y "S" solos son ambiguos.'),
     },
     exercises: [
       { id: 'db1-ex-2-1', level: 1, title: L('Name the mini-world', 'Nombra el minimundo'),
@@ -91,13 +90,16 @@ export const dbWeek1Lessons: Lesson[] = [
         'Algunos SGBD conocidos son PostgreSQL, MySQL, SQL Server, Oracle Database y SQLite para datos relacionales, y MongoDB o Redis para otros modelos de datos. El SGBD, junto con los datos y los programas de aplicación que lo usan, se llama sistema de base de datos.'),
       L('Compared with files, a DBMS brings real advantages: it controls redundancy, enforces access rules, uses indexes and a query optimiser to answer quickly, backs up and recovers data after failures, represents complex relationships, and enforces integrity rules, also called business rules, such as "a price cannot be negative".',
         'Frente a los archivos, un SGBD aporta ventajas reales: controla la redundancia, aplica reglas de acceso, usa índices y un optimizador de consultas para responder rápido, respalda y recupera los datos tras fallos, representa relaciones complejas y hace cumplir reglas de integridad, también llamadas reglas de negocio, como "un precio no puede ser negativo".'),
+      L('A DBMS also has costs. The organisation may need hardware, storage, software support, training, and a skilled administrator. Its extra layers can add work and delay for a tiny task. A simple file may be enough when data are small, rarely change, need no shared access, and can be rebuilt easily. Compare the cost with the need for security, reliable updates, recovery, and concurrent users.',
+        'Un SGBD también tiene costos. La organización puede necesitar hardware, almacenamiento, soporte de software, capacitación y una persona administradora con experiencia. Sus capas adicionales pueden añadir trabajo y demora en una tarea pequeña. Un archivo sencillo puede bastar cuando los datos son pocos, cambian poco, no necesitan acceso compartido y se pueden reconstruir fácilmente. Compara el costo con la necesidad de seguridad, actualizaciones fiables, recuperación y acceso simultáneo.'),
     ],
     analogy: L('A DBMS is like a librarian. You do not walk into the storage room yourself: you ask, and the librarian finds the book quickly, checks you may borrow it, records the loan, and makes sure two people do not take the last copy.',
       'Un SGBD es como un bibliotecario. No entras tú al depósito: pides, y el bibliotecario encuentra el libro rápido, verifica que puedes prestarlo, registra el préstamo y se asegura de que dos personas no se lleven el último ejemplar.'),
     takeaways: [
       L('A DBMS defines, constructs, manipulates, and shares databases.', 'Un SGBD define, construye, manipula y comparte bases de datos.'),
       L('Database system = DBMS + data + application programs.', 'Sistema de base de datos = SGBD + datos + programas de aplicación.'),
-      L('Key advantages: less redundancy, access control, fast queries, recovery, integrity.', 'Ventajas clave: menos redundancia, control de acceso, consultas rápidas, recuperación e integridad.'),
+      L('Benefits: less redundancy, controlled sharing, security, efficient queries, recovery, and integrity.', 'Ventajas: menos redundancia, uso compartido controlado, seguridad, consultas eficientes, recuperación e integridad.'),
+      L('Tradeoffs: setup, hardware, training, and administration costs; simple files can suit small, stable, single-user data.', 'Límites: costos de instalación, hardware, capacitación y administración; los archivos sencillos pueden servir para datos pequeños, estables y de un solo usuario.'),
     ],
     check: {
       question: L('Which job of a DBMS is "creating the tables, column types, and rules"?', '¿Qué tarea del SGBD es "crear las tablas, los tipos de columna y las reglas"?'),
@@ -106,7 +108,7 @@ export const dbWeek1Lessons: Lesson[] = [
       explanation: L('Defining the database specifies its structure and constraints. Manipulation works on the data; sharing coordinates many users.', 'Definir la base de datos especifica su estructura y restricciones. La manipulación trabaja con los datos; la compartición coordina a muchos usuarios.'),
     },
     pitfalls: [
-      { mistake: L('Confusing the database (the data) with the DBMS (the software).', 'Confundir la base de datos (los datos) con el SGBD (el software).'), fix: L('PostgreSQL is a DBMS; "the store database" is the data it manages.', 'PostgreSQL es un SGBD; "la base de datos de la tienda" son los datos que administra.') },
+      { mistake: L('Confusing the database (the data) with the DBMS (the software).', 'Confundir la base de datos (los datos) con el SGBD (el software).'), fix: L('PostgreSQL is a DBMS; "the bakery database" is the data it manages.', 'PostgreSQL es un SGBD; "la base de datos de la panadería" son los datos que administra.') },
     ],
   },
   {
@@ -118,8 +120,10 @@ export const dbWeek1Lessons: Lesson[] = [
         'Varios roles comparten una base de datos. El administrador de base de datos (DBA) autoriza el acceso, vigila el rendimiento y la seguridad, controla los cambios en la estructura y planifica hardware y software. El diseñador de base de datos decide qué datos guardar y cómo estructurarlos, conversa con los futuros usuarios, define las reglas de integridad y diseña vistas para cada grupo.'),
       L('Systems analysts find out what end users need and specify the transactions that serve them. Application programmers turn those specifications into programs, then test, document, and maintain them.',
         'Los analistas de sistemas averiguan qué necesitan los usuarios finales y especifican las transacciones que los atienden. Los programadores de aplicaciones convierten esas especificaciones en programas y luego los prueban, documentan y mantienen.'),
-      L('End users are the reason the database exists. Casual users query it now and then, each time asking something different. Parametric users, such as a cashier, repeat the same standard operations all day. Sophisticated users, such as data analysts, write their own queries and tools. Stand-alone users keep a personal database for their own work.',
-        'Los usuarios finales son la razón de ser de la base de datos. Los usuarios ocasionales la consultan de vez en cuando, cada vez con una pregunta distinta. Los usuarios paramétricos, como un cajero, repiten las mismas operaciones estándar todo el día. Los usuarios sofisticados, como los analistas de datos, escriben sus propias consultas y herramientas. Los usuarios autónomos mantienen una base de datos personal para su propio trabajo.'),
+      L('Some roles work behind the scenes: DBMS designers and implementers build and improve the database software itself; computer operators run scheduled jobs, backups, and server equipment. These roles differ from the DBA, who administers a particular database installation.',
+        'Algunos roles trabajan tras bambalinas: quienes diseñan e implementan SGBD construyen y mejoran el propio software de base de datos; los operadores de computación ejecutan tareas programadas, respaldos y equipos de servidor. Estos roles son distintos del DBA, que administra una instalación concreta de bases de datos.'),
+      L('End users are the reason the database exists. Casual users query it now and then, each time asking something different. Parametric users, such as a bakery cashier, repeat the same standard operations all day. Sophisticated users, such as data analysts, write their own queries and tools. Stand-alone users keep a personal database for their own work.',
+        'Los usuarios finales son la razón de ser de la base de datos. Los usuarios ocasionales la consultan de vez en cuando, cada vez con una pregunta distinta. Los usuarios paramétricos, como quien cobra en una panadería, repiten las mismas operaciones estándar todo el día. Los usuarios sofisticados, como los analistas de datos, escriben sus propias consultas y herramientas. Los usuarios autónomos mantienen una base de datos personal para su propio trabajo.'),
     ],
     analogy: L('Think of a theatre: the designer draws the stage, the administrator runs the building and holds the keys, programmers build the props, and the audience, the end users, are why the show exists.',
       'Piensa en un teatro: el diseñador dibuja el escenario, el administrador dirige el edificio y guarda las llaves, los programadores construyen la utilería y el público, los usuarios finales, es la razón de la función.'),
@@ -140,12 +144,14 @@ export const dbWeek1Lessons: Lesson[] = [
     title: L('The relational model: tables, rows, and columns', 'El modelo relacional: tablas, filas y columnas'),
     minutes: 20,
     body: [
-      L('In the relational model, data live in tables. Each table, formally a relation, represents one kind of thing, such as Product. Each column, or attribute, holds one property, such as price. Each row, also called a record or tuple, describes one specific thing: product 20, a USB drive that costs 35,000.',
-        'En el modelo relacional, los datos viven en tablas. Cada tabla, formalmente una relación, representa un tipo de cosa, como Producto. Cada columna, o atributo, guarda una propiedad, como el precio. Cada fila, también llamada registro o tupla, describe una cosa concreta: el producto 20, una memoria USB que cuesta 35.000.'),
+      L('In the relational model, data live in tables. Each table, formally a relation, represents one kind of thing, such as Product. Each column, or attribute, holds one property, such as price. Each row, also called a record or tuple, describes one specific thing: product 611, a sourdough loaf that costs 12,000 pesos.',
+        'En el modelo relacional, los datos viven en tablas. Cada tabla, formalmente una relación, representa un tipo de cosa, como Producto. Cada columna, o atributo, guarda una propiedad, como el precio. Cada fila, también llamada registro o tupla, describe una cosa concreta: el producto 611, una hogaza de masa madre que cuesta 12.000 pesos.'),
       L('The schema is the structure: table names, columns, and their data types. The data, sometimes called the instance, is the content at a given moment. Adding a stock column changes the schema; changing a price changes only the data. Common data types are integers, decimals, text such as VARCHAR(60), booleans, dates, and timestamps.',
         'El esquema es la estructura: nombres de tablas, columnas y sus tipos de datos. Los datos, a veces llamados instancia, son el contenido en un momento dado. Agregar una columna stock cambia el esquema; cambiar un precio solo cambia los datos. Tipos de datos comunes son enteros, decimales, texto como VARCHAR(60), booleanos, fechas y marcas de tiempo.'),
       L('The relational model is not the only one. Hierarchical databases organise records as trees, like an organisation chart. Network databases connect records with links. Object-oriented databases store objects with their methods. Many modern NoSQL systems use documents or key-value pairs. The relational model remains the starting point because tables and keys are simple and powerful.',
         'El modelo relacional no es el único. Las bases de datos jerárquicas organizan los registros como árboles, como un organigrama. Las de red conectan registros con enlaces. Las orientadas a objetos guardan objetos con sus métodos. Muchos sistemas NoSQL modernos usan documentos o pares clave-valor. El modelo relacional sigue siendo el punto de partida porque las tablas y las claves son simples y potentes.'),
+      L('A different classification describes where or what a database stores: a centralised database runs in one place, a distributed database is spread across connected machines, a geographic database focuses on locations, and a multimedia database manages images, sound, or video. These labels describe deployment or data type, not necessarily a different relational model.',
+        'Otra clasificación describe dónde está o qué guarda una base de datos: una base centralizada funciona en un solo lugar, una distribuida se reparte entre equipos conectados, una geográfica se enfoca en ubicaciones y una multimedia administra imágenes, sonido o video. Estas etiquetas describen el despliegue o el tipo de datos, no necesariamente un modelo relacional distinto.'),
     ],
     code: {
       language: 'sql',
@@ -173,12 +179,11 @@ export const dbWeek1Lessons: Lesson[] = [
     id: 'db1-l6-keys-relationships',
     title: L('Keys and relationships', 'Claves y relaciones'),
     minutes: 25,
-    diagram: 'er-store',
     body: [
-      L('A primary key (PK) identifies each row of a table. It must be unique and never empty. In Customer, customer_id 1, 2, and 3 each appear once. Two customers with id 2 would break the key.',
-        'Una clave primaria (PK) identifica cada fila de una tabla. Debe ser única y nunca vacía. En Cliente, los id_cliente 1, 2 y 3 aparecen una sola vez. Dos clientes con id 2 romperían la clave.'),
-      L('A foreign key (FK) is a column that stores the primary key of another table, creating a relationship. Order has a customer_id column pointing to Customer. One customer can place many orders, so this is a one-to-many (1:N) relationship. The DBMS can refuse an order for customer 99 if no such customer exists: that is referential integrity.',
-        'Una clave foránea (FK) es una columna que guarda la clave primaria de otra tabla y así crea una relación. Pedido tiene una columna id_cliente que apunta a Cliente. Un cliente puede hacer muchos pedidos, así que es una relación uno a muchos (1:N). El SGBD puede rechazar un pedido del cliente 99 si ese cliente no existe: eso es integridad referencial.'),
+      L('A primary key (PK) identifies each row of a table. It must be unique and never empty. In Customer, customer_id 301, 302, and 303 each appear once. Two customers with id 302 would break the key.',
+        'Una clave primaria (PK) identifica cada fila de una tabla. Debe ser única y nunca vacía. En Cliente, los id_cliente 301, 302 y 303 aparecen una sola vez. Dos clientes con id 302 romperían la clave.'),
+      L('A foreign key (FK) is a column that stores the primary key of another table, creating a relationship. Order has a customer_id column pointing to Customer. One customer can place many orders, so this is a one-to-many (1:N) relationship. The DBMS can refuse an order for customer 399 if no such customer exists: that is referential integrity.',
+        'Una clave foránea (FK) es una columna que guarda la clave primaria de otra tabla y así crea una relación. Pedido tiene una columna customer_id que apunta a Customer. Un cliente puede hacer muchos pedidos, así que es una relación uno a muchos (1:N). El SGBD puede rechazar un pedido del cliente 399 si ese cliente no existe: eso es integridad referencial.'),
       L('Some relationships are many-to-many (N:M): an order can include several products, and a product can appear in several orders. Relational databases model this with an intermediate table, often called a junction table, such as Order_Item with order_id, product_id, and quantity. Its primary key combines both foreign keys.',
         'Algunas relaciones son muchos a muchos (N:M): un pedido puede incluir varios productos y un producto puede aparecer en varios pedidos. Las bases de datos relacionales lo modelan con una tabla intermedia, como Detalle_Pedido con id_pedido, id_producto y cantidad. Su clave primaria combina ambas claves foráneas.'),
     ],
@@ -216,15 +221,15 @@ export const dbWeek1Lessons: Lesson[] = [
     body: [
       L('Integrity constraints are rules the DBMS enforces so invalid data never gets in. PRIMARY KEY forbids repeated identifiers. FOREIGN KEY keeps relationships valid. NOT NULL requires a value. CHECK tests a condition, such as price >= 0. Because the database enforces them, every application gets the same protection.',
         'Las restricciones de integridad son reglas que el SGBD hace cumplir para que nunca entren datos inválidos. PRIMARY KEY prohíbe identificadores repetidos. FOREIGN KEY mantiene válidas las relaciones. NOT NULL exige un valor. CHECK comprueba una condición, como precio >= 0. Como la base de datos las aplica, todas las aplicaciones reciben la misma protección.'),
-      L('A transaction groups several operations into one unit: all or nothing. Selling a USB drive means creating the order, adding the item, and reducing stock. If every step succeeds, the transaction is committed (COMMIT). If any step fails, all changes are undone (ROLLBACK), so the database never stays half-updated.',
-        'Una transacción agrupa varias operaciones en una unidad: todo o nada. Vender una memoria USB implica crear el pedido, agregar el artículo y descontar el inventario. Si todos los pasos funcionan, la transacción se confirma (COMMIT). Si alguno falla, se deshacen todos los cambios (ROLLBACK), así la base de datos nunca queda a medio actualizar.'),
-      L('The DBMS also coordinates concurrent users: if two cashiers try to sell the last USB drive at the same time, only one sale may succeed. It keeps a log of changes to recover after failures, supports regular backups and a recovery plan, and controls security with roles and permissions, following the principle of least privilege: each user gets only the access they need.',
-        'El SGBD también coordina a los usuarios concurrentes: si dos cajeros intentan vender la última memoria USB al mismo tiempo, solo una venta puede concretarse. Guarda un registro de cambios para recuperarse tras fallos, permite respaldos periódicos y un plan de recuperación, y controla la seguridad con roles y permisos, siguiendo el principio de mínimo privilegio: cada usuario recibe solo el acceso que necesita.'),
+      L('A transaction groups several operations into one unit: all or nothing. Selling two cinnamon rolls means creating the order, adding the items, and reducing stock. If every step succeeds, the transaction is committed (COMMIT). If any step fails, all changes are undone (ROLLBACK), so the database never stays half-updated.',
+        'Una transacción agrupa varias operaciones en una unidad: todo o nada. Vender dos rollitos de canela implica crear el pedido, agregar los artículos y descontar el inventario. Si todos los pasos funcionan, la transacción se confirma (COMMIT). Si alguno falla, se deshacen todos los cambios (ROLLBACK), así la base de datos nunca queda a medio actualizar.'),
+      L('The DBMS also coordinates concurrent users: if two bakery workers try to sell the last sourdough loaf at the same time, only one sale may succeed. It keeps a log of changes to recover after failures, supports regular backups and a recovery plan, and controls security with roles and permissions, following the principle of least privilege: each user gets only the access they need.',
+        'El SGBD también coordina a los usuarios concurrentes: si dos trabajadores de la panadería intentan vender la última hogaza de masa madre al mismo tiempo, solo una venta puede concretarse. Guarda un registro de cambios para recuperarse tras fallos, permite respaldos periódicos y un plan de recuperación, y controla la seguridad con roles y permisos, siguiendo el principio de mínimo privilegio: cada usuario recibe solo el acceso que necesita.'),
     ],
     code: {
       language: 'sql',
       caption: L('A sale as one transaction.', 'Una venta como una sola transacción.'),
-      source: "BEGIN;\nINSERT INTO orders (order_id, customer_id) VALUES (104, 2);\nINSERT INTO order_item (order_id, product_id, quantity) VALUES (104, 20, 1);\nUPDATE product SET stock = stock - 1 WHERE product_id = 20;\nCOMMIT;  -- or ROLLBACK if any step failed",
+      source: "BEGIN;\nINSERT INTO orders (order_id, customer_id, order_date) VALUES (205, 302, '2026-03-07');\nINSERT INTO order_item (order_id, product_id, quantity) VALUES (205, 612, 2);\nUPDATE product SET stock = stock - 2 WHERE product_id = 612;\nCOMMIT;  -- or ROLLBACK if any step failed",
     },
     analogy: L('A transaction is like a bank transfer: money leaves one account and arrives in the other, or nothing happens. You never want the money to leave and not arrive.',
       'Una transacción es como una transferencia bancaria: el dinero sale de una cuenta y llega a la otra, o no pasa nada. Nunca quieres que el dinero salga y no llegue.'),
@@ -249,8 +254,8 @@ export const dbWeek1Lessons: Lesson[] = [
     minutes: 20,
     diagram: 'three-schema',
     body: [
-      L('The three-schema architecture separates how data is seen, organised, and stored. The external level holds the views of each user group: a cashier sees orders and prices. The conceptual level describes the whole database logically: Customer, Order, Product, and their relationships. The internal level describes physical storage: files, pages, and indexes.',
-        'La arquitectura de tres esquemas separa cómo se ven, se organizan y se guardan los datos. El nivel externo contiene las vistas de cada grupo de usuarios: un cajero ve pedidos y precios. El nivel conceptual describe toda la base de datos de forma lógica: Cliente, Pedido, Producto y sus relaciones. El nivel interno describe el almacenamiento físico: archivos, páginas e índices.'),
+      L('The three-schema architecture separates how data are seen, organised, and stored. The external level holds the views of each user group: a bakery cashier sees orders and prices. The conceptual level describes the whole database logically: Customer, Order, Product, and their relationships. The internal level describes physical storage: files, pages, and indexes.',
+        'La arquitectura de tres esquemas separa cómo se ven, se organizan y se guardan los datos. El nivel externo contiene las vistas de cada grupo de usuarios: quien cobra en la panadería ve pedidos y precios. El nivel conceptual describe toda la base de datos de forma lógica: Customer, Order, Product y sus relaciones. El nivel interno describe el almacenamiento físico: archivos, páginas e índices.'),
       L('This separation gives data independence. Physical independence means the storage can change, for example by adding an index, without changing the applications. Logical independence means the conceptual schema can grow, for example with a new table, without breaking existing views. A view is a named query: CREATE VIEW expensive_products AS SELECT … lets users query a tailored subset as if it were a table, and can also hide sensitive columns.',
         'Esta separación da independencia de datos. La independencia física significa que el almacenamiento puede cambiar, por ejemplo al agregar un índice, sin modificar las aplicaciones. La independencia lógica significa que el esquema conceptual puede crecer, por ejemplo con una tabla nueva, sin romper las vistas existentes. Una vista es una consulta con nombre: CREATE VIEW productos_caros AS SELECT … permite consultar un subconjunto a medida como si fuera una tabla y también puede ocultar columnas sensibles.'),
       L('Most databases follow a client-server architecture: the application, the client, sends SQL; the server, the DBMS, validates it, plans it, and runs it. An index works like the index of a book: it finds rows without reading the whole table. The query optimiser chooses an execution plan, for example whether to use an index. Indexes speed up reads but take space and must be updated on every change.',
@@ -275,8 +280,8 @@ export const dbWeek1Lessons: Lesson[] = [
     title: L('First SQL queries', 'Primeras consultas SQL'),
     minutes: 30,
     body: [
-      L('SQL is the language for working with relational data. A query starts with three words: SELECT says which columns to show, FROM says which table to read, and WHERE says which rows qualify. SELECT name, price FROM product WHERE price > 20000; returns only the products that cost more than 20,000.',
-        'SQL es el lenguaje para trabajar con datos relacionales. Una consulta empieza con tres palabras: SELECT dice qué columnas mostrar, FROM dice de qué tabla leer y WHERE dice qué filas cumplen la condición. SELECT nombre, precio FROM producto WHERE precio > 20000; devuelve solo los productos que cuestan más de 20.000.'),
+      L('SQL is the language for working with relational data. A query starts with three words: SELECT says which columns to show, FROM says which table to read, and WHERE says which rows qualify. SELECT name, price FROM product WHERE price > 10000; returns only the bakery products that cost more than 10,000 pesos.',
+        'SQL es el lenguaje para trabajar con datos relacionales. Una consulta empieza con tres palabras: SELECT dice qué columnas mostrar, FROM dice de qué tabla leer y WHERE dice qué filas cumplen la condición. SELECT name, price FROM product WHERE price > 10000; devuelve solo los productos de panadería que cuestan más de 10.000 pesos.'),
       L('AND combines conditions, and ORDER BY sorts the result: ORDER BY price DESC goes from highest to lowest. JOIN brings related tables together using their keys: joining Customer and Order on customer_id lists each customer with their orders, so a customer with two orders appears twice.',
         'AND combina condiciones y ORDER BY ordena el resultado: ORDER BY precio DESC va del mayor al menor. JOIN reúne tablas relacionadas usando sus claves: unir Cliente y Pedido por id_cliente lista a cada cliente con sus pedidos, así que un cliente con dos pedidos aparece dos veces.'),
       L('SQL also changes data. INSERT adds a row, UPDATE changes rows, and DELETE removes rows. Always write a WHERE clause on UPDATE and DELETE: without it, the change applies to every row in the table. Try every query in this week\'s SQL Lab, which runs a real database in your browser.',
@@ -285,7 +290,7 @@ export const dbWeek1Lessons: Lesson[] = [
     code: {
       language: 'sql',
       caption: L('Filter, sort, and join.', 'Filtrar, ordenar y unir.'),
-      source: "SELECT name, price\nFROM product\nWHERE price >= 8000 AND price <= 20000\nORDER BY price DESC;\n\nSELECT c.name, o.order_id\nFROM customer AS c\nJOIN orders AS o ON c.customer_id = o.customer_id;",
+      source: "SELECT name, price\nFROM product\nWHERE price >= 8000 AND price <= 12000\nORDER BY price DESC;\n\nSELECT c.name, o.order_id\nFROM customer AS c\nJOIN orders AS o ON c.customer_id = o.customer_id;",
     },
     analogy: L('SELECT is like asking a librarian: "show me the titles and authors (SELECT) from the history shelf (FROM) published after 2000 (WHERE)".',
       'SELECT es como pedirle al bibliotecario: "muéstrame los títulos y autores (SELECT) del estante de historia (FROM) publicados después del 2000 (WHERE)".'),
@@ -305,7 +310,7 @@ export const dbWeek1Lessons: Lesson[] = [
     ],
     exercises: [
       { id: 'db1-ex-9-1', level: 1, title: L('Write the query', 'Escribe la consulta'),
-        prompt: L('List the name and price of products that cost less than 10,000, cheapest first.', 'Lista el nombre y el precio de los productos que cuestan menos de 10.000, del más barato al más caro.'),
+        prompt: L('List the name and price of bakery products that cost less than 10,000 pesos, cheapest first.', 'Lista el nombre y el precio de los productos de panadería que cuestan menos de 10.000 pesos, del más barato al más caro.'),
         hint: L('WHERE for the condition, ORDER BY … ASC for the order.', 'WHERE para la condición y ORDER BY … ASC para el orden.'),
         solution: L('SELECT name, price FROM product WHERE price < 10000 ORDER BY price ASC;', 'SELECT name, price FROM product WHERE price < 10000 ORDER BY price ASC;') },
       { id: 'db1-ex-9-2', level: 2, title: L('Who bought what?', '¿Quién compró qué?'),
