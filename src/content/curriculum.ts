@@ -40,7 +40,7 @@ terms[0].modules[2].subjects = [
         title: { en: 'Introduction to Software Engineering Management', es: 'Introducción a la gestión de la ingeniería de software' },
         status: 'published',
       },
-      { id: 'y1-t1-m3-w2', number: 2, status: 'planned', title: { en: 'Requirements engineering', es: 'Ingeniería de requerimientos', pt: 'Engenharia de requisitos' } },
+      { id: 'y1-t1-m3-w2', number: 2, status: 'published', title: { en: 'Requirements engineering', es: 'Ingeniería de requerimientos', pt: 'Engenharia de requisitos' } },
       { id: 'y1-t1-m3-w3', number: 3, status: 'planned', title: { en: 'Agile methodology', es: 'Metodología ágil', pt: 'Metodologia ágil' } },
       { id: 'y1-t1-m3-w4', number: 4, status: 'planned', title: { en: 'Agile estimation', es: 'Estimación ágil', pt: 'Estimativa ágil' } },
       { id: 'y1-t1-m3-w5', number: 5, status: 'planned', title: { en: 'Use cases', es: 'Casos de uso', pt: 'Casos de uso' } },

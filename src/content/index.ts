@@ -3,13 +3,14 @@ import type { SubjectMeta } from './types';
 import { week1 } from './week1';
 import { dbWeek1 } from './db1-week1';
 import { calcWeek1 } from './calc1-week1';
+import { sd1Week2 } from './sd1-week2';
 import { addPortuguese } from './localize';
 
 /**
  * Registry of all published weeks. To add a week, create its folder with the
  * same shape as week1 and register it here.
  */
-export const weeks: WeekContent[] = [week1, dbWeek1, calcWeek1].map(addPortuguese);
+export const weeks: WeekContent[] = [week1, sd1Week2, dbWeek1, calcWeek1].map(addPortuguese);
 
 export function findWeek(id: string): WeekContent | undefined {
   return weeks.find((w) => w.id === id);
